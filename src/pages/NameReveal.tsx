@@ -111,24 +111,24 @@ const NameReveal = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
       <Card className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
-        <h2 className="text-3xl font-bold mb-4">It's {currentPlayerName}'s Turn</h2>
-        <p className="text-lg mb-6">Tap to reveal your word.</p>
+        <h2 className="text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
+        <p className="text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
 
-        <CardContent className="relative w-full h-48 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-200 shadow-md">
+        <CardContent className="relative w-full h-64 bg-gradient-to-br from-gray-50 to-gray-200 rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 shadow-xl transform transition-all duration-300 hover:scale-[1.01] cursor-pointer">
           {showWord ? (
             <div className="flex flex-col items-center justify-center animate-fade-in">
-              <p className="text-xl font-semibold mb-2">You are a:</p>
-              <p className={`text-4xl font-extrabold ${isSusPlayer ? "text-red-600" : "text-green-600"} mb-4`}>
+              <p className="text-lg font-medium text-gray-700 mb-2">You are a:</p>
+              <p className={`text-5xl font-black ${isSusPlayer ? "text-red-600" : "text-green-600"} mb-4 tracking-tight`}>
                 {isSusPlayer ? "Sus Player" : "Crewmate"}
               </p>
-              <p className="text-5xl font-bold text-purple-700">
-                Your Word: {currentWord}
+              <p className="text-7xl font-black text-purple-700 tracking-tighter leading-none">
+                {currentWord}
               </p>
             </div>
           ) : (
             <Button
               onClick={handleTapToReveal}
-              className="bg-purple-700 text-white hover:bg-purple-800 text-xl px-8 py-4 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="absolute inset-0 flex items-center justify-center bg-purple-700 text-white hover:bg-purple-800 text-2xl font-bold rounded-3xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               Tap to Reveal
             </Button>
