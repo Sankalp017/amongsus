@@ -25,7 +25,7 @@ const HowToPlay = () => {
           variant="ghost"
           size="icon"
           onClick={handleGoBack}
-          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700 rounded-xl" // Changed to rounded-xl
+          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700 rounded-xl"
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
@@ -34,35 +34,35 @@ const HowToPlay = () => {
         </CardHeader>
         <CardContent className="text-left space-y-4">
           <p className="text-base md:text-lg">
-            Welcome, brave truth-seekers and master manipulators! Among Sus is your new favorite word-based social deduction game for <span className="font-bold">3+ players</span>, all on one device. Think of it as a verbal tightrope walk where one wrong word (or a suspiciously *right* one) can expose you.
+            Alright, gather 'round, you magnificent truth-seekers and cunning master manipulators! Welcome to Among Sus, the word-based social deduction game that's about to become your new obsession. Designed for <span className="font-bold">3+ players</span> on a single device, it's a verbal tightrope walk where one slip of the tongue (or a suspiciously *perfect* one) can expose everything.
           </p>
           <p className="text-base md:text-lg">
-            One or more of you will be the "<span className="font-bold text-red-600">Imposters</span>" – sneaky devils who get a word that's *just* different enough to make them sweat. The rest are the "<span className="font-bold text-green-600">Innocents</span>," armed with the true word and a burning desire to sniff out the fakers.
+            Some of you will be the "<span className="font-bold text-red-600">Imposters</span>" – sly foxes who get a word that's *just* off-kilter enough to make them sweat. The rest? You're the "<span className="font-bold text-green-600">Innocents</span>," armed with the real deal and a burning, unshakeable urge to unmask the fakes.
           </p>
 
           <Separator className="my-6 bg-gray-300" />
 
-          <h3 className="text-xl md:text-2xl font-semibold mb-3 text-purple-700">The Grand Scheme (aka Game Flow):</h3>
+          <h3 className="text-xl md:text-2xl font-semibold mb-3 text-purple-700">The Master Plan (aka How This Chaos Unfolds):</h3>
           <ol className="list-decimal list-inside space-y-3 text-base md:text-lg">
             <li>
-              <span className="font-bold">Game Setup:</span> Gather your crew, enter names (no duplicates, unless you *really* want to confuse everyone), pick your imposter count (the more, the merrier... or more chaotic), and choose a word topic.
+              <span className="font-bold">Game Setup:</span> First things first, wrangle your unsuspecting friends (or frenemies). Punch in everyone's names – and seriously, try to keep them unique, unless you *enjoy* shouting 'Which "Bob" are we talking about?!' Pick how many Imposters you want to unleash (more Imposters = more delightful chaos, just sayin'). Finally, pick a word topic. Choose wisely, for your fate depends on it!
             </li>
             <li>
-              <span className="font-bold">Word Reveal (The "Don't Look!" Phase):</span> This is where the magic (and paranoia) happens! The game will dramatically announce whose turn it is using text-to-speech. <span className="font-bold text-purple-700">Pass the device ONLY to the announced player.</span> Everyone else, avert your eyes! The current player taps to reveal their secret word. Innocents get the real deal, while Imposters get a "sus word" – close enough to blend, but far enough to trip them up. The game will then loudly declare "Word revealed!" just to make sure everyone knows *someone* just saw *something*. Then, tap "Next Player" and pass the device like it's a hot potato.
+              <span className="font-bold">Word Reveal (The "Seriously, Don't Peek!" Phase):</span> This is where the tension builds and friendships are tested! Our digital overlord (the game, that is) will dramatically announce whose turn it is via text-to-speech. <span className="font-bold text-purple-700">Pass the device ONLY to the player whose name was just bellowed.</span> Everyone else, for the love of all that is innocent, avert your gaze! The chosen player then bravely clicks the screen to unveil their secret word. If you're an Innocent, you'll see the true word. If you're an Imposter, you'll get a "sus word" – it's like the main word's slightly awkward cousin, just similar enough to blend in, but different enough to make you sweat. The game will then triumphantly declare "Word revealed!" (just in case you weren't paying attention). Once you've absorbed your destiny, click "Next Player" and pass that device like it's a ticking time bomb.
             </li>
             <li>
-              <span className="font-bold">Discussion Phase (The "Who's Lying?" Inquisition):</span> Once everyone's seen their word (or their "sus" word), the gloves come off! Discuss the word. Innocents, ask probing questions, listen for any verbal stumbles, and try to pinpoint the Imposter(s). Imposters, this is your time to shine! Blend in, deflect, and try not to reveal your slightly-off word. Remember, directly saying the main word is a big no-no – unless you *want* to be voted out!
+              <span className="font-bold">Discussion Phase (The "Let the Accusations Fly!" Inquisition):</span> Everyone's seen their word (or their cleverly disguised "sus" word). Now, the real fun begins! This is your chance to discuss the word. Innocents, channel your inner detective: ask cunning questions, listen for any verbal stumbles, and try to pinpoint who's acting a little *too* innocent. Imposters, this is your moment to shine! Blend in, deflect, throw shade, and whatever you do, *do not* accidentally blurt out your slightly-off word. And a pro tip for everyone: directly saying the main word is a massive no-no – unless you're actively trying to get yourself voted into the digital abyss!
             </li>
             <li>
-              <span className="font-bold">Results (The Moment of Truth!):</span> After all the accusations and nervous laughter, the game reveals the true Imposters and both the main and sus words. See if your detective skills (or your bluffing prowess) paid off!
+              <span className="font-bold">Results (The Grand Unmasking!):</span> The dust settles, the nervous laughter subsides, and it's time for the big reveal! The game will proudly display who the true Imposters were, along with both the main word and that tricky "sus word." Did your detective skills pay off? Or did the Imposters pull off the ultimate deception? Find out if you're a master of deduction or just really good at guessing!
             </li>
           </ol>
           <p className="text-base md:text-lg mt-6">
-            Good luck, have fun, and try not to be *too* sus. We're watching you...
+            So, there you have it! Good luck, have an absolute blast, and remember: try not to be *too* sus. We're always watching... (mostly just the game, but still!)
           </p>
           <Button
             onClick={handleReadyToPlay}
-            className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 mt-6" // Changed to rounded-xl
+            className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 mt-6"
           >
             Ready to Play? (And Lie?)
           </Button>
