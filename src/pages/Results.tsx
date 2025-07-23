@@ -41,7 +41,7 @@ const Results = () => {
 
     // Initialize audio object once
     if (!audioRef.current) {
-      audioRef.current = new Audio("/sounds/drum-roll.mp3");
+      audioRef.current = new Audio("/sounds/Drum Roll 3.mp3"); // Updated to use the new file name
       audioRef.current.volume = 0.7;
     }
 
