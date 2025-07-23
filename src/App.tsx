@@ -3,7 +3,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import GameSetup from "./pages/GameSetup";
@@ -14,18 +13,6 @@ import HowToPlay from "./pages/HowToPlay";
 
 const queryClient = new QueryClient();
 
-const PageWrapper = ({ children }: { children: React.ReactNode }) => (
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.2, ease: "easeInOut" }} // Shorter duration for a quicker fade
-    className="w-full h-full"
-  >
-    {children}
-  </motion.div>
-);
-
 const App = () => {
   const location = useLocation();
 
@@ -34,17 +21,15 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<PageWrapper><Index /></PageWrapper>} />
-            <Route path="/setup" element={<PageWrapper><GameSetup /></PageWrapper>} />
-            <Route path="/name-reveal" element={<PageWrapper><NameReveal /></PageWrapper>} />
-            <Route path="/discussion" element={<PageWrapper><Discussion /></PageWrapper>} />
-            <Route path="/results" element={<PageWrapper><Results /></PageWrapper>} />
-            <Route path="/how-to-play" element={<PageWrapper><HowToPlay /></PageWrapper>} />
-            <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
-          </Routes>
-        </AnimatePresence>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Index />} />
+          <Route path="/setup" element={<GameSetup />} />
+          <Route path="/name-reveal" element={<NameReveal />} />
+          <Route path="/discussion" element={<Discussion />} />
+          <Route path="/results" element={<Results />} />
+          <Route path="/how-to-play" element={<HowToPlay />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </TooltipProvider>
     </QueryClientProvider>
   );
