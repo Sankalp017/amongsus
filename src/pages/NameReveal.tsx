@@ -2,16 +2,18 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { getWordsForTopic } from "@/utils/words";
+import { getWordsForTopic, wordCategories } from "@/utils/words"; // Import wordCategories
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { saveGameState, loadGameState } from "@/utils/localStorage"; // Import localStorage utilities
+import { saveGameState, loadGameState } from "@/utils/localStorage";
+import Timer from "@/components/Timer"; // Import the Timer component
 
 interface GameSetupData {
   numPlayers: number;
   playerNames: string[];
   numSusPlayers: number;
   topic?: string;
+  previousTopic?: string; // Added for new round logic
 }
 
 interface GameStateData extends GameSetupData {
@@ -34,6 +36,8 @@ const NameReveal = () => {
   const [susWord, setSusWord] = useState("");
   const [gameData, setGameData] = useState<GameSetupData | null>(null);
   const [voicesLoaded, setVoicesLoaded] = useState(false);
+  const [showTimer, setShowTimer] = useState(true); // State to control timer visibility
+  const [timerDone, setTimerDone] = useState(false); // State to control content visibility after timer
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -74,15 +78,12 @@ const NameReveal = () => {
         setVoicesLoaded(true);
         console.log("Speech voices loaded.");
       } else {
-        // If voices are not yet available, try again after a short delay
-        // This can help in browsers that load voices asynchronously
         setTimeout(checkAndSetVoices, 100);
       }
     };
 
     if ("speechSynthesis" in window) {
-      // Initial check and listener
-      checkAndSetVoices(); // Try to get voices immediately
+      checkAndSetVoices();
       speechSynthesis.addEventListener("voiceschanged", checkAndSetVoices);
     }
 
@@ -107,14 +108,24 @@ const NameReveal = () => {
 
     setGameData(loadedGameState);
 
-    if ((loadedGameState as GameStateData).mainWord && (loadedGameState as GameStateData).susPlayerIndices) {
-      const fullGameState = loadedGameState as GameStateData;
-      setMainWord(fullGameState.mainWord);
-      setSusWord(fullGameState.susWord);
-      setSusPlayerIndices(fullGameState.susPlayerIndices);
-    } else {
+    // Determine if it's a new game or a "next round"
+    const isNewGame = !(loadedGameState as GameStateData).mainWord || !(loadedGameState as GameStateData).susPlayerIndices;
+
+    if (isNewGame) {
+      let selectedTopic = loadedGameState.topic || "Random words";
+      if (loadedGameState.previousTopic) {
+        // If it's a next round, try to pick a different topic
+        const availableTopics = wordCategories.filter(cat => cat !== loadedGameState.previousTopic);
+        if (availableTopics.length > 0) {
+          selectedTopic = availableTopics[Math.floor(Math.random() * availableTopics.length)];
+        } else {
+          // Fallback if only one topic exists or all have been used
+          selectedTopic = wordCategories[Math.floor(Math.random() * wordCategories.length)];
+        }
+      }
+
       const { mainWord: generatedMainWord, susWord: generatedSusWord } = getWordsForTopic(
-        loadedGameState.topic || "Random words",
+        selectedTopic,
         loadedGameState.numSusPlayers
       );
       setMainWord(generatedMainWord);
@@ -127,10 +138,16 @@ const NameReveal = () => {
 
       saveGameState({
         ...loadedGameState,
+        topic: selectedTopic, // Save the chosen topic for this round
         mainWord: generatedMainWord,
         susWord: generatedSusWord,
         susPlayerIndices: selectedSusIndices,
       });
+    } else {
+      const fullGameState = loadedGameState as GameStateData;
+      setMainWord(fullGameState.mainWord);
+      setSusWord(fullGameState.susWord);
+      setSusPlayerIndices(fullGameState.susPlayerIndices);
     }
 
     return () => {
@@ -141,14 +158,14 @@ const NameReveal = () => {
   }, [initialGameData, navigate]);
 
   useEffect(() => {
-    if (gameData && currentPlayerIndex < gameData.numPlayers && voicesLoaded) {
+    if (gameData && currentPlayerIndex < gameData.numPlayers && voicesLoaded && timerDone) {
       const playerIsSus = susPlayerIndices.includes(currentPlayerIndex);
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
       setShowWord(false);
       speak(`It's ${gameData.playerNames[currentPlayerIndex]}'s turn`);
     }
-  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, voicesLoaded]);
+  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, voicesLoaded, timerDone]);
 
   const handleTapToReveal = () => {
     setShowWord(true);
@@ -174,6 +191,11 @@ const NameReveal = () => {
     }
   };
 
+  const handleTimerComplete = () => {
+    setShowTimer(false);
+    setTimerDone(true);
+  };
+
   if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0) {
     return null;
   }
@@ -183,39 +205,49 @@ const NameReveal = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
       <Card className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
-        <h2 className="text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
-        <p className="text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
+        {showTimer ? (
+          <div className="flex flex-col items-center justify-center h-64">
+            <h2 className="text-3xl font-bold mb-4 text-purple-800">Get Ready!</h2>
+            <Timer initialTime={5} onTimeUp={handleTimerComplete} />
+            <p className="mt-4 text-lg text-gray-600">Word reveal starting soon...</p>
+          </div>
+        ) : (
+          <>
+            <h2 className="text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
+            <p className="text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
 
-        <CardContent
-          onClick={!showWord ? handleTapToReveal : undefined}
-          className={`relative w-full h-64 bg-white rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 shadow-lg transform transition-all duration-300 ${!showWord ? 'cursor-pointer hover:scale-[1.01] hover:shadow-xl' : ''}`}
-        >
-          {showWord ? (
-            <div className="flex flex-col items-center justify-center animate-fade-in">
-              <Badge
-                variant={isSusPlayer ? "destructive" : "secondary"}
-                className={`text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
-              >
-                {isSusPlayer ? "Imposter" : "Innocent"}
-              </Badge>
-              <p className="text-5xl font-medium text-purple-700 tracking-tighter leading-none">
-                {currentWord}
-              </p>
-            </div>
-          ) : (
-            <span className="text-2xl font-bold text-purple-700">
-              Tap to Reveal
-            </span>
-          )}
-        </CardContent>
+            <CardContent
+              onClick={!showWord ? handleTapToReveal : undefined}
+              className={`relative w-full h-64 bg-white rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 shadow-lg transform transition-all duration-300 ${!showWord ? 'cursor-pointer hover:scale-[1.01] hover:shadow-xl' : ''}`}
+            >
+              {showWord ? (
+                <div className="flex flex-col items-center justify-center animate-fade-in">
+                  <Badge
+                    variant={isSusPlayer ? "destructive" : "secondary"}
+                    className={`text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
+                  >
+                    {isSusPlayer ? "Imposter" : "Innocent"}
+                  </Badge>
+                  <p className="text-5xl font-medium text-purple-700 tracking-tighter leading-none">
+                    {currentWord}
+                  </p>
+                </div>
+              ) : (
+                <span className="text-2xl font-bold text-purple-700">
+                  Tap to Reveal
+                </span>
+              )}
+            </CardContent>
 
-        <Button
-          onClick={handleNextPlayer}
-          disabled={!showWord}
-          className="w-full bg-blue-600 text-white hover:bg-blue-700 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-        >
-          {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
-        </Button>
+            <Button
+              onClick={handleNextPlayer}
+              disabled={!showWord}
+              className="w-full bg-blue-600 text-white hover:bg-blue-700 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+            >
+              {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
+            </Button>
+          </>
+        )}
       </Card>
     </div>
   );
