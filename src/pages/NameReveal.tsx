@@ -141,7 +141,10 @@ const NameReveal = () => {
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
       setShowWord(false); // Reset showWord for the new player
-      // Removed automatic speak here, it will now be triggered by handleTapToReveal
+      
+      // Automatic speak here, as per previous behavior
+      const playerTurnText = `It's ${gameData.playerNames[currentPlayerIndex]}'s turn`;
+      speak(playerTurnText);
     }
   }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData]);
 
@@ -151,29 +154,9 @@ const NameReveal = () => {
       return;
     }
 
-    if (!showWord && gameData) { // Only allow tap to reveal if word is not already shown
-      const playerTurnText = `It's ${gameData.playerNames[currentPlayerIndex]}'s turn`;
+    if (!showWord) { // Only allow tap to reveal if word is not already shown
       const wordRevealText = "Word revealed";
-
-      // Create and configure the first utterance (player's turn)
-      const playerTurnUtterance = new SpeechSynthesisUtterance(playerTurnText);
-      playerTurnUtterance.lang = "en-US";
-      const voices = speechSynthesis.getVoices();
-      const femaleVoice = voices.find((voice) => voice.lang === "en-US" && voice.name.includes("Female"));
-      const selectedVoice = femaleVoice || voices.find((voice) => voice.lang === "en-US");
-      if (selectedVoice) {
-        playerTurnUtterance.voice = selectedVoice;
-      }
-
-      // Chain the "Word revealed" announcement after the first one finishes
-      playerTurnUtterance.onend = () => {
-        speak(wordRevealText);
-      };
-
-      speechSynthesis.cancel(); // Cancel any ongoing speech before starting new sequence
-      speechSynthesis.speak(playerTurnUtterance);
-      utteranceRef.current = playerTurnUtterance; // Store the first utterance in ref
-
+      speak(wordRevealText); // Speak "Word revealed" on tap
       setShowWord(true); // Show the word immediately upon tap
     }
   };
