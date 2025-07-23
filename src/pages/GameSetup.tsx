@@ -24,9 +24,8 @@ import {
 import { toast } from "sonner";
 import { wordCategories } from "@/utils/words";
 import { ArrowLeft } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Import Card components
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { saveGameState, clearGameState } from "@/utils/localStorage";
-// import NumberInputStepper from "@/components/NumberInputStepper"; // No longer needed
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -36,10 +35,7 @@ const formSchema = z.object({
     .max(20, { message: "Maximum 20 players allowed." }),
   playerNames: z
     .array(z.string().min(1, { message: "Player name cannot be empty." }))
-    .min(3, { message: "Please enter names for all players." })
-    .refine((names) => new Set(names.map(name => name.toLowerCase())).size === names.length, {
-      message: "Player names must be unique.",
-    }),
+    .min(3, { message: "Please enter names for all players." }), // Removed the refine for unique names here
   numSusPlayers: z.coerce
     .number()
     .min(1, { message: "Minimum 1 imposter required." }),
@@ -59,7 +55,7 @@ const GameSetup = () => {
       numPlayers: 3,
       playerNames: ["", "", ""],
       numSusPlayers: 1,
-      topic: "🎲 Random words", // Updated default value for topic
+      topic: "🎲 Random words",
     },
   });
 
@@ -77,6 +73,40 @@ const GameSetup = () => {
   }, [numPlayers, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    // Manual duplicate check for player names
+    const seenNames = new Set<string>();
+    let hasDuplicateError = false;
+
+    // Clear previous player name errors to avoid stale messages
+    values.playerNames.forEach((_, index) => {
+      form.clearErrors(`playerNames.${index}`);
+    });
+
+    values.playerNames.forEach((name, index) => {
+      const lowerName = name.toLowerCase().trim(); // Trim whitespace
+      if (lowerName === "") { // Check for empty names after trim
+        form.setError(`playerNames.${index}`, {
+          type: "manual",
+          message: "Player name cannot be empty.",
+        });
+        hasDuplicateError = true;
+        return;
+      }
+      if (seenNames.has(lowerName)) {
+        form.setError(`playerNames.${index}`, {
+          type: "manual",
+          message: "Player name must be unique.",
+        });
+        hasDuplicateError = true;
+      }
+      seenNames.add(lowerName);
+    });
+
+    if (hasDuplicateError) {
+      toast.error("Please correct the errors in player names.");
+      return; // Stop submission if there are duplicate or empty name errors
+    }
+
     console.log("Game Setup Values:", values);
     saveGameState(values);
     toast.success("Game setup complete! Starting round...");
@@ -96,7 +126,7 @@ const GameSetup = () => {
           variant="ghost"
           size="icon"
           onClick={handleGoBack}
-          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700 rounded-xl" // Changed to rounded-xl
+          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700 rounded-xl"
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
@@ -113,7 +143,7 @@ const GameSetup = () => {
                     <Input
                       type="number"
                       placeholder="e.g., 3"
-                      className="text-center text-base md:text-lg py-2 w-full" // Added w-full
+                      className="text-center text-base md:text-lg py-2 w-full"
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
@@ -122,7 +152,7 @@ const GameSetup = () => {
                           form.setValue("numPlayers", val);
                         }
                       }}
-                      min={3} // Ensure min/max are still applied
+                      min={3}
                       max={20}
                     />
                   </FormControl>
@@ -141,7 +171,7 @@ const GameSetup = () => {
                     <Input
                       type="number"
                       placeholder="e.g., 1"
-                      className="text-center text-base md:text-lg py-2 w-full" // Added w-full
+                      className="text-center text-base md:text-lg py-2 w-full"
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
@@ -157,7 +187,7 @@ const GameSetup = () => {
               )}
             />
 
-            <Card className="bg-gray-50 p-4 rounded-xl shadow-inner border border-gray-200"> {/* New card for player names */}
+            <Card className="bg-gray-50 p-4 rounded-xl shadow-inner border border-gray-200">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="text-lg md:text-xl font-semibold text-purple-700 text-left">Player Names</CardTitle>
               </CardHeader>
@@ -174,7 +204,7 @@ const GameSetup = () => {
                           <Input
                             placeholder={`Enter name for Player ${index + 1}`}
                             {...field}
-                            className="w-full" // Ensure input is full width
+                            className="w-full"
                           />
                         </FormControl>
                         <FormMessage />
@@ -212,7 +242,7 @@ const GameSetup = () => {
 
             <Button
               type="submit"
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105" // Changed to rounded-xl
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               Start Round
             </Button>
