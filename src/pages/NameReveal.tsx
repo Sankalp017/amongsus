@@ -204,17 +204,17 @@ const NameReveal = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
-      <Card className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
+      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
         {showTimer ? (
           <div className="flex flex-col items-center justify-center h-64">
-            <h2 className="text-3xl font-bold mb-4 text-purple-800 animate-pulse-fast">Get Ready!</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-purple-800 animate-pulse-fast">Get Ready!</h2>
             <Timer initialTime={3} onTimeUp={handleTimerComplete} />
-            <p className="mt-4 text-lg text-gray-600">Word reveal starting soon...</p>
+            <p className="mt-4 text-base md:text-lg text-gray-600">Word reveal starting soon...</p>
           </div>
         ) : (
           <>
-            <h2 className="text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
-            <p className="text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
+            <p className="text-base md:text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
 
             <CardContent
               onClick={!showWord ? handleTapToReveal : undefined}
@@ -223,7 +223,7 @@ const NameReveal = () => {
               {/* Overlay that animates away to reveal the word */}
               {!showWord && (
                 <div className="absolute inset-0 bg-purple-100 rounded-3xl flex items-center justify-center">
-                  <span className="text-2xl font-bold text-purple-700">
+                  <span className="text-xl md:text-2xl font-bold text-purple-700">
                     Tap to Reveal
                   </span>
                 </div>
@@ -233,11 +233,11 @@ const NameReveal = () => {
                 <div className="flex flex-col items-center justify-center animate-reveal-word"> {/* Apply reveal animation here */}
                   <Badge
                     variant={isSusPlayer ? "destructive" : "secondary"}
-                    className={`text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
+                    className={`text-lg md:text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
                   >
                     {isSusPlayer ? "Imposter" : "Innocent"}
                   </Badge>
-                  <p className="text-5xl font-medium text-purple-700 tracking-tighter leading-none">
+                  <p className="text-4xl md:text-5xl font-medium text-purple-700 tracking-tighter leading-none">
                     {currentWord}
                   </p>
                 </div>
@@ -247,7 +247,7 @@ const NameReveal = () => {
             <Button
               onClick={handleNextPlayer}
               disabled={!showWord}
-              className="w-full bg-blue-600 text-white hover:bg-blue-700 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="w-full bg-blue-600 text-white hover:bg-blue-700 text-base md:text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
             </Button>

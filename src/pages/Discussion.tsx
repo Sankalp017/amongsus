@@ -62,22 +62,22 @@ const Discussion = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
-      <Card className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
+      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
         {showTimer ? (
           <div className="flex flex-col items-center justify-center h-64">
-            <h2 className="text-3xl font-bold mb-4 text-purple-800">Discussion Starts In...</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-purple-800">Discussion Starts In...</h2>
             <Timer initialTime={3} onTimeUp={handleTimerComplete} />
-            <p className="mt-4 text-lg text-gray-600">Get ready to accuse!</p>
+            <p className="mt-4 text-base md:text-lg text-gray-600">Get ready to accuse!</p>
           </div>
         ) : (
           <>
             <CardHeader>
-              <CardTitle className="text-3xl font-bold mb-4 flex items-center justify-center gap-2">
-                <MessageCircle className="h-8 w-8 text-purple-700" /> Discussion Time!
+              <CardTitle className="text-2xl md:text-3xl font-bold mb-4 flex items-center justify-center gap-2">
+                <MessageCircle className="h-7 w-7 md:h-8 md:w-8 text-purple-700" /> Discussion Time!
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-lg mb-6">
+              <p className="text-base md:text-lg mb-6">
                 Players, discuss among yourselves. Try to figure out who the sus players are!
               </p>
 

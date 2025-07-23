@@ -89,7 +89,7 @@ const GameSetup = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
-      <Card className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200 relative"> {/* Added relative for positioning */}
+      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200 relative"> {/* Added relative for positioning */}
         <Button
           variant="ghost"
           size="icon"
@@ -98,7 +98,7 @@ const GameSetup = () => {
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
-        <h2 className="text-3xl font-bold mb-6 text-center mt-4">Game Setup</h2>
+        <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center mt-4">Game Setup</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -106,12 +106,12 @@ const GameSetup = () => {
               name="numPlayers"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-lg">Number of Players</FormLabel>
+                  <FormLabel className="text-base md:text-lg">Number of Players</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       placeholder="e.g., 4"
-                      className="text-center text-lg py-2"
+                      className="text-center text-base md:text-lg py-2"
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
@@ -152,12 +152,12 @@ const GameSetup = () => {
               name="numSusPlayers"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-lg">Number of Imposters</FormLabel>
+                  <FormLabel className="text-base md:text-lg">Number of Imposters</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       placeholder="e.g., 1"
-                      className="text-center text-lg py-2"
+                      className="text-center text-base md:text-lg py-2"
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
@@ -178,7 +178,7 @@ const GameSetup = () => {
               name="topic"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-lg">Select Topic (Optional)</FormLabel>
+                  <FormLabel className="text-base md:text-lg">Select Topic (Optional)</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -200,7 +200,7 @@ const GameSetup = () => {
 
             <Button
               type="submit"
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-lg py-6 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               Start Round
             </Button>
