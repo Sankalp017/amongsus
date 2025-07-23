@@ -218,7 +218,7 @@ const NameReveal = () => {
 
             <CardContent
               onClick={!showWord ? handleTapToReveal : undefined}
-              className={`relative w-full h-64 bg-white rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 shadow-lg transform transition-all duration-300 ${!showWord ? 'cursor-pointer hover:scale-[1.01] hover:shadow-xl' : ''}`}
+              className={`relative w-full h-64 bg-white rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 transform transition-all duration-300 ${!showWord ? 'cursor-pointer hover:scale-[1.01]' : ''}`}
             >
               {/* Overlay that animates away to reveal the word */}
               {!showWord && (
@@ -247,7 +247,7 @@ const NameReveal = () => {
             <Button
               onClick={handleNextPlayer}
               disabled={!showWord}
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
             </Button>

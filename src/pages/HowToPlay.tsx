@@ -53,7 +53,7 @@ const HowToPlay = () => {
           </p>
           <Button
             onClick={handleGoBack}
-            className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 mt-6"
+            className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105 mt-6"
           >
             Back to Home
           </Button>

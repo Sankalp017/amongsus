@@ -42,7 +42,7 @@ const formSchema = z.object({
   numSusPlayers: z.coerce
     .number()
     .min(1, { message: "Minimum 1 imposter required." }),
-  topic: z.string().optional(),
+  topic: z.string().optional(), // Added topic to the schema
 }).refine(data => data.numSusPlayers < data.numPlayers, {
   message: "Number of imposters must be less than total players.",
   path: ["numSusPlayers"],
@@ -58,7 +58,7 @@ const GameSetup = () => {
       numPlayers: 3,
       playerNames: ["", "", ""],
       numSusPlayers: 1,
-      topic: "Random words",
+      topic: "Random words", // Default value for topic
     },
   });
 
@@ -200,7 +200,7 @@ const GameSetup = () => {
 
             <Button
               type="submit"
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               Start Round
             </Button>

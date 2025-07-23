@@ -121,14 +121,14 @@ const Results = () => {
             <div className="flex flex-col space-y-4 mt-6">
               <Button
                 onClick={handlePlayNextRound}
-                className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+                className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105"
               >
                 Play Next Round
               </Button>
               <Button
                 onClick={handleNewGame}
                 variant="outline"
-                className="w-full bg-transparent border-2 border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white text-base md:text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+                className="w-full bg-transparent border-2 border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white text-base md:text-lg py-4 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105"
               >
                 New Game
               </Button>
