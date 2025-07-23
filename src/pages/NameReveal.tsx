@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { saveGameState, loadGameState } from "@/utils/localStorage";
 import Timer from "@/components/Timer";
-import CircularProgress from "@/components/CircularProgress"; // Import CircularProgress
 
 interface GameSetupData {
   numPlayers: number;
@@ -200,7 +199,6 @@ const NameReveal = () => {
   }
 
   const currentPlayerName = gameData.playerNames[currentPlayerIndex];
-  const progressValue = ((currentPlayerIndex) / gameData.numPlayers) * 100; // Calculate progress
 
   return (
     <div
@@ -215,19 +213,13 @@ const NameReveal = () => {
           </div>
         ) : (
           <>
-            <div className="absolute top-4 right-4">
-              <CircularProgress value={progressValue} size={60} strokeWidth={6} />
-              <div className="absolute inset-0 flex items-center justify-center text-sm font-bold text-purple-700">
-                {currentPlayerIndex}/{gameData.numPlayers}
-              </div>
-            </div>
             <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
             <p className="text-base md:text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
 
             <div
               onClick={handleRevealWord}
               className={`relative w-full h-64 rounded-3xl overflow-hidden flex flex-col items-center justify-center p-4 cursor-pointer transition-colors duration-300 ease-in-out mb-6
-                ${showWord ? "bg-white text-gray-800 shadow-lg" : "bg-[#f5f5f7] hover:bg-[#e0e0e2] animate-pulse-fast"}
+                ${showWord ? "bg-white text-gray-800 shadow-lg" : "bg-[#f5f5f7] hover:bg-[#e0e0e2]"}
               `}
             >
               {!showWord && (
