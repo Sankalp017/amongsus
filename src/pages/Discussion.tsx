@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import Timer from "@/components/Timer"; // Import the new Timer component
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Import Card components
+import Timer from "@/components/Timer";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface GameStateData {
   numPlayers: number;
@@ -29,9 +29,9 @@ const Discussion = () => {
     }
   }, [gameState, navigate]);
 
-  const handleStartVoting = () => {
-    toast.info("Time to vote!");
-    navigate("/voting", { state: gameState }); // Navigate to the Voting Phase, passing gameState
+  const handleEndDiscussion = () => {
+    toast.info("Discussion ended! Revealing results...");
+    navigate("/results", { state: gameState }); // Navigate directly to Results, passing gameState
   };
 
   if (!gameState) {
@@ -53,23 +53,14 @@ const Discussion = () => {
           </p>
 
           <div className="mb-8">
-            <h3 className="text-xl font-bold mb-2">Players:</h3>
-            <ul className="list-disc list-inside text-lg mb-4">
-              {gameState.playerNames.map((name, index) => (
-                <li key={index}>{name}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="mb-8">
-            <Timer initialTime={discussionTime} onTimeUp={handleStartVoting} />
+            <Timer initialTime={discussionTime} onTimeUp={handleEndDiscussion} />
           </div>
 
           <Button
-            onClick={handleStartVoting}
+            onClick={handleEndDiscussion}
             className="w-full bg-purple-700 text-white hover:bg-purple-800 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
           >
-            End Discussion & Start Voting
+            End Discussion & Reveal Results
           </Button>
         </CardContent>
       </Card>
