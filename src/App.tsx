@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion"; // Import motion and AnimatePresence
+import { AnimatePresence, motion } from "framer-motion";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import GameSetup from "./pages/GameSetup";
@@ -16,25 +16,24 @@ const queryClient = new QueryClient();
 
 const PageWrapper = ({ children }: { children: React.ReactNode }) => (
   <motion.div
-    initial={{ opacity: 0, x: 50 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: -50 }}
-    transition={{ duration: 0.3, ease: "easeInOut" }}
-    className="w-full h-full" // Ensure it takes full space for transitions
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.2, ease: "easeInOut" }} // Shorter duration for a quicker fade
+    className="w-full h-full"
   >
     {children}
   </motion.div>
 );
 
 const App = () => {
-  const location = useLocation(); // Use useLocation hook inside BrowserRouter
+  const location = useLocation();
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        {/* AnimatePresence allows components to animate when they are removed from the React tree */}
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<PageWrapper><Index /></PageWrapper>} />
@@ -43,7 +42,6 @@ const App = () => {
             <Route path="/discussion" element={<PageWrapper><Discussion /></PageWrapper>} />
             <Route path="/results" element={<PageWrapper><Results /></PageWrapper>} />
             <Route path="/how-to-play" element={<PageWrapper><HowToPlay /></PageWrapper>} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
           </Routes>
         </AnimatePresence>
