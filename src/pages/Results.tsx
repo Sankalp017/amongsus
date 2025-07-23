@@ -72,7 +72,7 @@ const Results = () => {
       <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-lg text-gray-800 text-center border border-gray-200">
         <>
           <CardContent>
-            <h3 className="text-2xl md:text-3xl font-semibold mb-6">The Truth Revealed!</h3>
+            <h3 className="text-2xl md:text-3xl font-semibold mb-6">The truth has been revealed!</h3>
             <p className="text-base md:text-lg mb-8">
               The discussion has concluded. Here's how the game was set up:
             </p>
