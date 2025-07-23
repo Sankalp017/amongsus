@@ -71,9 +71,6 @@ const Results = () => {
     >
       <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-lg text-gray-800 text-center border border-gray-200">
         <>
-          <CardHeader>
-            <CardTitle className="text-3xl md:text-4xl font-extrabold mb-6">Truth Revealed!</CardTitle>
-          </CardHeader>
           <CardContent>
             <h3 className="text-2xl md:text-3xl font-semibold mb-6">The Truth Revealed!</h3>
             <p className="text-base md:text-lg mb-8">
@@ -107,7 +104,7 @@ const Results = () => {
 
             <div className="bg-gray-50 p-4 rounded-lg mb-8 border border-gray-200">
               <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-green-800">
-                <Users className="h-5 w-5 md:h-6 md:w-6 text-green-600" /> Innocents Were:
+                <Users className="h-5 w-5 md:h-6 w-6 text-green-600" /> Innocents Were:
               </h4>
               <div className="flex flex-wrap justify-center gap-3">
                 {gameState.playerNames
