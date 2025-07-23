@@ -26,13 +26,14 @@ import { wordCategories } from "@/utils/words";
 import { ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { saveGameState, clearGameState } from "@/utils/localStorage";
+import NumberInputStepper from "@/components/NumberInputStepper"; // Import the new component
 
 // Zod schema for form validation
 const formSchema = z.object({
   numPlayers: z.coerce
     .number()
     .min(3, { message: "Minimum 3 players required." })
-    .max(10, { message: "Maximum 10 players allowed." }), // Added a max for practicality
+    .max(20, { message: "Maximum 20 players allowed." }), // Updated max to 20
   playerNames: z
     .array(z.string().min(1, { message: "Player name cannot be empty." }))
     .min(3, { message: "Please enter names for all players." })
@@ -107,21 +108,14 @@ const GameSetup = () => {
               control={form.control}
               name="numPlayers"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-base md:text-lg">Number of Players</FormLabel>
+                <FormItem className="flex flex-col items-center"> {/* Centering the stepper */}
+                  <FormLabel className="text-base md:text-lg mb-2">Number of Players</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="e.g., 4"
-                      className="text-center text-base md:text-lg py-2"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        const val = parseInt(e.target.value);
-                        if (!isNaN(val)) {
-                          form.setValue("numPlayers", val);
-                        }
-                      }}
+                    <NumberInputStepper
+                      value={field.value}
+                      onChange={field.onChange}
+                      min={3}
+                      max={20}
                     />
                   </FormControl>
                   <FormMessage />
