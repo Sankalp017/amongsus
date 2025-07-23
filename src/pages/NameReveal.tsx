@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { saveGameState, loadGameState } from "@/utils/localStorage";
 import Timer from "@/components/Timer";
-import ScratchReveal from "@/components/ScratchReveal"; // Import the new ScratchReveal component
 
 interface GameSetupData {
   numPlayers: number;
@@ -38,7 +37,7 @@ const NameReveal = () => {
   const [voicesLoaded, setVoicesLoaded] = useState(false);
   const [showTimer, setShowTimer] = useState(true);
   const [timerDone, setTimerDone] = useState(false);
-  const [hasRevealedWord, setHasRevealedWord] = useState(false); // New state for scratch reveal
+  const [showWord, setShowWord] = useState(false); // Re-introducing state for word visibility
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -158,14 +157,14 @@ const NameReveal = () => {
       const playerIsSus = susPlayerIndices.includes(currentPlayerIndex);
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
-      setHasRevealedWord(false); // Reset for the new player
+      setShowWord(false); // Reset word visibility for the new player
       speak(`It's ${gameData.playerNames[currentPlayerIndex]}'s turn`);
     }
   }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, voicesLoaded, timerDone]);
 
-  const handleRevealStart = () => {
-    setHasRevealedWord(true); // Enable the next player button once scratching starts
-    speak("Word revealed"); // Announce word revealed
+  const handleRevealWord = () => {
+    setShowWord(true);
+    speak("Word revealed");
   };
 
   const handleNextPlayer = () => {
@@ -210,23 +209,35 @@ const NameReveal = () => {
         ) : (
           <>
             <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
-            <p className="text-base md:text-lg mb-6 text-gray-600">Scratch the card to reveal your word.</p>
+            <p className="text-base md:text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
 
-            <ScratchReveal onRevealStart={handleRevealStart} className="mb-6">
-              <Badge
-                variant={isSusPlayer ? "destructive" : "secondary"}
-                className={`text-lg md:text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
-              >
-                {isSusPlayer ? "Imposter" : "Innocent"}
-              </Badge>
-              <p className="text-4xl md:text-5xl font-medium text-purple-700 tracking-tighter leading-none">
-                {currentWord}
-              </p>
-            </ScratchReveal>
+            <div
+              onClick={handleRevealWord}
+              className="relative w-full h-64 rounded-3xl overflow-hidden flex flex-col items-center justify-center p-4 cursor-pointer bg-purple-500/90 hover:bg-purple-600/90 transition-colors duration-300 ease-in-out shadow-lg mb-6"
+            >
+              {!showWord && (
+                <span className="text-xl md:text-2xl font-bold text-white z-10">
+                  Tap to Reveal
+                </span>
+              )}
+              {showWord && (
+                <>
+                  <Badge
+                    variant={isSusPlayer ? "destructive" : "secondary"}
+                    className={`text-lg md:text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"} animate-fade-in-pop`}
+                  >
+                    {isSusPlayer ? "Imposter" : "Innocent"}
+                  </Badge>
+                  <p className="text-4xl md:text-5xl font-medium text-purple-700 tracking-tighter leading-none animate-fade-in-pop">
+                    {currentWord}
+                  </p>
+                </>
+              )}
+            </div>
 
             <Button
               onClick={handleNextPlayer}
-              disabled={!hasRevealedWord}
+              disabled={!showWord}
               className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
