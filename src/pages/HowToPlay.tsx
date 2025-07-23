@@ -16,6 +16,61 @@ const HowToPlay = () => {
     navigate("/setup"); // Navigate to the setup page
   };
 
+  const guidePoints = [
+    {
+      emoji: "⚙️",
+      title: "Setup:",
+      description: "Enter player names, choose how many Imposters, and pick a word topic.",
+    },
+    {
+      emoji: "🤫",
+      title: "Word Reveal:",
+      description: "The game announces whose turn it is. Pass the device ONLY to that player.",
+    },
+    {
+      emoji: "👆",
+      title: "Your Word:",
+      description: "Click the screen to see your secret word.",
+    },
+    {
+      emoji: "😈",
+      title: "Imposters:",
+      description: "Get a 'sus word' (a tricky word from a similar topic).",
+      color: "text-red-600",
+    },
+    {
+      emoji: "😇",
+      title: "Innocents:",
+      description: "Get the 'main word' (the real one).",
+      color: "text-green-600",
+    },
+    {
+      emoji: "🤐",
+      title: "Important:",
+      description: "Do NOT say your word directly!",
+    },
+    {
+      emoji: "➡️",
+      title: "Next Player:",
+      description: "Click 'Next Player' and pass the device.",
+    },
+    {
+      emoji: "🗣️",
+      title: "Discussion:",
+      description: "Talk amongst yourselves. Innocents ask questions to find the Imposters.",
+    },
+    {
+      emoji: "🤥",
+      title: "Imposters:",
+      description: "Lie, blend in, and try not to get caught!",
+    },
+    {
+      emoji: "🏆",
+      title: "Results:",
+      description: "The game reveals the main word, sus word, and who the Imposters were.",
+    },
+  ];
+
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
@@ -40,38 +95,17 @@ const HowToPlay = () => {
           <Separator className="my-6 bg-gray-300" />
 
           <h3 className="text-xl md:text-2xl font-semibold mb-3 text-purple-700">Quick Guide:</h3>
-          <ol className="list-decimal list-inside space-y-3 text-base md:text-lg">
-            <li>
-              <span className="font-bold">Setup:</span> Enter player names, choose how many Imposters, and pick a word topic.
-            </li>
-            <li>
-              <span className="font-bold">Word Reveal:</span> The game announces whose turn it is. Pass the device ONLY to that player.
-            </li>
-            <li>
-              <span className="font-bold">Your Word:</span> Click the screen to see your secret word.
-            </li>
-            <li>
-              <span className="font-bold text-red-600">Imposters</span> get a "sus word" (a tricky word from a similar topic).
-            </li>
-            <li>
-              <span className="font-bold text-green-600">Innocents</span> get the "main word" (the real one).
-            </li>
-            <li>
-              <span className="font-bold">Important:</span> Do NOT say your word directly!
-            </li>
-            <li>
-              Click "Next Player" and pass the device.
-            </li>
-            <li>
-              <span className="font-bold">Discussion:</span> Talk amongst yourselves. Innocents ask questions to find the Imposters.
-            </li>
-            <li>
-              <span className="font-bold">Imposters:</span> Lie, blend in, and try not to get caught!
-            </li>
-            <li>
-              <span className="font-bold">Results:</span> The game reveals the main word, sus word, and who the Imposters were.
-            </li>
-          </ol>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {guidePoints.map((point, index) => (
+              <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 flex items-start space-x-3">
+                <span className="text-2xl mt-0.5">{point.emoji}</span>
+                <div>
+                  <h4 className={`font-bold text-lg ${point.color || 'text-gray-800'}`}>{point.title}</h4>
+                  <p className="text-sm text-gray-700">{point.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
           <p className="text-base md:text-lg mt-6">
             Good luck, have fun, and try not to be too sus!
           </p>
