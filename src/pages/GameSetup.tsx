@@ -59,7 +59,7 @@ const GameSetup = () => {
       numPlayers: 3,
       playerNames: ["", "", ""],
       numSusPlayers: 1,
-      topic: "Random words", // Default value for topic
+      topic: "Random words 🎲", // Default value for topic, now with emoji
     },
   });
 
@@ -108,7 +108,7 @@ const GameSetup = () => {
               control={form.control}
               name="numPlayers"
               render={({ field }) => (
-                <FormItem className="flex flex-col items-center"> {/* Centering the stepper */}
+                <FormItem> {/* Removed items-center to align left */}
                   <FormLabel className="text-base md:text-lg mb-2">Number of Players</FormLabel>
                   <FormControl>
                     <NumberInputStepper
@@ -116,6 +116,7 @@ const GameSetup = () => {
                       onChange={field.onChange}
                       min={3}
                       max={20}
+                      className="justify-start"
                     />
                   </FormControl>
                   <FormMessage />
