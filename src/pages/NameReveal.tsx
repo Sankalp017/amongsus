@@ -10,7 +10,6 @@ interface GameSetupData {
   playerNames: string[];
   numSusPlayers: number;
   topic?: string;
-  revealDuration: number;
 }
 
 const NameReveal = () => {

@@ -14,8 +14,6 @@ interface GameStateData {
   mainWord: string;
   susWord: string;
   susPlayerIndices: number[];
-  revealDuration: number;
-  // discussionDuration: number; // Removed
 }
 
 const Discussion = () => {
