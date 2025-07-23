@@ -6,13 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { BookOpen, UserX, Users } from "lucide-react";
-import { loadGameState, clearGameState } from "@/utils/localStorage"; // Import localStorage utilities
+import { loadGameState, clearGameState, saveGameState } from "@/utils/localStorage";
 
 interface GameStateData {
   numPlayers: number;
   playerNames: string[];
   numSusPlayers: number;
-  topic?: string;
+  topic: string; // Ensure topic is always present
   mainWord: string;
   susWord: string;
   susPlayerIndices: number[];
@@ -28,7 +28,6 @@ const Results = () => {
     let loadedState: GameStateData | undefined = initialGameState;
 
     if (!loadedState || !loadedState.playerNames || loadedState.playerNames.length === 0) {
-      // If no state from navigation, try to load from local storage
       loadedState = loadGameState();
       if (!loadedState || !loadedState.playerNames || loadedState.playerNames.length === 0) {
         toast.error("Game data not found. Please set up the game again.");
@@ -37,15 +36,33 @@ const Results = () => {
       }
     }
     setGameState(loadedState);
+    // Save the loaded state to ensure it persists if the user refreshes on this page
+    if (loadedState) {
+      saveGameState(loadedState);
+    }
   }, [initialGameState, navigate]);
 
   if (!gameState) {
     return null; // Or a loading spinner
   }
 
-  const handlePlayAgain = () => {
-    clearGameState(); // Clear game state from local storage when playing again
+  const handleNewGame = () => {
+    clearGameState(); // Clear all game state from local storage for a completely new game
     navigate("/");
+  };
+
+  const handlePlayNextRound = () => {
+    // Prepare data for the next round, keeping player info but clearing round-specific details
+    const nextRoundSetup = {
+      numPlayers: gameState.numPlayers,
+      playerNames: gameState.playerNames,
+      numSusPlayers: gameState.numSusPlayers,
+      previousTopic: gameState.topic, // Pass the current topic to avoid repetition
+    };
+    // Clear the full game state from local storage before starting a new round
+    // NameReveal will then generate new words/sus players based on nextRoundSetup
+    clearGameState();
+    navigate("/name-reveal", { state: nextRoundSetup });
   };
 
   return (
@@ -104,12 +121,21 @@ const Results = () => {
             </div>
           </div>
 
-          <Button
-            onClick={handlePlayAgain}
-            className="w-full bg-purple-700 text-white hover:bg-purple-800 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-          >
-            Play Again
-          </Button>
+          <div className="flex flex-col space-y-4 mt-6">
+            <Button
+              onClick={handlePlayNextRound}
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+            >
+              Play Next Round
+            </Button>
+            <Button
+              onClick={handleNewGame}
+              variant="outline"
+              className="w-full bg-transparent border-2 border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+            >
+              New Game
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
