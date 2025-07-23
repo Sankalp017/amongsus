@@ -38,7 +38,7 @@ const NameReveal = () => {
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   // Generic speech function
-  const speak = (text: string) => {
+  const speak = (text: string, onEndCallback?: () => void) => {
     if (!voicesLoaded) {
       console.warn("Speech voices not yet loaded. Skipping announcement.");
       return;
@@ -59,10 +59,18 @@ const NameReveal = () => {
           utterance.voice = englishVoice;
         }
       }
+      utterance.onend = () => {
+        if (onEndCallback) {
+          onEndCallback();
+        }
+      };
       speechSynthesis.speak(utterance);
       utteranceRef.current = utterance;
     } else {
       toast.warning("Text-to-speech not supported in this browser. Please ensure your browser supports it and audio is enabled.");
+      if (onEndCallback) {
+        onEndCallback(); // Call callback even if speech isn't supported
+      }
     }
   };
 
@@ -141,10 +149,6 @@ const NameReveal = () => {
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
       setShowWord(false); // Reset showWord for the new player
-      
-      // Automatic speak here, as per previous behavior
-      const playerTurnText = `It's ${gameData.playerNames[currentPlayerIndex]}'s turn`;
-      speak(playerTurnText);
     }
   }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData]);
 
@@ -154,10 +158,14 @@ const NameReveal = () => {
       return;
     }
 
-    if (!showWord) { // Only allow tap to reveal if word is not already shown
-      const wordRevealText = "Word revealed";
-      speak(wordRevealText); // Speak "Word revealed" on tap
-      setShowWord(true); // Show the word immediately upon tap
+    if (!showWord && gameData) { // Only allow tap to reveal if word is not already shown
+      const playerTurnText = `It's ${gameData.playerNames[currentPlayerIndex]}'s turn`;
+      speak(playerTurnText, () => {
+        // After player turn is announced, announce "Word revealed"
+        const wordRevealText = "Word revealed";
+        speak(wordRevealText);
+        setShowWord(true); // Show the word immediately upon tap
+      });
     }
   };
 
