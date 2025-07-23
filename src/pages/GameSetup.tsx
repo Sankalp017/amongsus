@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate }
+from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -131,7 +132,9 @@ const GameSetup = () => {
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center mt-4">Game Setup</h2>
-        {/* Removed the descriptive paragraph from here */}
+        <p className="text-sm md:text-base text-gray-600 mb-6 text-center">
+          First, set the total number of players, then choose how many of them will be imposters. Next, enter each player's name, and finally, select a word topic.
+        </p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -144,7 +147,7 @@ const GameSetup = () => {
                     <Input
                       type="number"
                       placeholder="e.g., 3"
-                      className="text-center text-base md:text-lg py-2 w-full"
+                      className="text-center text-base md:text-lg py-2 w-full bg-green-50" // Added bg-green-50
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
@@ -172,7 +175,7 @@ const GameSetup = () => {
                     <Input
                       type="number"
                       placeholder="e.g., 1"
-                      className="text-center text-base md:text-lg py-2 w-full"
+                      className="text-center text-base md:text-lg py-2 w-full bg-red-50" // Added bg-red-50
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
