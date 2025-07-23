@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge"; // Import Badge component
-import { Separator } from "@/components/ui/separator"; // Import Separator
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { BookOpen, UserX, Users } from "lucide-react";
+import { loadGameState, clearGameState } from "@/utils/localStorage"; // Import localStorage utilities
 
 interface GameStateData {
   numPlayers: number;
@@ -20,20 +21,30 @@ interface GameStateData {
 const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { gameState } = location.state as { gameState: GameStateData };
+  const initialGameState = location.state?.gameState as GameStateData;
+  const [gameState, setGameState] = useState<GameStateData | null>(null);
 
   useEffect(() => {
-    if (!gameState || !gameState.playerNames || gameState.playerNames.length === 0) {
-      toast.error("Game data not found. Please set up the game again.");
-      navigate("/setup");
+    let loadedState: GameStateData | undefined = initialGameState;
+
+    if (!loadedState || !loadedState.playerNames || loadedState.playerNames.length === 0) {
+      // If no state from navigation, try to load from local storage
+      loadedState = loadGameState();
+      if (!loadedState || !loadedState.playerNames || loadedState.playerNames.length === 0) {
+        toast.error("Game data not found. Please set up the game again.");
+        navigate("/setup");
+        return;
+      }
     }
-  }, [gameState, navigate]);
+    setGameState(loadedState);
+  }, [initialGameState, navigate]);
 
   if (!gameState) {
-    return null;
+    return null; // Or a loading spinner
   }
 
   const handlePlayAgain = () => {
+    clearGameState(); // Clear game state from local storage when playing again
     navigate("/");
   };
 

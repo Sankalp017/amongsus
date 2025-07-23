@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { wordCategories } from "@/utils/words"; // Import wordCategories
 import { ArrowLeft } from "lucide-react"; // Import ArrowLeft icon
 import { Card } from "@/components/ui/card"; // Import Card component
+import { saveGameState, clearGameState } from "@/utils/localStorage"; // Import localStorage utilities
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -64,6 +65,9 @@ const GameSetup = () => {
   const numPlayers = form.watch("numPlayers");
 
   useEffect(() => {
+    // Clear game state from local storage when entering setup to ensure a fresh start
+    clearGameState();
+
     const currentNames = form.getValues("playerNames");
     const newPlayerInputs = Array.from({ length: numPlayers }, (_, i) => {
       return currentNames[i] || "";
@@ -74,6 +78,7 @@ const GameSetup = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log("Game Setup Values:", values);
+    saveGameState(values); // Save initial game state to local storage
     toast.success("Game setup complete! Starting round...");
     navigate("/name-reveal", { state: values }); // Navigate to Name Reveal Phase
   };

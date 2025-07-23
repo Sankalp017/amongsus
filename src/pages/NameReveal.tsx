@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner"; // Corrected import statement
+import { toast } from "sonner";
 import { getWordsForTopic } from "@/utils/words";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge"; // Import Badge component
+import { Badge } from "@/components/ui/badge";
+import { saveGameState, loadGameState } from "@/utils/localStorage"; // Import localStorage utilities
 
 interface GameSetupData {
   numPlayers: number;
@@ -13,10 +14,16 @@ interface GameSetupData {
   topic?: string;
 }
 
+interface GameStateData extends GameSetupData {
+  mainWord: string;
+  susWord: string;
+  susPlayerIndices: number[];
+}
+
 const NameReveal = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const gameData = location.state as GameSetupData;
+  const initialGameData = location.state as GameSetupData;
 
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [showWord, setShowWord] = useState(false);
@@ -25,6 +32,7 @@ const NameReveal = () => {
   const [susPlayerIndices, setSusPlayerIndices] = useState<number[]>([]);
   const [mainWord, setMainWord] = useState("");
   const [susWord, setSusWord] = useState("");
+  const [gameData, setGameData] = useState<GameSetupData | null>(null); // State to hold gameData
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -54,33 +62,58 @@ const NameReveal = () => {
   };
 
   useEffect(() => {
-    if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0) {
-      toast.error("Game data not found. Please set up the game again.");
-      navigate("/setup");
-      return;
+    let loadedGameState: GameStateData | GameSetupData | undefined = initialGameData;
+
+    if (!loadedGameState || !loadedGameState.playerNames || loadedGameState.playerNames.length === 0) {
+      // If no state from navigation, try to load from local storage
+      loadedGameState = loadGameState();
+      if (!loadedGameState || !loadedGameState.playerNames || loadedGameState.playerNames.length === 0) {
+        toast.error("Game data not found. Please set up the game again.");
+        navigate("/setup");
+        return;
+      }
     }
 
-    const { mainWord: generatedMainWord, susWord: generatedSusWord } = getWordsForTopic(
-      gameData.topic || "Random words",
-      gameData.numSusPlayers
-    );
-    setMainWord(generatedMainWord);
-    setSusWord(generatedSusWord);
+    setGameData(loadedGameState); // Set the gameData state
 
-    const allPlayerIndices = Array.from({ length: gameData.numPlayers }, (_, i) => i);
-    const shuffledIndices = allPlayerIndices.sort(() => 0.5 - Math.random());
-    const selectedSusIndices = shuffledIndices.slice(0, gameData.numSusPlayers);
-    setSusPlayerIndices(selectedSusIndices);
+    // If words and sus players are already in loadedGameState (from refresh), use them
+    if ((loadedGameState as GameStateData).mainWord && (loadedGameState as GameStateData).susPlayerIndices) {
+      const fullGameState = loadedGameState as GameStateData;
+      setMainWord(fullGameState.mainWord);
+      setSusWord(fullGameState.susWord);
+      setSusPlayerIndices(fullGameState.susPlayerIndices);
+    } else {
+      // Otherwise, generate them for a new game
+      const { mainWord: generatedMainWord, susWord: generatedSusWord } = getWordsForTopic(
+        loadedGameState.topic || "Random words",
+        loadedGameState.numSusPlayers
+      );
+      setMainWord(generatedMainWord);
+      setSusWord(generatedSusWord);
+
+      const allPlayerIndices = Array.from({ length: loadedGameState.numPlayers }, (_, i) => i);
+      const shuffledIndices = allPlayerIndices.sort(() => 0.5 - Math.random());
+      const selectedSusIndices = shuffledIndices.slice(0, loadedGameState.numSusPlayers);
+      setSusPlayerIndices(selectedSusIndices);
+
+      // Save the newly generated full game state to local storage
+      saveGameState({
+        ...loadedGameState,
+        mainWord: generatedMainWord,
+        susWord: generatedSusWord,
+        susPlayerIndices: selectedSusIndices,
+      });
+    }
 
     return () => {
       if (utteranceRef.current) {
         speechSynthesis.cancel();
       }
     };
-  }, [gameData, navigate]);
+  }, [initialGameData, navigate]);
 
   useEffect(() => {
-    if (currentPlayerIndex < gameData.numPlayers) {
+    if (gameData && currentPlayerIndex < gameData.numPlayers) {
       const playerIsSus = susPlayerIndices.includes(currentPlayerIndex);
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
@@ -88,7 +121,7 @@ const NameReveal = () => {
       // Announce player's turn when the component loads or current player changes
       speak(`It's ${gameData.playerNames[currentPlayerIndex]}'s turn`);
     }
-  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData.numPlayers, gameData.playerNames]);
+  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData]); // Added gameData to dependency array
 
   const handleTapToReveal = () => {
     setShowWord(true);
@@ -96,18 +129,28 @@ const NameReveal = () => {
   };
 
   const handleNextPlayer = () => {
+    if (!gameData) return; // Should not happen due to initial check
+
     const nextIndex = currentPlayerIndex + 1;
     if (nextIndex < gameData.numPlayers) {
       setCurrentPlayerIndex(nextIndex);
       // The useEffect above will handle speaking the next player's name
     } else {
       toast.success("All players have seen their words. Time to discuss!");
-      navigate("/discussion", { state: { ...gameData, mainWord, susWord, susPlayerIndices } });
+      // Ensure the full game state is saved before navigating
+      const fullGameState: GameStateData = {
+        ...gameData,
+        mainWord,
+        susWord,
+        susPlayerIndices,
+      };
+      saveGameState(fullGameState);
+      navigate("/discussion", { state: fullGameState });
     }
   };
 
   if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0) {
-    return null;
+    return null; // Or a loading spinner
   }
 
   const currentPlayerName = gameData.playerNames[currentPlayerIndex];

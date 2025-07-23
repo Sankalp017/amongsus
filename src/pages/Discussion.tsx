@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageCircle } from "lucide-react";
+import { loadGameState, saveGameState } from "@/utils/localStorage"; // Import localStorage utilities
 
 interface GameStateData {
   numPlayers: number;
@@ -18,23 +19,38 @@ interface GameStateData {
 const Discussion = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const gameState = location.state as GameStateData;
+  const initialGameState = location.state as GameStateData;
+  const [gameState, setGameState] = useState<GameStateData | null>(null);
 
   useEffect(() => {
-    if (!gameState || !gameState.playerNames || gameState.playerNames.length === 0) {
-      toast.error("Game data not found. Please set up the game again.");
-      navigate("/setup");
+    let loadedState: GameStateData | undefined = initialGameState;
+
+    if (!loadedState || !loadedState.playerNames || loadedState.playerNames.length === 0) {
+      // If no state from navigation, try to load from local storage
+      loadedState = loadGameState();
+      if (!loadedState || !loadedState.playerNames || loadedState.playerNames.length === 0) {
+        toast.error("Game data not found. Please set up the game again.");
+        navigate("/setup");
+        return;
+      }
     }
-  }, [gameState, navigate]);
+    setGameState(loadedState);
+  }, [initialGameState, navigate]);
 
   const handleEndDiscussion = () => {
-    console.log("End Discussion button clicked!"); // Added for debugging
+    if (!gameState) {
+      toast.error("Game state is missing. Cannot end discussion.");
+      navigate("/setup");
+      return;
+    }
+    console.log("End Discussion button clicked!");
+    saveGameState(gameState); // Save current game state before navigating to results
     toast.info("Discussion ended! Revealing results...");
     navigate("/results", { state: { gameState } });
   };
 
   if (!gameState) {
-    return null;
+    return null; // Or a loading spinner
   }
 
   return (
