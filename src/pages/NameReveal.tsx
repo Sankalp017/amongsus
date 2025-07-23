@@ -10,7 +10,8 @@ interface GameSetupData {
   playerNames: string[];
   numSusPlayers: number;
   topic?: string;
-  revealDuration: number; // Added revealDuration
+  revealDuration: number;
+  discussionDuration: number; // Ensure this is passed
 }
 
 const NameReveal = () => {
@@ -25,7 +26,7 @@ const NameReveal = () => {
   const [susPlayerIndices, setSusPlayerIndices] = useState<number[]>([]);
   const [mainWord, setMainWord] = useState("");
   const [susWord, setSusWord] = useState("");
-  const [timerKey, setTimerKey] = useState(0); // Key to reset timer component
+  const [isRevealTimerRunning, setIsRevealTimerRunning] = useState(false); // New state for timer control
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -67,7 +68,7 @@ const NameReveal = () => {
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
       setShowWord(false); // Hide word for the new player
-      setTimerKey(prevKey => prevKey + 1); // Reset timer for new player
+      setIsRevealTimerRunning(false); // Reset timer state for new player
     }
   }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData.numPlayers]);
 
@@ -76,6 +77,7 @@ const NameReveal = () => {
       speechSynthesis.cancel(); // Stop any ongoing speech
       const utterance = new SpeechSynthesisUtterance(`It's ${name}'s turn`);
       utterance.lang = "en-US";
+      // Attempt to find a suitable voice
       const voices = speechSynthesis.getVoices();
       const femaleVoice = voices.find(
         (voice) => voice.lang === "en-US" && voice.name.includes("Female")
@@ -91,13 +93,16 @@ const NameReveal = () => {
       speechSynthesis.speak(utterance);
       utteranceRef.current = utterance;
     } else {
-      toast.warning("Text-to-speech not supported in this browser.");
+      toast.warning("Text-to-speech not supported in this browser. Please ensure your browser supports it and audio is enabled.");
     }
   };
 
   const handleTapToReveal = () => {
     setShowWord(true);
-    // Timer will start automatically when showWord is true and Timer component is rendered
+  };
+
+  const handleStartRevealTimer = () => {
+    setIsRevealTimerRunning(true);
   };
 
   const handleNextPlayer = () => {
@@ -146,8 +151,18 @@ const NameReveal = () => {
         </div>
 
         {showWord && (
-          <div className="mb-6">
-            <Timer key={timerKey} initialTime={gameData.revealDuration} onTimeUp={handleNextPlayer} />
+          <div className="flex flex-col gap-4 mb-6">
+            {!isRevealTimerRunning && (
+              <Button
+                onClick={handleStartRevealTimer}
+                className="bg-green-600 text-white hover:bg-green-700 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+              >
+                Start Reveal Timer
+              </Button>
+            )}
+            {isRevealTimerRunning && (
+              <Timer initialTime={gameData.revealDuration} onTimeUp={handleNextPlayer} />
+            )}
           </div>
         )}
 

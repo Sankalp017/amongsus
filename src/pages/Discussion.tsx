@@ -13,14 +13,16 @@ interface GameStateData {
   mainWord: string;
   susWord: string;
   susPlayerIndices: number[];
-  revealDuration: number; // Ensure this is passed
-  discussionDuration: number; // New field for discussion duration
+  revealDuration: number;
+  discussionDuration: number;
 }
 
 const Discussion = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const gameState = location.state as GameStateData;
+
+  const [isDiscussionTimerRunning, setIsDiscussionTimerRunning] = useState(false); // New state for timer control
 
   useEffect(() => {
     if (!gameState || !gameState.playerNames || gameState.playerNames.length === 0 || gameState.discussionDuration === undefined) {
@@ -29,9 +31,13 @@ const Discussion = () => {
     }
   }, [gameState, navigate]);
 
+  const handleStartDiscussionTimer = () => {
+    setIsDiscussionTimerRunning(true);
+  };
+
   const handleEndDiscussion = () => {
     toast.info("Discussion ended! Revealing results...");
-    navigate("/results", { state: gameState }); // Navigate directly to Results, passing gameState
+    navigate("/results", { state: { gameState } }); // Navigate directly to Results, passing gameState
   };
 
   if (!gameState) {
@@ -52,8 +58,18 @@ const Discussion = () => {
             Remember the main word is: <span className="font-semibold">{gameState.mainWord}</span>
           </p>
 
-          <div className="mb-8">
-            <Timer initialTime={gameState.discussionDuration} onTimeUp={handleEndDiscussion} />
+          <div className="mb-8 flex flex-col gap-4">
+            {!isDiscussionTimerRunning && (
+              <Button
+                onClick={handleStartDiscussionTimer}
+                className="bg-green-600 text-white hover:bg-green-700 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+              >
+                Start Discussion Timer
+              </Button>
+            )}
+            {isDiscussionTimerRunning && (
+              <Timer initialTime={gameState.discussionDuration} onTimeUp={handleEndDiscussion} />
+            )}
           </div>
 
           <Button
