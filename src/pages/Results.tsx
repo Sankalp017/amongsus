@@ -93,37 +93,33 @@ const Results = () => {
                 The discussion has concluded. Here's how the game was set up:
               </p>
 
-              <div className="mb-6">
-                <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2">
+              <div className="bg-purple-50/20 p-4 rounded-lg mb-6 border border-purple-200">
+                <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-purple-800">
                   <BookOpen className="h-5 w-5 md:h-6 md:w-6 text-purple-700" /> The Words Were:
                 </h4>
                 <p className="text-base md:text-lg">Main Word: <span className="font-semibold text-purple-700">{gameState.mainWord}</span></p>
                 <p className="text-base md:text-lg">Sus Word: <span className="font-semibold text-purple-700">{gameState.susWord}</span></p>
               </div>
 
-              <Separator className="my-6 bg-gray-300" />
-
-              <div className="mb-8">
-                <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2">
+              <div className="bg-red-50/20 p-4 rounded-lg mb-6 border border-red-200">
+                <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-red-800">
                   <UserX className="h-5 w-5 md:h-6 md:w-6 text-red-600" /> Imposters Were:
                 </h4>
                 <div className="flex flex-wrap justify-center gap-2">
                   {gameState.susPlayerIndices.length > 0 ? (
                     gameState.susPlayerIndices.map((index) => (
-                      <Badge key={index} variant="destructive" className="text-base md:text-lg px-4 py-2">
+                      <Badge key={index} variant="destructive" className="text-base md:text-lg px-4 py-2 bg-red-600 text-white">
                         {gameState.playerNames[index]}
                       </Badge>
                     ))
                   ) : (
-                    <p className="text-base md:text-lg">No imposters assigned.</p>
+                    <p className="text-base md:text-lg text-gray-600">No imposters assigned.</p>
                   )}
                 </div>
               </div>
 
-              <Separator className="my-6 bg-gray-300" />
-
-              <div className="mb-8">
-                <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2">
+              <div className="bg-green-50/20 p-4 rounded-lg mb-8 border border-green-200">
+                <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-green-800">
                   <Users className="h-5 w-5 md:h-6 md:w-6 text-green-600" /> Innocents Were:
                 </h4>
                 <div className="flex flex-wrap justify-center gap-2">
