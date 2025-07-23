@@ -132,9 +132,7 @@ const GameSetup = () => {
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center mt-4">Game Setup</h2>
-        <p className="text-sm md:text-base text-gray-600 mb-6 text-center">
-          First, set the total number of players, then choose how many of them will be imposters. Next, enter each player's name, and finally, select a word topic.
-        </p>
+        {/* Removed the descriptive paragraph from here */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -147,7 +145,7 @@ const GameSetup = () => {
                     <Input
                       type="number"
                       placeholder="e.g., 3"
-                      className="text-center text-base md:text-lg py-2 w-full bg-green-100" // Changed to bg-green-100
+                      className="text-center text-base md:text-lg py-2 w-full bg-green-100"
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
@@ -175,7 +173,7 @@ const GameSetup = () => {
                     <Input
                       type="number"
                       placeholder="e.g., 1"
-                      className="text-center text-base md:text-lg py-2 w-full bg-red-100" // Changed to bg-red-100
+                      className="text-center text-base md:text-lg py-2 w-full bg-red-100"
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
