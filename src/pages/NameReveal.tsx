@@ -3,15 +3,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getWordsForTopic } from "@/utils/words";
-import Timer from "@/components/Timer"; // Import the Timer component
+// Removed import for Timer component as it's no longer needed for reveal phase
 
 interface GameSetupData {
   numPlayers: number;
   playerNames: string[];
   numSusPlayers: number;
   topic?: string;
-  revealDuration: number;
-  discussionDuration: number; // Ensure this is passed
+  revealDuration: number; // Still passed, but not used for an automatic timer here
+  discussionDuration: number;
 }
 
 const NameReveal = () => {
@@ -26,13 +26,13 @@ const NameReveal = () => {
   const [susPlayerIndices, setSusPlayerIndices] = useState<number[]>([]);
   const [mainWord, setMainWord] = useState("");
   const [susWord, setSusWord] = useState("");
-  const [isRevealTimerRunning, setIsRevealTimerRunning] = useState(false); // New state for timer control
+  // Removed isRevealTimerRunning state
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
-    if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0 || gameData.revealDuration === undefined) {
-      toast.error("Game data not found or reveal duration missing. Please set up the game again.");
+    if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0) {
+      toast.error("Game data not found. Please set up the game again.");
       navigate("/setup");
       return;
     }
@@ -68,7 +68,7 @@ const NameReveal = () => {
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
       setShowWord(false); // Hide word for the new player
-      setIsRevealTimerRunning(false); // Reset timer state for new player
+      // Removed reset for isRevealTimerRunning
     }
   }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData.numPlayers]);
 
@@ -101,10 +101,6 @@ const NameReveal = () => {
     setShowWord(true);
   };
 
-  const handleStartRevealTimer = () => {
-    setIsRevealTimerRunning(true);
-  };
-
   const handleNextPlayer = () => {
     const nextIndex = currentPlayerIndex + 1;
     if (nextIndex < gameData.numPlayers) {
@@ -117,7 +113,7 @@ const NameReveal = () => {
     }
   };
 
-  if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0 || gameData.revealDuration === undefined) {
+  if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0) {
     return null; // Or a loading spinner/error message
   }
 
@@ -150,21 +146,7 @@ const NameReveal = () => {
           )}
         </div>
 
-        {showWord && (
-          <div className="flex flex-col gap-4 mb-6">
-            {!isRevealTimerRunning && (
-              <Button
-                onClick={handleStartRevealTimer}
-                className="bg-green-600 text-white hover:bg-green-700 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-              >
-                Start Reveal Timer
-              </Button>
-            )}
-            {isRevealTimerRunning && (
-              <Timer initialTime={gameData.revealDuration} onTimeUp={handleNextPlayer} />
-            )}
-          </div>
-        )}
+        {/* Removed the reveal timer section entirely */}
 
         <Button
           onClick={handleNextPlayer}
