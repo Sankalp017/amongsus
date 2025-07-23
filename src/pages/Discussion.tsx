@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Timer from "@/components/Timer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MessageCircle } from "lucide-react"; // Import MessageCircle icon
 
 interface GameStateData {
   numPlayers: number;
@@ -22,7 +23,8 @@ const Discussion = () => {
   const navigate = useNavigate();
   const gameState = location.state as GameStateData;
 
-  const [isDiscussionTimerRunning, setIsDiscussionTimerRunning] = useState(false); // New state for timer control
+  // The timer will now start automatically when the component mounts
+  // No need for isDiscussionTimerRunning state or a "Start Timer" button
 
   useEffect(() => {
     if (!gameState || !gameState.playerNames || gameState.playerNames.length === 0 || gameState.discussionDuration === undefined) {
@@ -30,10 +32,6 @@ const Discussion = () => {
       navigate("/setup");
     }
   }, [gameState, navigate]);
-
-  const handleStartDiscussionTimer = () => {
-    setIsDiscussionTimerRunning(true);
-  };
 
   const handleEndDiscussion = () => {
     toast.info("Discussion ended! Revealing results...");
@@ -48,28 +46,18 @@ const Discussion = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
       <Card className="w-full max-w-md bg-white p-6 rounded-lg shadow-xl text-gray-800 text-center">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold mb-4">Discussion Time!</CardTitle>
+          <CardTitle className="text-3xl font-bold mb-4 flex items-center justify-center gap-2">
+            <MessageCircle className="h-8 w-8 text-purple-700" /> Discussion Time!
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-lg mb-6">
             Players, discuss among yourselves. Try to figure out who the sus players are!
           </p>
-          <p className="text-md text-gray-600 mb-8">
-            Remember the main word is: <span className="font-semibold">{gameState.mainWord}</span>
-          </p>
+          {/* Removed the line mentioning the main word */}
 
           <div className="mb-8 flex flex-col gap-4">
-            {!isDiscussionTimerRunning && (
-              <Button
-                onClick={handleStartDiscussionTimer}
-                className="bg-green-600 text-white hover:bg-green-700 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-              >
-                Start Discussion Timer
-              </Button>
-            )}
-            {isDiscussionTimerRunning && (
-              <Timer initialTime={gameState.discussionDuration} onTimeUp={handleEndDiscussion} />
-            )}
+            <Timer initialTime={gameState.discussionDuration} onTimeUp={handleEndDiscussion} />
           </div>
 
           <Button

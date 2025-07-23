@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BookOpen, UserX, Users } from "lucide-react"; // Import new icons
 
 interface GameStateData {
   numPlayers: number;
@@ -47,13 +48,17 @@ const Results = () => {
           </p>
 
           <div className="mb-6">
-            <h4 className="text-xl font-bold mb-2">The Words Were:</h4>
+            <h4 className="text-xl font-bold mb-2 flex items-center justify-center gap-2">
+              <BookOpen className="h-6 w-6 text-purple-700" /> The Words Were:
+            </h4>
             <p className="text-lg">Main Word: <span className="font-semibold text-purple-700">{gameState.mainWord}</span></p>
             <p className="text-lg">Sus Word: <span className="font-semibold text-purple-700">{gameState.susWord}</span></p>
           </div>
 
           <div className="mb-8">
-            <h4 className="text-xl font-bold mb-2">Sus Players Were:</h4>
+            <h4 className="text-xl font-bold mb-2 flex items-center justify-center gap-2">
+              <UserX className="h-6 w-6 text-red-600" /> Sus Players Were:
+            </h4>
             {gameState.susPlayerIndices.length > 0 ? (
               gameState.susPlayerIndices.map((index) => (
                 <p key={index} className="text-lg font-semibold text-red-600">
@@ -66,7 +71,9 @@ const Results = () => {
           </div>
 
           <div className="mb-8">
-            <h4 className="text-xl font-bold mb-2">Crewmates Were:</h4>
+            <h4 className="text-xl font-bold mb-2 flex items-center justify-center gap-2">
+              <Users className="h-6 w-6 text-green-600" /> Crewmates Were:
+            </h4>
             {gameState.playerNames
               .filter((_, index) => !gameState.susPlayerIndices.includes(index))
               .map((name, index) => (
