@@ -51,8 +51,7 @@ const NameReveal = () => {
     const selectedSusIndices = shuffledIndices.slice(0, gameData.numSusPlayers);
     setSusPlayerIndices(selectedSusIndices);
 
-    // Initial speak for the first player
-    speakPlayerName(gameData.playerNames[0]);
+    // No initial speakPlayerName call here. It will be triggered by user interaction.
 
     return () => {
       // Clean up speech synthesis if component unmounts
@@ -99,12 +98,16 @@ const NameReveal = () => {
 
   const handleTapToReveal = () => {
     setShowWord(true);
+    // Announce the current player's name AFTER they tap to reveal their word
+    // This ensures a user gesture has occurred, bypassing autoplay restrictions.
+    speakPlayerName(gameData.playerNames[currentPlayerIndex]);
   };
 
   const handleNextPlayer = () => {
     const nextIndex = currentPlayerIndex + 1;
     if (nextIndex < gameData.numPlayers) {
       setCurrentPlayerIndex(nextIndex);
+      // Announce the next player's name when the "Next Player" button is clicked.
       speakPlayerName(gameData.playerNames[nextIndex]);
     } else {
       // All players have seen their words, proceed to discussion phase
@@ -145,8 +148,6 @@ const NameReveal = () => {
             </Button>
           )}
         </div>
-
-        {/* Removed the reveal timer section entirely */}
 
         <Button
           onClick={handleNextPlayer}
