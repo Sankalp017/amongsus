@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "sonner"; // Corrected import statement
 import { getWordsForTopic } from "@/utils/words";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge"; // Import Badge component
@@ -130,7 +130,7 @@ const NameReveal = () => {
               >
                 {isSusPlayer ? "Sus Player" : "Crewmate"}
               </Badge>
-              <p className="text-5xl font-black text-purple-700 tracking-tighter leading-none">
+              <p className="text-5xl font-medium text-purple-700 tracking-tighter leading-none">
                 {currentWord}
               </p>
             </div>
