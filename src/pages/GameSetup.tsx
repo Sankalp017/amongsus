@@ -130,7 +130,10 @@ const GameSetup = () => {
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
-        <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center mt-4">Game Setup</h2>
+        <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center mt-4">Game Setup</h2>
+        <p className="text-sm md:text-base text-gray-600 mb-6 text-center">
+          First, set the number of players and imposters, then enter each player's name, and finally, select a word topic.
+        </p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
