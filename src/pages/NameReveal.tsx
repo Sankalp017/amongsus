@@ -27,6 +27,31 @@ const NameReveal = () => {
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
+  // Generic speech function
+  const speak = (text: string) => {
+    if ("speechSynthesis" in window) {
+      speechSynthesis.cancel(); // Cancel any ongoing speech
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      const voices = speechSynthesis.getVoices();
+      const femaleVoice = voices.find(
+        (voice) => voice.lang === "en-US" && voice.name.includes("Female")
+      );
+      if (femaleVoice) {
+        utterance.voice = femaleVoice;
+      } else {
+        const englishVoice = voices.find((voice) => voice.lang === "en-US");
+        if (englishVoice) {
+          utterance.voice = englishVoice;
+        }
+      }
+      speechSynthesis.speak(utterance);
+      utteranceRef.current = utterance;
+    } else {
+      toast.warning("Text-to-speech not supported in this browser. Please ensure your browser supports it and audio is enabled.");
+    }
+  };
+
   useEffect(() => {
     if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0) {
       toast.error("Game data not found. Please set up the game again.");
@@ -59,43 +84,21 @@ const NameReveal = () => {
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
       setShowWord(false);
+      // Announce player's turn when the component loads or current player changes
+      speak(`It's ${gameData.playerNames[currentPlayerIndex]}'s turn`);
     }
-  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData.numPlayers]);
-
-  const speakPlayerName = (name: string) => {
-    if ("speechSynthesis" in window) {
-      speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(`It's ${name}'s turn`);
-      utterance.lang = "en-US";
-      const voices = speechSynthesis.getVoices();
-      const femaleVoice = voices.find(
-        (voice) => voice.lang === "en-US" && voice.name.includes("Female")
-      );
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
-      } else {
-        const englishVoice = voices.find((voice) => voice.lang === "en-US");
-        if (englishVoice) {
-          utterance.voice = englishVoice;
-        }
-      }
-      speechSynthesis.speak(utterance);
-      utteranceRef.current = utterance;
-    } else {
-      toast.warning("Text-to-speech not supported in this browser. Please ensure your browser supports it and audio is enabled.");
-    }
-  };
+  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData.numPlayers, gameData.playerNames]);
 
   const handleTapToReveal = () => {
     setShowWord(true);
-    speakPlayerName(gameData.playerNames[currentPlayerIndex]);
+    speak("Word revealed"); // Announce "Word revealed"
   };
 
   const handleNextPlayer = () => {
     const nextIndex = currentPlayerIndex + 1;
     if (nextIndex < gameData.numPlayers) {
       setCurrentPlayerIndex(nextIndex);
-      speakPlayerName(gameData.playerNames[nextIndex]);
+      // The useEffect above will handle speaking the next player's name
     } else {
       toast.success("All players have seen their words. Time to discuss!");
       navigate("/discussion", { state: { ...gameData, mainWord, susWord, susPlayerIndices } });
