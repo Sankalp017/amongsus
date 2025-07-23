@@ -33,7 +33,7 @@ const NameReveal = () => {
   const [mainWord, setMainWord] = useState("");
   const [susWord, setSusWord] = useState("");
   const [gameData, setGameData] = useState<GameSetupData | null>(null);
-  const [voicesLoaded, setVoicesLoaded] = useState(false); // New state for voice loading
+  const [voicesLoaded, setVoicesLoaded] = useState(false);
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -68,23 +68,27 @@ const NameReveal = () => {
 
   // Effect to load voices
   useEffect(() => {
-    const handleVoicesChanged = () => {
-      setVoicesLoaded(true);
-      console.log("Speech voices loaded.");
+    const checkAndSetVoices = () => {
+      const voices = speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        setVoicesLoaded(true);
+        console.log("Speech voices loaded.");
+      } else {
+        // If voices are not yet available, try again after a short delay
+        // This can help in browsers that load voices asynchronously
+        setTimeout(checkAndSetVoices, 100);
+      }
     };
 
     if ("speechSynthesis" in window) {
-      // Check if voices are already loaded (e.g., on refresh)
-      if (speechSynthesis.getVoices().length > 0) {
-        setVoicesLoaded(true);
-      } else {
-        speechSynthesis.addEventListener("voiceschanged", handleVoicesChanged);
-      }
+      // Initial check and listener
+      checkAndSetVoices(); // Try to get voices immediately
+      speechSynthesis.addEventListener("voiceschanged", checkAndSetVoices);
     }
 
     return () => {
       if ("speechSynthesis" in window) {
-        speechSynthesis.removeEventListener("voiceschanged", handleVoicesChanged);
+        speechSynthesis.removeEventListener("voiceschanged", checkAndSetVoices);
       }
     };
   }, []);
@@ -137,14 +141,14 @@ const NameReveal = () => {
   }, [initialGameData, navigate]);
 
   useEffect(() => {
-    if (gameData && currentPlayerIndex < gameData.numPlayers && voicesLoaded) { // Added voicesLoaded check
+    if (gameData && currentPlayerIndex < gameData.numPlayers && voicesLoaded) {
       const playerIsSus = susPlayerIndices.includes(currentPlayerIndex);
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
       setShowWord(false);
       speak(`It's ${gameData.playerNames[currentPlayerIndex]}'s turn`);
     }
-  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, voicesLoaded]); // Added voicesLoaded to dependency array
+  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, voicesLoaded]);
 
   const handleTapToReveal = () => {
     setShowWord(true);
