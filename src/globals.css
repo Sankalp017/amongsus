@@ -129,10 +129,10 @@
 
 /* New animation for more suspenseful word reveal */
 @keyframes fade-in-pop {
-  0% { opacity: 0; transform: translateY(10px) scale(0.95); filter: blur(5px); }
-  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  0% { opacity: 0; transform: translateY(5px) scale(0.98); } /* Reduced blur and initial transform */
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .animate-fade-in-pop {
-  animation: fade-in-pop 0.8s ease-out forwards; /* Slightly longer duration */
+  animation: fade-in-pop 1s ease-out forwards; /* Slightly longer duration for smoothness */
 }
