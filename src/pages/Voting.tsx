@@ -47,25 +47,27 @@ const Voting = () => {
 
   const handleVote = (votedForPlayerName: string) => {
     const votedForIndex = gameState.playerNames.indexOf(votedForPlayerName);
-    setVotes((prevVotes) => [
-      ...prevVotes,
-      { voterIndex: currentVoterIndex, votedForIndex },
-    ]);
-    setVotedForName(votedForPlayerName);
-    setShowVoteConfirmation(true);
+    setVotes((prevVotes) => {
+      const updatedVotes = [
+        ...prevVotes,
+        { voterIndex: currentVoterIndex, votedForIndex },
+      ];
+      setVotedForName(votedForPlayerName);
+      setShowVoteConfirmation(true);
 
-    setTimeout(() => {
-      setShowVoteConfirmation(false);
-      const nextVoterIndex = currentVoterIndex + 1;
-      if (nextVoterIndex < gameState.numPlayers) {
-        setCurrentVoterIndex(nextVoterIndex);
-      } else {
-        // All players have voted, proceed to results
-        toast.success("All votes cast! Revealing results...");
-        // TODO: Navigate to Results Phase, passing gameState and votes
-        // navigate("/results", { state: { ...gameState, votes } });
-      }
-    }, 2000); // Show confirmation for 2 seconds
+      setTimeout(() => {
+        setShowVoteConfirmation(false);
+        const nextVoterIndex = currentVoterIndex + 1;
+        if (nextVoterIndex < gameState.numPlayers) {
+          setCurrentVoterIndex(nextVoterIndex);
+        } else {
+          // All players have voted, proceed to results
+          toast.success("All votes cast! Revealing results...");
+          navigate("/results", { state: { gameState, votes: updatedVotes } });
+        }
+      }, 2000); // Show confirmation for 2 seconds
+      return updatedVotes;
+    });
   };
 
   return (
