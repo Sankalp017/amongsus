@@ -2,9 +2,8 @@ import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-// Removed import for Timer component
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageCircle } from "lucide-react"; // Import MessageCircle icon
+import { MessageCircle } from "lucide-react";
 
 interface GameStateData {
   numPlayers: number;
@@ -29,12 +28,13 @@ const Discussion = () => {
   }, [gameState, navigate]);
 
   const handleEndDiscussion = () => {
+    console.log("End Discussion button clicked!"); // Added for debugging
     toast.info("Discussion ended! Revealing results...");
-    navigate("/results", { state: { gameState } }); // Navigate directly to Results, passing gameState
+    navigate("/results", { state: { gameState } });
   };
 
   if (!gameState) {
-    return null; // Or a loading spinner/error message
+    return null;
   }
 
   return (
@@ -49,13 +49,10 @@ const Discussion = () => {
           <p className="text-lg mb-6">
             Players, discuss among yourselves. Try to figure out who the sus players are!
           </p>
-          {/* Removed the line mentioning the main word */}
-
-          {/* Removed the timer component */}
 
           <Button
             onClick={handleEndDiscussion}
-            className="w-full bg-purple-700 text-white hover:bg-purple-800 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap"
           >
             End Discussion & Reveal Results
           </Button>
