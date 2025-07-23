@@ -33,17 +33,14 @@ const NameReveal = () => {
   const [mainWord, setMainWord] = useState("");
   const [susWord, setSusWord] = useState("");
   const [gameData, setGameData] = useState<GameSetupData | null>(null);
-  const [voicesLoaded, setVoicesLoaded] = useState(false);
+  const [voicesLoaded, setVoicesLoaded] = useState(false); // New state for voice loading
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   // Generic speech function
-  const speak = (text: string, onEndCallback?: () => void) => {
+  const speak = (text: string) => {
     if (!voicesLoaded) {
       console.warn("Speech voices not yet loaded. Skipping announcement.");
-      if (onEndCallback) {
-        onEndCallback();
-      }
       return;
     }
     if ("speechSynthesis" in window) {
@@ -62,18 +59,10 @@ const NameReveal = () => {
           utterance.voice = englishVoice;
         }
       }
-      utterance.onend = () => {
-        if (onEndCallback) {
-          onEndCallback();
-        }
-      };
       speechSynthesis.speak(utterance);
       utteranceRef.current = utterance;
     } else {
       toast.warning("Text-to-speech not supported in this browser. Please ensure your browser supports it and audio is enabled.");
-      if (onEndCallback) {
-        onEndCallback();
-      }
     }
   };
 
@@ -85,6 +74,7 @@ const NameReveal = () => {
     };
 
     if ("speechSynthesis" in window) {
+      // Check if voices are already loaded (e.g., on refresh)
       if (speechSynthesis.getVoices().length > 0) {
         setVoicesLoaded(true);
       } else {
@@ -146,26 +136,19 @@ const NameReveal = () => {
     };
   }, [initialGameData, navigate]);
 
-  // Effect to update current player's word and reset showWord state
   useEffect(() => {
-    if (gameData && currentPlayerIndex < gameData.numPlayers) {
+    if (gameData && currentPlayerIndex < gameData.numPlayers && voicesLoaded) { // Added voicesLoaded check
       const playerIsSus = susPlayerIndices.includes(currentPlayerIndex);
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
-      setShowWord(false); // Reset showWord for the new player
+      setShowWord(false);
+      speak(`It's ${gameData.playerNames[currentPlayerIndex]}'s turn`);
     }
-  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData]);
+  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, voicesLoaded]); // Added voicesLoaded to dependency array
 
-  const handleTapToRevealWord = () => {
-    if (!showWord && gameData) { // Only allow tap to reveal if word is not already shown
-      const playerTurnText = `It's ${gameData.playerNames[currentPlayerIndex]}'s turn`;
-      speak(playerTurnText, () => {
-        // After player turn is announced, announce "Word revealed"
-        const wordRevealText = "Word revealed";
-        speak(wordRevealText);
-        setShowWord(true); // Show the word immediately upon tap
-      });
-    }
+  const handleTapToReveal = () => {
+    setShowWord(true);
+    speak("Word revealed");
   };
 
   const handleNextPlayer = () => {
@@ -200,7 +183,7 @@ const NameReveal = () => {
         <p className="text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
 
         <CardContent
-          onClick={!showWord ? handleTapToRevealWord : undefined}
+          onClick={!showWord ? handleTapToReveal : undefined}
           className={`relative w-full h-64 bg-white rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 shadow-lg transform transition-all duration-300 ${!showWord ? 'cursor-pointer hover:scale-[1.01] hover:shadow-xl' : ''}`}
         >
           {showWord ? (
@@ -212,8 +195,8 @@ const NameReveal = () => {
                 {isSusPlayer ? "Imposter" : "Innocent"}
               </Badge>
               <p className="text-5xl font-medium text-purple-700 tracking-tighter leading-none">
-                  {currentWord}
-                </p>
+                {currentWord}
+              </p>
             </div>
           ) : (
             <span className="text-2xl font-bold text-purple-700">

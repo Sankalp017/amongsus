@@ -5,8 +5,8 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { BookOpen, UserX, Users } from "lucide-react"; // Removed Volume2 icon
-import { loadGameState, clearGameState } from "@/utils/localStorage";
+import { BookOpen, UserX, Users } from "lucide-react";
+import { loadGameState, clearGameState } from "@/utils/localStorage"; // Import localStorage utilities
 
 interface GameStateData {
   numPlayers: number;
@@ -37,21 +37,16 @@ const Results = () => {
       }
     }
     setGameState(loadedState);
-
-    // Removed audio initialization and playback logic
-    return () => {
-      // No audio cleanup needed
-    };
   }, [initialGameState, navigate]);
+
+  if (!gameState) {
+    return null; // Or a loading spinner
+  }
 
   const handlePlayAgain = () => {
     clearGameState(); // Clear game state from local storage when playing again
     navigate("/");
   };
-
-  if (!gameState) {
-    return null; // Or a loading spinner
-  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
@@ -64,8 +59,6 @@ const Results = () => {
           <p className="text-lg mb-6">
             The discussion has concluded. Here's how the game was set up:
           </p>
-
-          {/* Removed "Hear Drum Roll" button */}
 
           <div className="mb-6">
             <h4 className="text-xl font-bold mb-2 flex items-center justify-center gap-2">
