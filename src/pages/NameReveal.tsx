@@ -214,7 +214,7 @@ const NameReveal = () => {
         ) : (
           <>
             <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
-            <p className="text-base md:text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
+            <p className="text-base md:text-lg mb-6 text-gray-600">Click the card to reveal your word.</p>
 
             <div
               onClick={handleRevealWord}
@@ -224,7 +224,7 @@ const NameReveal = () => {
             >
               {!showWord && (
                 <span className="text-xl md:text-2xl font-bold text-gray-800 z-10">
-                  Tap to Reveal
+                  Click to Reveal
                 </span>
               )}
               {showWord && (
