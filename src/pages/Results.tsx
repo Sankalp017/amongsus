@@ -117,17 +117,17 @@ const Results = () => {
               </div>
             </div>
 
-            <div className="flex flex-col space-y-6 mt-6">
+            <div className="flex flex-col space-y-4 mt-6"> {/* Changed space-y-6 to space-y-4 */}
               <Button
                 onClick={handlePlayNextRound}
-                className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105" // Changed to rounded-xl
+                className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 border-2 border-transparent" // Added border-2 border-transparent
               >
                 Play Next Round
               </Button>
               <Button
                 onClick={handleNewGame}
                 variant="outline"
-                className="w-full bg-transparent border-2 border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105" // Changed to rounded-xl
+                className="w-full bg-transparent border-2 border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
               >
                 New Game
               </Button>
