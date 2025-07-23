@@ -110,11 +110,11 @@ const NameReveal = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
-      <Card className="w-full max-w-md bg-white p-6 rounded-lg shadow-xl text-gray-800 text-center">
+      <Card className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
         <h2 className="text-3xl font-bold mb-4">It's {currentPlayerName}'s Turn</h2>
         <p className="text-lg mb-6">Tap to reveal your word.</p>
 
-        <CardContent className="relative w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden p-4 mb-6">
+        <CardContent className="relative w-full h-48 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-200 shadow-md">
           {showWord ? (
             <div className="flex flex-col items-center justify-center animate-fade-in">
               <p className="text-xl font-semibold mb-2">You are a:</p>

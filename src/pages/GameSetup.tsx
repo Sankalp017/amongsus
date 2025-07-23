@@ -78,7 +78,7 @@ const GameSetup = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-xl text-gray-800">
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200">
         <h2 className="text-3xl font-bold mb-6 text-center">Game Setup</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
