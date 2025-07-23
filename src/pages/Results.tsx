@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { BookOpen, UserX, Users } from "lucide-react";
-import { loadGameState, clearGameState } from "@/utils/localStorage"; // Import localStorage utilities
+import { loadGameState, clearGameState } from "@/utils/localStorage";
 
 interface GameStateData {
   numPlayers: number;
@@ -23,6 +23,7 @@ const Results = () => {
   const navigate = useNavigate();
   const initialGameState = location.state?.gameState as GameStateData;
   const [gameState, setGameState] = useState<GameStateData | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null); // Ref to store the audio object
 
   useEffect(() => {
     let loadedState: GameStateData | undefined = initialGameState;
@@ -37,6 +38,23 @@ const Results = () => {
       }
     }
     setGameState(loadedState);
+
+    // Play drum roll sound when the component mounts and game state is loaded
+    if (loadedState && !audioRef.current) {
+      const audio = new Audio("/sounds/drum-roll.mp3");
+      audio.volume = 0.7; // Adjust volume as needed (0.0 to 1.0)
+      audioRef.current = audio; // Store the audio object in the ref
+      audio.play().catch(e => console.error("Error playing drum roll:", e));
+    }
+
+    // Cleanup function to pause and reset audio when component unmounts
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioRef.current = null; // Clear the ref
+      }
+    };
   }, [initialGameState, navigate]);
 
   if (!gameState) {
