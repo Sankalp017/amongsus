@@ -33,7 +33,7 @@ const Index = () => {
           </Button>
           <Button
             onClick={handleHowToPlay}
-            className="bg-white/20 backdrop-blur-lg text-white hover:bg-white/30 hover:text-white text-lg md:text-xl px-8 py-4 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="bg-white/20 backdrop-blur-lg text-white hover:bg-white/30 hover:text-white text-lg md:text-xl px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
           >
             How to Play
           </Button>
