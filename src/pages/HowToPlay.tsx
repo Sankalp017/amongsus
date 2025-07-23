@@ -30,18 +30,16 @@ const HowToPlay = () => {
               <span className="font-bold">Word Reveal:</span> Each player will take turns tapping the screen to reveal their secret word.
               Pass the device around, ensuring only the current player sees their word.
               Crewmates will see the main word, while Sus Players will see a subtly different "sus word."
+              A timer will count down, but players can tap "Next Player" to proceed faster.
             </li>
             <li>
               <span className="font-bold">Discussion Phase:</span> All players discuss the word. Crewmates try to identify the Sus Player(s)
               by asking questions and listening for inconsistencies. Sus Players must blend in and avoid revealing their different word.
-              Be careful not to reveal the main word directly!
+              Be careful not to reveal the main word directly! A timer will keep track of the discussion time.
             </li>
             <li>
-              <span className="font-bold">Voting Phase:</span> After the discussion, each player takes a turn to vote for who they think is the Sus Player.
-            </li>
-            <li>
-              <span className="font-bold">Results:</span> The player with the most votes is revealed.
-              If a Sus Player is voted out, the Crewmates win! If an innocent Crewmate is voted out, the Sus Players win!
+              <span className="font-bold">Results:</span> After the discussion, the game will reveal who the Sus Players were and what the main and sus words were.
+              This is your chance to see if your suspicions were correct!
             </li>
           </ol>
           <p className="text-lg mt-4">
