@@ -230,7 +230,7 @@ const NameReveal = () => {
               )}
 
               {showWord && (
-                <div className="flex flex-col items-center justify-center animate-reveal-word"> {/* Apply reveal animation here */}
+                <div className="flex flex-col items-center justify-center animate-fade-in-pop"> {/* Apply new animation here */}
                   <Badge
                     variant={isSusPlayer ? "destructive" : "secondary"}
                     className={`text-lg md:text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
