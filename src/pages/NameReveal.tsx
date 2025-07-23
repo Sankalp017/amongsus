@@ -34,13 +34,17 @@ const NameReveal = () => {
   const [susWord, setSusWord] = useState("");
   const [gameData, setGameData] = useState<GameSetupData | null>(null);
   const [voicesLoaded, setVoicesLoaded] = useState(false);
+  const [hasAnnouncedPlayerTurn, setHasAnnouncedPlayerTurn] = useState(false); // New state
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   // Generic speech function
   const speak = (text: string, onEndCallback?: () => void) => {
     if (!voicesLoaded) {
-      console.warn("Speech voices not yet loaded. Skipping announcement.");
+      toast.warning("Speech voices are not ready. Please wait a moment or refresh.");
+      if (onEndCallback) {
+        onEndCallback(); // Call callback even if speech isn't supported
+      }
       return;
     }
     if ("speechSynthesis" in window) {
@@ -149,23 +153,27 @@ const NameReveal = () => {
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
       setShowWord(false); // Reset showWord for the new player
+      setHasAnnouncedPlayerTurn(false); // Reset announcement state for new player
     }
   }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData]);
 
-  const handleTapToReveal = () => {
+  const handleListenToName = () => {
+    if (!gameData) return;
+    const playerTurnText = `It's ${gameData.playerNames[currentPlayerIndex]}'s turn`;
+    speak(playerTurnText, () => {
+      setHasAnnouncedPlayerTurn(true); // Mark as announced after speech
+    });
+  };
+
+  const handleTapToRevealWord = () => {
     if (!voicesLoaded) {
       toast.warning("Speech voices are not ready. Please wait a moment or refresh.");
       return;
     }
-
-    if (!showWord && gameData) { // Only allow tap to reveal if word is not already shown
-      const playerTurnText = `It's ${gameData.playerNames[currentPlayerIndex]}'s turn`;
-      speak(playerTurnText, () => {
-        // After player turn is announced, announce "Word revealed"
-        const wordRevealText = "Word revealed";
-        speak(wordRevealText);
-        setShowWord(true); // Show the word immediately upon tap
-      });
+    if (!showWord && gameData) {
+      const wordRevealText = "Word revealed";
+      speak(wordRevealText);
+      setShowWord(true); // Show the word immediately upon tap
     }
   };
 
@@ -198,30 +206,41 @@ const NameReveal = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
       <Card className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
         <h2 className="text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
-        <p className="text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
+        <p className="text-lg mb-6 text-gray-600">
+          {!hasAnnouncedPlayerTurn ? "Click below to hear whose turn it is." : "Tap the card to reveal your word."}
+        </p>
 
-        <CardContent
-          onClick={!showWord ? handleTapToReveal : undefined}
-          className={`relative w-full h-64 bg-white rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 shadow-lg transform transition-all duration-300 ${!showWord ? 'cursor-pointer hover:scale-[1.01] hover:shadow-xl' : ''}`}
-        >
-          {showWord ? (
-            <div className="flex flex-col items-center justify-center animate-fade-in">
-              <Badge
-                variant={isSusPlayer ? "destructive" : "secondary"}
-                className={`text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
-              >
-                {isSusPlayer ? "Imposter" : "Innocent"}
-              </Badge>
-              <p className="text-5xl font-medium text-purple-700 tracking-tighter leading-none">
-                {currentWord}
-              </p>
-            </div>
-          ) : (
-            <span className="text-2xl font-bold text-purple-700">
-              Tap to Reveal
-            </span>
-          )}
-        </CardContent>
+        {!hasAnnouncedPlayerTurn ? (
+          <Button
+            onClick={handleListenToName}
+            className="w-full bg-purple-700 text-white hover:bg-purple-800 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 mb-6"
+          >
+            Listen to Name
+          </Button>
+        ) : (
+          <CardContent
+            onClick={!showWord ? handleTapToRevealWord : undefined}
+            className={`relative w-full h-64 bg-white rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 shadow-lg transform transition-all duration-300 ${!showWord ? 'cursor-pointer hover:scale-[1.01] hover:shadow-xl' : ''}`}
+          >
+            {showWord ? (
+              <div className="flex flex-col items-center justify-center animate-fade-in">
+                <Badge
+                  variant={isSusPlayer ? "destructive" : "secondary"}
+                  className={`text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
+                >
+                  {isSusPlayer ? "Imposter" : "Innocent"}
+                </Badge>
+                <p className="text-5xl font-medium text-purple-700 tracking-tighter leading-none">
+                  {currentWord}
+                </p>
+              </div>
+            ) : (
+              <span className="text-2xl font-bold text-purple-700">
+                Tap to Reveal
+              </span>
+            )}
+          </CardContent>
+        )}
 
         <Button
           onClick={handleNextPlayer}
