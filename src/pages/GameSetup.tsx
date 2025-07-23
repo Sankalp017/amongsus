@@ -92,7 +92,7 @@ const GameSetup = () => {
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
     >
-      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200 relative"> {/* Added relative for positioning */}
+      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200 relative">
         <Button
           variant="ghost"
           size="icon"
@@ -108,7 +108,7 @@ const GameSetup = () => {
               control={form.control}
               name="numPlayers"
               render={({ field }) => (
-                <FormItem> {/* Removed items-center to align left */}
+                <FormItem>
                   <FormLabel className="text-base md:text-lg mb-2">Number of Players</FormLabel>
                   <FormControl>
                     <NumberInputStepper
@@ -116,7 +116,33 @@ const GameSetup = () => {
                       onChange={field.onChange}
                       min={3}
                       max={20}
-                      className="justify-start"
+                      className="w-full justify-between" // Make stepper full width and space items
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="numSusPlayers"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base md:text-lg">Number of Imposters</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="e.g., 1"
+                      className="text-center text-base md:text-lg py-2"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        const val = parseInt(e.target.value);
+                        if (!isNaN(val)) {
+                          form.setValue("numSusPlayers", val);
+                        }
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -146,39 +172,13 @@ const GameSetup = () => {
 
             <FormField
               control={form.control}
-              name="numSusPlayers"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-base md:text-lg">Number of Imposters</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="e.g., 1"
-                      className="text-center text-base md:text-lg py-2"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        const val = parseInt(e.target.value);
-                        if (!isNaN(val)) {
-                          form.setValue("numSusPlayers", val);
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
               name="topic"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-base md:text-lg">Select Topic (Optional)</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full"> {/* Ensure select trigger is full width */}
                         <SelectValue placeholder="Select a topic" />
                       </SelectTrigger>
                     </FormControl>
