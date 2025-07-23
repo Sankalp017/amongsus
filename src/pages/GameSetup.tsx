@@ -22,17 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-
-// Define word categories
-const wordCategories = [
-  "Movies",
-  "Food",
-  "Cities",
-  "Random words",
-  "Sports",
-  "Games",
-  "Slang",
-];
+import { wordCategories } from "@/utils/words"; // Import wordCategories
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -83,8 +73,7 @@ const GameSetup = () => {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log("Game Setup Values:", values);
     toast.success("Game setup complete! Starting round...");
-    // TODO: Implement game start logic and navigate to Name Reveal Phase
-    // navigate("/name-reveal", { state: values });
+    navigate("/name-reveal", { state: values }); // Navigate to Name Reveal Phase
   };
 
   return (
