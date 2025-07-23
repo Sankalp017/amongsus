@@ -33,7 +33,7 @@ const NameReveal = () => {
   const [mainWord, setMainWord] = useState("");
   const [susWord, setSusWord] = useState("");
   const [gameData, setGameData] = useState<GameSetupData | null>(null);
-  const [voicesLoaded, setVoicesLoaded] = useState(false); // New state for voice loading
+  const [voicesLoaded, setVoicesLoaded] = useState(false);
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -74,7 +74,6 @@ const NameReveal = () => {
     };
 
     if ("speechSynthesis" in window) {
-      // Check if voices are already loaded (e.g., on refresh)
       if (speechSynthesis.getVoices().length > 0) {
         setVoicesLoaded(true);
       } else {
@@ -137,18 +136,46 @@ const NameReveal = () => {
   }, [initialGameData, navigate]);
 
   useEffect(() => {
-    if (gameData && currentPlayerIndex < gameData.numPlayers && voicesLoaded) { // Added voicesLoaded check
+    if (gameData && currentPlayerIndex < gameData.numPlayers) {
       const playerIsSus = susPlayerIndices.includes(currentPlayerIndex);
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
-      setShowWord(false);
-      speak(`It's ${gameData.playerNames[currentPlayerIndex]}'s turn`);
+      setShowWord(false); // Reset showWord for the new player
+      // Removed automatic speak here, it will now be triggered by handleTapToReveal
     }
-  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, voicesLoaded]); // Added voicesLoaded to dependency array
+  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData]);
 
   const handleTapToReveal = () => {
-    setShowWord(true);
-    speak("Word revealed");
+    if (!voicesLoaded) {
+      toast.warning("Speech voices are not ready. Please wait a moment or refresh.");
+      return;
+    }
+
+    if (!showWord && gameData) { // Only allow tap to reveal if word is not already shown
+      const playerTurnText = `It's ${gameData.playerNames[currentPlayerIndex]}'s turn`;
+      const wordRevealText = "Word revealed";
+
+      // Create and configure the first utterance (player's turn)
+      const playerTurnUtterance = new SpeechSynthesisUtterance(playerTurnText);
+      playerTurnUtterance.lang = "en-US";
+      const voices = speechSynthesis.getVoices();
+      const femaleVoice = voices.find((voice) => voice.lang === "en-US" && voice.name.includes("Female"));
+      const selectedVoice = femaleVoice || voices.find((voice) => voice.lang === "en-US");
+      if (selectedVoice) {
+        playerTurnUtterance.voice = selectedVoice;
+      }
+
+      // Chain the "Word revealed" announcement after the first one finishes
+      playerTurnUtterance.onend = () => {
+        speak(wordRevealText);
+      };
+
+      speechSynthesis.cancel(); // Cancel any ongoing speech before starting new sequence
+      speechSynthesis.speak(playerTurnUtterance);
+      utteranceRef.current = playerTurnUtterance; // Store the first utterance in ref
+
+      setShowWord(true); // Show the word immediately upon tap
+    }
   };
 
   const handleNextPlayer = () => {
