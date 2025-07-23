@@ -2,18 +2,19 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { getWordsForTopic, wordCategories } from "@/utils/words"; // Import wordCategories
+import { getWordsForTopic, wordCategories } from "@/utils/words";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { saveGameState, loadGameState } from "@/utils/localStorage";
-import Timer from "@/components/Timer"; // Import the Timer component
+import Timer from "@/components/Timer";
+import ScratchReveal from "@/components/ScratchReveal"; // Import the new ScratchReveal component
 
 interface GameSetupData {
   numPlayers: number;
   playerNames: string[];
   numSusPlayers: number;
   topic?: string;
-  previousTopic?: string; // Added for new round logic
+  previousTopic?: string;
 }
 
 interface GameStateData extends GameSetupData {
@@ -28,7 +29,6 @@ const NameReveal = () => {
   const initialGameData = location.state as GameSetupData;
 
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
-  const [showWord, setShowWord] = useState(false);
   const [currentWord, setCurrentWord] = useState("");
   const [isSusPlayer, setIsSusPlayer] = useState(false);
   const [susPlayerIndices, setSusPlayerIndices] = useState<number[]>([]);
@@ -36,19 +36,19 @@ const NameReveal = () => {
   const [susWord, setSusWord] = useState("");
   const [gameData, setGameData] = useState<GameSetupData | null>(null);
   const [voicesLoaded, setVoicesLoaded] = useState(false);
-  const [showTimer, setShowTimer] = useState(true); // State to control timer visibility
-  const [timerDone, setTimerDone] = useState(false); // State to control content visibility after timer
+  const [showTimer, setShowTimer] = useState(true);
+  const [timerDone, setTimerDone] = useState(false);
+  const [hasRevealedWord, setHasRevealedWord] = useState(false); // New state for scratch reveal
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
-  // Generic speech function
   const speak = (text: string) => {
     if (!voicesLoaded) {
       console.warn("Speech voices not yet loaded. Skipping announcement.");
       return;
     }
     if ("speechSynthesis" in window) {
-      speechSynthesis.cancel(); // Cancel any ongoing speech
+      speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "en-US";
       const voices = speechSynthesis.getVoices();
@@ -70,7 +70,6 @@ const NameReveal = () => {
     }
   };
 
-  // Effect to load voices
   useEffect(() => {
     const checkAndSetVoices = () => {
       const voices = speechSynthesis.getVoices();
@@ -108,18 +107,15 @@ const NameReveal = () => {
 
     setGameData(loadedGameState);
 
-    // Determine if it's a new game or a "next round"
     const isNewGame = !(loadedGameState as GameStateData).mainWord || !(loadedGameState as GameStateData).susPlayerIndices;
 
     if (isNewGame) {
       let selectedTopic = loadedGameState.topic || "Random words";
       if (loadedGameState.previousTopic) {
-        // If it's a next round, try to pick a different topic
         const availableTopics = wordCategories.filter(cat => cat !== loadedGameState.previousTopic);
         if (availableTopics.length > 0) {
           selectedTopic = availableTopics[Math.floor(Math.random() * availableTopics.length)];
         } else {
-          // Fallback if only one topic exists or all have been used
           selectedTopic = wordCategories[Math.floor(Math.random() * wordCategories.length)];
         }
       }
@@ -138,7 +134,7 @@ const NameReveal = () => {
 
       saveGameState({
         ...loadedGameState,
-        topic: selectedTopic, // Save the chosen topic for this round
+        topic: selectedTopic,
         mainWord: generatedMainWord,
         susWord: generatedSusWord,
         susPlayerIndices: selectedSusIndices,
@@ -162,14 +158,14 @@ const NameReveal = () => {
       const playerIsSus = susPlayerIndices.includes(currentPlayerIndex);
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
-      setShowWord(false); // Reset showWord for the new player
+      setHasRevealedWord(false); // Reset for the new player
       speak(`It's ${gameData.playerNames[currentPlayerIndex]}'s turn`);
     }
   }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, voicesLoaded, timerDone]);
 
-  const handleTapToReveal = () => {
-    setShowWord(true);
-    speak("Word revealed");
+  const handleRevealStart = () => {
+    setHasRevealedWord(true); // Enable the next player button once scratching starts
+    speak("Word revealed"); // Announce word revealed
   };
 
   const handleNextPlayer = () => {
@@ -214,39 +210,23 @@ const NameReveal = () => {
         ) : (
           <>
             <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
-            <p className="text-base md:text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
+            <p className="text-base md:text-lg mb-6 text-gray-600">Scratch the card to reveal your word.</p>
 
-            <CardContent
-              onClick={!showWord ? handleTapToReveal : undefined}
-              className={`relative w-full h-64 bg-white rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 transform transition-all duration-300 ${!showWord ? 'cursor-pointer hover:scale-[1.01]' : ''}`}
-            >
-              {/* Overlay that animates away to reveal the word */}
-              {!showWord && (
-                <div className="absolute inset-0 bg-purple-100 rounded-3xl flex items-center justify-center">
-                  <span className="text-xl md:text-2xl font-bold text-purple-700">
-                    Tap to Reveal
-                  </span>
-                </div>
-              )}
-
-              {showWord && (
-                <div className="flex flex-col items-center justify-center animate-fade-in-pop"> {/* Apply new animation here */}
-                  <Badge
-                    variant={isSusPlayer ? "destructive" : "secondary"}
-                    className={`text-lg md:text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
-                  >
-                    {isSusPlayer ? "Imposter" : "Innocent"}
-                  </Badge>
-                  <p className="text-4xl md:text-5xl font-medium text-purple-700 tracking-tighter leading-none">
-                    {currentWord}
-                  </p>
-                </div>
-              )}
-            </CardContent>
+            <ScratchReveal onRevealStart={handleRevealStart} className="mb-6">
+              <Badge
+                variant={isSusPlayer ? "destructive" : "secondary"}
+                className={`text-lg md:text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
+              >
+                {isSusPlayer ? "Imposter" : "Innocent"}
+              </Badge>
+              <p className="text-4xl md:text-5xl font-medium text-purple-700 tracking-tighter leading-none">
+                {currentWord}
+              </p>
+            </ScratchReveal>
 
             <Button
               onClick={handleNextPlayer}
-              disabled={!showWord}
+              disabled={!hasRevealedWord}
               className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
