@@ -11,7 +11,7 @@ interface CircularProgressProps {
 const CircularProgress: React.FC<CircularProgressProps> = ({
   value,
   size = 120,
-  strokeWidth = 10,
+  strokeWidth = 8, // Reduced stroke width for a more minimal look
   className,
 }) => {
   const radius = (size - strokeWidth) / 2;
@@ -26,7 +26,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
       className={cn("transform -rotate-90", className)}
     >
       <circle
-        className="text-gray-300"
+        className="text-gray-200" // Softer background color
         stroke="currentColor"
         strokeWidth={strokeWidth}
         fill="transparent"
@@ -35,7 +35,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
         cy={size / 2}
       />
       <circle
-        className="text-purple-700 transition-all duration-300 ease-out"
+        className="text-purple-600 transition-all duration-300 ease-out" // Slightly softer purple
         stroke="currentColor"
         strokeWidth={strokeWidth}
         fill="transparent"

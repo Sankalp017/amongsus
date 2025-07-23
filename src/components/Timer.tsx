@@ -36,8 +36,8 @@ const Timer: React.FC<TimerProps> = ({ initialTime, onTimeUp }) => {
   return (
     <div className="w-full flex flex-col items-center gap-4">
       <div className="relative flex items-center justify-center">
-        <CircularProgress value={progress} size={150} strokeWidth={12} />
-        <div className="absolute text-5xl font-bold text-purple-700">
+        <CircularProgress value={progress} size={150} strokeWidth={8} /> {/* Updated strokeWidth here too */}
+        <div className="absolute text-4xl font-semibold text-gray-700"> {/* Softer text styling */}
           {formatTime(timeLeft)}
         </div>
       </div>
