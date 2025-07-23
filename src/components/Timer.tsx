@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Progress } from "@/components/ui/progress";
+import CircularProgress from "@/components/CircularProgress"; // Import the new CircularProgress component
 
 interface TimerProps {
   initialTime: number; // Time in seconds
@@ -35,10 +35,12 @@ const Timer: React.FC<TimerProps> = ({ initialTime, onTimeUp }) => {
 
   return (
     <div className="w-full flex flex-col items-center gap-4">
-      <div className="text-4xl font-bold text-purple-700">
-        {formatTime(timeLeft)}
+      <div className="relative flex items-center justify-center">
+        <CircularProgress value={progress} size={150} strokeWidth={12} />
+        <div className="absolute text-5xl font-bold text-purple-700">
+          {formatTime(timeLeft)}
+        </div>
       </div>
-      <Progress value={progress} className="w-full h-3 bg-gray-300" />
     </div>
   );
 };
