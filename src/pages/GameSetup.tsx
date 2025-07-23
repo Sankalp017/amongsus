@@ -26,7 +26,6 @@ import { wordCategories } from "@/utils/words";
 import { ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { saveGameState, clearGameState } from "@/utils/localStorage";
-import { motion } from "framer-motion"; // Import motion
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -89,10 +88,7 @@ const GameSetup = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+    <div
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
     >
       <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200 relative"> {/* Added relative for positioning */}
@@ -213,7 +209,7 @@ const GameSetup = () => {
           </form>
         </Form>
       </Card>
-    </motion.div>
+    </div>
   );
 };
 
