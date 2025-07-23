@@ -20,7 +20,7 @@ const Index = () => {
           Among Sus
         </h1>
         <p className="text-lg md:text-xl mb-8 max-w-md">
-          Uncover the Imposter in this thrilling word-based social deduction game, played on a single device!
+          Uncover the Imposter in this thrilling word-based social deduction game, and let the accusations fly!
         </p>
         <div className="flex flex-col space-y-4 w-full max-w-xs">
           <Button
