@@ -114,7 +114,10 @@ const NameReveal = () => {
         <h2 className="text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
         <p className="text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
 
-        <CardContent className="relative w-full h-64 bg-white rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 shadow-lg transform transition-all duration-300 hover:scale-[1.01] cursor-pointer">
+        <CardContent
+          onClick={!showWord ? handleTapToReveal : undefined}
+          className={`relative w-full h-64 bg-white rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 shadow-lg transform transition-all duration-300 ${!showWord ? 'cursor-pointer hover:scale-[1.01] hover:shadow-xl' : ''}`}
+        >
           {showWord ? (
             <div className="flex flex-col items-center justify-center animate-fade-in">
               <p className="text-xl font-semibold text-gray-700 mb-3">You are a:</p>
@@ -126,12 +129,9 @@ const NameReveal = () => {
               </p>
             </div>
           ) : (
-            <Button
-              onClick={handleTapToReveal}
-              className="absolute inset-0 flex items-center justify-center bg-purple-700 text-white hover:bg-purple-800 text-2xl font-bold rounded-3xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-            >
+            <span className="text-2xl font-bold text-purple-700">
               Tap to Reveal
-            </Button>
+            </span>
           )}
         </CardContent>
 
