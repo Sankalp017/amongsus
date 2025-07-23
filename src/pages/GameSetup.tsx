@@ -122,17 +122,20 @@ const GameSetup = () => {
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
     >
-      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200 relative">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleGoBack}
-          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700 rounded-xl"
-        >
-          <ArrowLeft className="h-6 w-6" />
-        </Button>
-        <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center mt-4">Game Setup</h2>
-        {/* Removed the descriptive paragraph from here */}
+      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200">
+        <div className="relative flex items-center justify-center mb-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleGoBack}
+            className="absolute left-0 text-gray-600 hover:text-purple-700 rounded-xl"
+          >
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h2 className="text-2xl md:text-3xl font-bold">
+            Game Setup
+          </h2>
+        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
