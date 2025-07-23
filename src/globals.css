@@ -136,3 +136,13 @@
 .animate-fade-in-pop {
   animation: fade-in-pop 1s ease-out forwards; /* Slightly longer duration for smoothness */
 }
+
+/* New animation for continuous slow spin */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 60s linear infinite; /* Adjust duration for desired speed */
+}

@@ -23,7 +23,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
       width={size}
       height={size}
       viewBox={`0 0 ${size} ${size}`}
-      className={cn("transform -rotate-90", className)}
+      className={cn("transform -rotate-90 animate-spin-slow", className)} // Added animate-spin-slow
     >
       <circle
         className="text-gray-200" // Softer background color

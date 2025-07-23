@@ -28,6 +28,10 @@ const Timer: React.FC<TimerProps> = ({ initialTime, onTimeUp }) => {
   }, [timeLeft, initialTime]);
 
   const formatTime = (seconds: number) => {
+    // If initial time is 10 seconds or less, display only seconds
+    if (initialTime <= 10) {
+      return seconds.toString();
+    }
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
