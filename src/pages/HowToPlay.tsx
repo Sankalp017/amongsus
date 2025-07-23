@@ -31,13 +31,15 @@ const HowToPlay = () => {
               <span className="font-bold">Game Setup:</span> Enter player names and choose the number of sus players and a word topic.
             </li>
             <li>
-              <span className="font-bold">Word Reveal:</span> Each player will take turns tapping the screen to reveal their secret word.
-              Pass the device around, ensuring only the current player sees their word.
+              <span className="font-bold">Word Reveal (Offline Role Allocation):</span> This is a crucial phase! Each player will take turns. The game will announce whose turn it is using text-to-speech.
+              <span className="font-bold text-purple-700"> Pass the device to the announced player.</span>
+              Only the current player should look at the screen and tap to reveal their secret word.
               Crewmates will see the main word, while Sus Players will see a subtly different "sus word."
-              Players can tap "Next Player" to proceed.
+              The text-to-speech will also announce "Word revealed" to let everyone know the word has been seen.
+              Players can then tap "Next Player" and pass the device to the next person.
             </li>
             <li>
-              <span className="font-bold">Discussion Phase:</span> All players discuss the word. Crewmates try to identify the Sus Player(s)
+              <span className="font-bold">Discussion Phase:</span> Once all players have seen their words, the discussion begins. All players discuss the word. Crewmates try to identify the Sus Player(s)
               by asking questions and listening for inconsistencies. Sus Players must blend in and avoid revealing their different word.
               Be careful not to reveal the main word directly!
             </li>
