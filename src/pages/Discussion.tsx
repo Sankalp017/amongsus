@@ -13,6 +13,8 @@ interface GameStateData {
   mainWord: string;
   susWord: string;
   susPlayerIndices: number[];
+  revealDuration: number; // Ensure this is passed
+  discussionDuration: number; // New field for discussion duration
 }
 
 const Discussion = () => {
@@ -20,11 +22,9 @@ const Discussion = () => {
   const navigate = useNavigate();
   const gameState = location.state as GameStateData;
 
-  const discussionTime = 120; // 2 minutes for discussion
-
   useEffect(() => {
-    if (!gameState || !gameState.playerNames || gameState.playerNames.length === 0) {
-      toast.error("Game data not found. Please set up the game again.");
+    if (!gameState || !gameState.playerNames || gameState.playerNames.length === 0 || gameState.discussionDuration === undefined) {
+      toast.error("Game data not found or discussion duration missing. Please set up the game again.");
       navigate("/setup");
     }
   }, [gameState, navigate]);
@@ -53,7 +53,7 @@ const Discussion = () => {
           </p>
 
           <div className="mb-8">
-            <Timer initialTime={discussionTime} onTimeUp={handleEndDiscussion} />
+            <Timer initialTime={gameState.discussionDuration} onTimeUp={handleEndDiscussion} />
           </div>
 
           <Button

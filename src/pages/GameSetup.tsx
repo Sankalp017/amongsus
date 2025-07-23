@@ -44,6 +44,10 @@ const formSchema = z.object({
     .number()
     .min(5, { message: "Minimum 5 seconds for word reveal." })
     .max(30, { message: "Maximum 30 seconds for word reveal." }),
+  discussionDuration: z.coerce // New field for discussion duration
+    .number()
+    .min(30, { message: "Minimum 30 seconds for discussion." })
+    .max(300, { message: "Maximum 300 seconds (5 minutes) for discussion." }),
 }).refine(data => data.numSusPlayers < data.numPlayers, {
   message: "Number of sus players must be less than total players.",
   path: ["numSusPlayers"],
@@ -61,6 +65,7 @@ const GameSetup = () => {
       numSusPlayers: 1,
       topic: "Random words",
       revealDuration: 10, // Default to 10 seconds
+      discussionDuration: 120, // Default to 120 seconds (2 minutes)
     },
   });
 
@@ -176,6 +181,32 @@ const GameSetup = () => {
                         const val = parseInt(e.target.value);
                         if (!isNaN(val)) {
                           form.setValue("revealDuration", val);
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="discussionDuration" // New FormField for discussion duration
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg">Discussion Duration (seconds)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="e.g., 120"
+                      className="text-center text-lg py-2"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        const val = parseInt(e.target.value);
+                        if (!isNaN(val)) {
+                          form.setValue("discussionDuration", val);
                         }
                       }}
                     />
