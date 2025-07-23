@@ -5,8 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import GameSetup from "./pages/GameSetup";
-import NameReveal from "./pages/NameReveal"; // Import the new NameReveal component
+import GameSetup from "./pages/GameSetup"; // Import the new GameSetup component
 
 const queryClient = new QueryClient();
 
@@ -18,8 +17,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/setup" element={<GameSetup />} />
-          <Route path="/name-reveal" element={<NameReveal />} /> {/* New route for Name Reveal */}
+          <Route path="/setup" element={<GameSetup />} /> {/* New route for Game Setup */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

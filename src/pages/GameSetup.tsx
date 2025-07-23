@@ -22,10 +22,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { assignRolesAndWords, wordCategories as availableWordCategories } from "@/lib/words"; // Import from new words file
 
-// Define word categories for the dropdown (using keys from the imported object)
-const wordCategories = Object.keys(availableWordCategories);
+// Define word categories
+const wordCategories = [
+  "Movies",
+  "Food",
+  "Cities",
+  "Random words",
+  "Sports",
+  "Games",
+  "Slang",
+];
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -58,7 +65,7 @@ const GameSetup = () => {
       numPlayers: 3,
       playerNames: ["", "", ""],
       numSusPlayers: 1,
-      topic: "Random words", // Default to a valid category
+      topic: "Random words",
     },
   });
 
@@ -75,29 +82,9 @@ const GameSetup = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log("Game Setup Values:", values);
-    
-    const playersWithRoles = assignRolesAndWords(
-      values.playerNames,
-      values.numSusPlayers,
-      values.topic || "Random words" // Ensure a topic is passed
-    );
-
-    const mainWord = playersWithRoles.find(p => !p.isSus)?.word || "";
-    const susWord = playersWithRoles.find(p => p.isSus)?.word || "";
-
-    if (!mainWord || !susWord) {
-      toast.error("Could not generate words. Please try again.");
-      return;
-    }
-
-    toast.success("Game setup complete! Starting name reveal...");
-    navigate("/name-reveal", { 
-      state: { 
-        players: playersWithRoles, 
-        mainWord, 
-        susWord 
-      } 
-    });
+    toast.success("Game setup complete! Starting round...");
+    // TODO: Implement game start logic and navigate to Name Reveal Phase
+    // navigate("/name-reveal", { state: values });
   };
 
   return (
