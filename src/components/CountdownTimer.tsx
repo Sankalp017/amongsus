@@ -22,7 +22,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ initialCount, onCountdo
   }, [count, onCountdownEnd]);
 
   return (
-    <div className="text-white text-9xl font-extrabold animate-bounce-in">
+    <div className="text-purple-700 text-9xl font-extrabold animate-bounce-in">
       {count}
     </div>
   );
