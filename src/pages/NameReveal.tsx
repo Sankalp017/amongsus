@@ -38,6 +38,7 @@ const NameReveal = () => {
   const [showTimer, setShowTimer] = useState(true);
   const [timerDone, setTimerDone] = useState(false);
   const [showWord, setShowWord] = useState(false);
+  const [ttsWarningShown, setTtsWarningShown] = useState(false);
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -51,49 +52,80 @@ const NameReveal = () => {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "en-US";
       const voices = speechSynthesis.getVoices();
-      const femaleVoice = voices.find(
-        (voice) => voice.lang === "en-US" && voice.name.includes("Female")
-      );
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
-      } else {
-        const englishVoice = voices.find((voice) => voice.lang === "en-US");
-        if (englishVoice) {
-          utterance.voice = englishVoice;
+      
+      // --- NEW: Prioritized Voice Selection for better consistency ---
+      const preferredVoices = [
+        "Google US English", // High-quality on Chrome/Android
+        "Samantha",          // Common on Apple devices
+        "Alex",              // High-quality on macOS
+        "Tessa",             // Common on some systems
+        "Microsoft Zira - English (United States)", // Windows
+      ];
+
+      let selectedVoice = null;
+
+      // 1. Try to find a preferred, high-quality voice
+      for (const name of preferredVoices) {
+        const found = voices.find(v => v.name === name && v.lang.startsWith("en-"));
+        if (found) {
+          selectedVoice = found;
+          break;
         }
       }
+
+      // 2. If not found, fall back to any US English female voice
+      if (!selectedVoice) {
+        selectedVoice = voices.find(v => v.lang === "en-US" && v.name.includes("Female"));
+      }
+
+      // 3. As a last resort, find any US English voice
+      if (!selectedVoice) {
+        selectedVoice = voices.find(v => v.lang === "en-US");
+      }
+      
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
+      // --- END: New Logic ---
+
       speechSynthesis.speak(utterance);
       utteranceRef.current = utterance;
-    } else {
-      toast.warning("Text-to-speech not supported in this browser. Please ensure your browser supports it and audio is enabled.");
-    }
-  };
-
-  const checkAndSetVoices = () => {
-    const voices = speechSynthesis.getVoices();
-    if (voices.length > 0) {
-      setVoicesLoaded(true);
-      console.log("Speech voices loaded.");
-    } else {
-      setTimeout(checkAndSetVoices, 100);
     }
   };
 
   useEffect(() => {
-    if ("speechSynthesis" in window) {
-      checkAndSetVoices();
-      speechSynthesis.addEventListener("voiceschanged", checkAndSetVoices);
+    if (!("speechSynthesis" in window)) {
+      return;
     }
 
+    const handleVoicesChanged = () => {
+      if (speechSynthesis.getVoices().length > 0) {
+        setVoicesLoaded(true);
+      }
+    };
+
+    handleVoicesChanged(); // Initial check
+    speechSynthesis.addEventListener("voiceschanged", handleVoicesChanged);
+
+    // Set up a timeout to show a warning if voices are still not loaded
+    const warningTimeout = setTimeout(() => {
+      if (speechSynthesis.getVoices().length === 0 && !ttsWarningShown) {
+        toast.info("Voice announcements may not work in this browser.", {
+          duration: 10000,
+          description: "For the best experience, use Chrome, Safari, or Brave. The game is still fully playable without sound.",
+        });
+        setTtsWarningShown(true);
+      }
+    }, 2500); // Wait 2.5 seconds
+
     return () => {
+      speechSynthesis.removeEventListener("voiceschanged", handleVoicesChanged);
+      clearTimeout(warningTimeout);
       if (utteranceRef.current) {
         speechSynthesis.cancel();
       }
-      if ("speechSynthesis" in window) {
-        speechSynthesis.removeEventListener("voiceschanged", checkAndSetVoices);
-      }
     };
-  }, []);
+  }, [ttsWarningShown]);
 
   useEffect(() => {
     let loadedGameState: GameStateData | GameSetupData | undefined = initialGameData;
@@ -155,17 +187,15 @@ const NameReveal = () => {
     };
   }, [initialGameData, navigate]);
 
-  // This effect sets the word and is NOT blocked by voice loading.
   useEffect(() => {
     if (gameData && currentPlayerIndex < gameData.numPlayers && timerDone) {
       const playerIsSus = susPlayerIndices.includes(currentPlayerIndex);
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
-      setShowWord(false); // Reset word visibility for the new player
+      setShowWord(false);
     }
   }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, timerDone]);
 
-  // This effect handles the speech announcement and can fail gracefully.
   useEffect(() => {
     if (gameData && currentPlayerIndex < gameData.numPlayers && voicesLoaded && timerDone) {
       speak(`It's ${gameData.playerNames[currentPlayerIndex]}'s turn`);
@@ -174,7 +204,7 @@ const NameReveal = () => {
 
   const handleRevealWord = () => {
     setShowWord(true);
-    speak("Word revealed");
+    speak("Your word is");
   };
 
   const handleNextPlayer = () => {
