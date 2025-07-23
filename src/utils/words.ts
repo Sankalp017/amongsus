@@ -57,7 +57,7 @@ const wordBank: WordBank = {
   ],
   "🏎️ Formula 1 Teams": [
     "Red Bull Racing", "Mercedes", "Ferrari", "McLaren", "Aston Martin",
-    "Alpine", "Williams", "RB", "Sauber", "Haas"
+    "Alpine", "Williams", "Sauber", "Haas"
   ],
   "⚽ Premier League Teams": [
     "Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton",
