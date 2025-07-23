@@ -32,12 +32,17 @@ const NameReveal = () => {
   const [susPlayerIndices, setSusPlayerIndices] = useState<number[]>([]);
   const [mainWord, setMainWord] = useState("");
   const [susWord, setSusWord] = useState("");
-  const [gameData, setGameData] = useState<GameSetupData | null>(null); // State to hold gameData
+  const [gameData, setGameData] = useState<GameSetupData | null>(null);
+  const [voicesLoaded, setVoicesLoaded] = useState(false); // New state for voice loading
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   // Generic speech function
   const speak = (text: string) => {
+    if (!voicesLoaded) {
+      console.warn("Speech voices not yet loaded. Skipping announcement.");
+      return;
+    }
     if ("speechSynthesis" in window) {
       speechSynthesis.cancel(); // Cancel any ongoing speech
       const utterance = new SpeechSynthesisUtterance(text);
@@ -61,11 +66,33 @@ const NameReveal = () => {
     }
   };
 
+  // Effect to load voices
+  useEffect(() => {
+    const handleVoicesChanged = () => {
+      setVoicesLoaded(true);
+      console.log("Speech voices loaded.");
+    };
+
+    if ("speechSynthesis" in window) {
+      // Check if voices are already loaded (e.g., on refresh)
+      if (speechSynthesis.getVoices().length > 0) {
+        setVoicesLoaded(true);
+      } else {
+        speechSynthesis.addEventListener("voiceschanged", handleVoicesChanged);
+      }
+    }
+
+    return () => {
+      if ("speechSynthesis" in window) {
+        speechSynthesis.removeEventListener("voiceschanged", handleVoicesChanged);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     let loadedGameState: GameStateData | GameSetupData | undefined = initialGameData;
 
     if (!loadedGameState || !loadedGameState.playerNames || loadedGameState.playerNames.length === 0) {
-      // If no state from navigation, try to load from local storage
       loadedGameState = loadGameState();
       if (!loadedGameState || !loadedGameState.playerNames || loadedGameState.playerNames.length === 0) {
         toast.error("Game data not found. Please set up the game again.");
@@ -74,16 +101,14 @@ const NameReveal = () => {
       }
     }
 
-    setGameData(loadedGameState); // Set the gameData state
+    setGameData(loadedGameState);
 
-    // If words and sus players are already in loadedGameState (from refresh), use them
     if ((loadedGameState as GameStateData).mainWord && (loadedGameState as GameStateData).susPlayerIndices) {
       const fullGameState = loadedGameState as GameStateData;
       setMainWord(fullGameState.mainWord);
       setSusWord(fullGameState.susWord);
       setSusPlayerIndices(fullGameState.susPlayerIndices);
     } else {
-      // Otherwise, generate them for a new game
       const { mainWord: generatedMainWord, susWord: generatedSusWord } = getWordsForTopic(
         loadedGameState.topic || "Random words",
         loadedGameState.numSusPlayers
@@ -96,7 +121,6 @@ const NameReveal = () => {
       const selectedSusIndices = shuffledIndices.slice(0, loadedGameState.numSusPlayers);
       setSusPlayerIndices(selectedSusIndices);
 
-      // Save the newly generated full game state to local storage
       saveGameState({
         ...loadedGameState,
         mainWord: generatedMainWord,
@@ -113,31 +137,28 @@ const NameReveal = () => {
   }, [initialGameData, navigate]);
 
   useEffect(() => {
-    if (gameData && currentPlayerIndex < gameData.numPlayers) {
+    if (gameData && currentPlayerIndex < gameData.numPlayers && voicesLoaded) { // Added voicesLoaded check
       const playerIsSus = susPlayerIndices.includes(currentPlayerIndex);
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
       setShowWord(false);
-      // Announce player's turn when the component loads or current player changes
       speak(`It's ${gameData.playerNames[currentPlayerIndex]}'s turn`);
     }
-  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData]); // Added gameData to dependency array
+  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, voicesLoaded]); // Added voicesLoaded to dependency array
 
   const handleTapToReveal = () => {
     setShowWord(true);
-    speak("Word revealed"); // Announce "Word revealed"
+    speak("Word revealed");
   };
 
   const handleNextPlayer = () => {
-    if (!gameData) return; // Should not happen due to initial check
+    if (!gameData) return;
 
     const nextIndex = currentPlayerIndex + 1;
     if (nextIndex < gameData.numPlayers) {
       setCurrentPlayerIndex(nextIndex);
-      // The useEffect above will handle speaking the next player's name
     } else {
       toast.success("All players have seen their words. Time to discuss!");
-      // Ensure the full game state is saved before navigating
       const fullGameState: GameStateData = {
         ...gameData,
         mainWord,
@@ -150,7 +171,7 @@ const NameReveal = () => {
   };
 
   if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0) {
-    return null; // Or a loading spinner
+    return null;
   }
 
   const currentPlayerName = gameData.playerNames[currentPlayerIndex];
