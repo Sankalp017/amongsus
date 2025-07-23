@@ -126,8 +126,14 @@ const NameReveal = () => {
 
         <div className="relative w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden mb-6">
           {showWord ? (
-            <div className="text-4xl font-extrabold text-purple-700 animate-fade-in">
-              {currentWord}
+            <div className="flex flex-col items-center justify-center animate-fade-in">
+              <p className="text-xl font-semibold mb-2">You are a:</p>
+              <p className={`text-4xl font-extrabold ${isSusPlayer ? "text-red-600" : "text-green-600"} mb-4`}>
+                {isSusPlayer ? "Sus Player" : "Crewmate"}
+              </p>
+              <p className="text-3xl font-bold text-purple-700">
+                Your Word: {currentWord}
+              </p>
             </div>
           ) : (
             <Button
