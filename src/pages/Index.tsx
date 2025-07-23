@@ -6,9 +6,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   const handleStartGame = () => {
-    // Navigate to the game setup screen (will be created next)
-    console.log("Start Game clicked!");
-    // navigate("/setup"); // Uncomment this when the setup page is ready
+    navigate("/setup"); // Navigate to the setup page
   };
 
   return (
