@@ -11,7 +11,7 @@ interface GameSetupData {
   numSusPlayers: number;
   topic?: string;
   revealDuration: number; // Still passed, but not used for an automatic timer here
-  discussionDuration: number;
+  // discussionDuration: number; // Removed
 }
 
 const NameReveal = () => {

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import Timer from "@/components/Timer";
+// Removed import for Timer component
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageCircle } from "lucide-react"; // Import MessageCircle icon
 
@@ -15,7 +15,7 @@ interface GameStateData {
   susWord: string;
   susPlayerIndices: number[];
   revealDuration: number;
-  discussionDuration: number;
+  // discussionDuration: number; // Removed
 }
 
 const Discussion = () => {
@@ -23,12 +23,9 @@ const Discussion = () => {
   const navigate = useNavigate();
   const gameState = location.state as GameStateData;
 
-  // The timer will now start automatically when the component mounts
-  // No need for isDiscussionTimerRunning state or a "Start Timer" button
-
   useEffect(() => {
-    if (!gameState || !gameState.playerNames || gameState.playerNames.length === 0 || gameState.discussionDuration === undefined) {
-      toast.error("Game data not found or discussion duration missing. Please set up the game again.");
+    if (!gameState || !gameState.playerNames || gameState.playerNames.length === 0) {
+      toast.error("Game data not found. Please set up the game again.");
       navigate("/setup");
     }
   }, [gameState, navigate]);
@@ -56,9 +53,7 @@ const Discussion = () => {
           </p>
           {/* Removed the line mentioning the main word */}
 
-          <div className="mb-8 flex flex-col gap-4">
-            <Timer initialTime={gameState.discussionDuration} onTimeUp={handleEndDiscussion} />
-          </div>
+          {/* Removed the timer component */}
 
           <Button
             onClick={handleEndDiscussion}
