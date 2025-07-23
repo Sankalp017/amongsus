@@ -5,8 +5,8 @@ export const wordCategories = [
   "🐾 Animals",
   "🎲 Random words",
   "⚽ Sports",
-  "🎮 Games",
-  "😎 Slang",
+  "🏎️ Formula 1 Teams",
+  "⚽ Premier League Teams",
 ];
 
 interface WordBank {
@@ -55,16 +55,16 @@ const wordBank: WordBank = {
     "Hockey", "Badminton", "Skiing", "Snowboarding", "Surfing", "Skateboarding",
     "Gymnastics", "Athletics", "Wrestling", "Judo", "Karate", "Fencing"
   ],
-  "🎮 Games": [
-    "Chess", "Monopoly", "Poker", "Scrabble", "Dominoes", "Jenga", "Uno",
-    "Checkers", "Backgammon", "Bingo", "Charades", "Pictionary", "Twister",
-    "Connect Four", "Battleship", "Risk", "Clue", "Catan", "Ticket to Ride",
-    "Mahjong", "Sudoku", "Crossword", "Solitaire", "Minesweeper"
+  "🏎️ Formula 1 Teams": [
+    "Red Bull Racing", "Mercedes", "Ferrari", "McLaren", "Aston Martin",
+    "Alpine", "Williams", "RB", "Sauber", "Haas"
   ],
-  "😎 Slang": [
-    "Lit", "Dope", "Slay", "Cap", "No Cap", "Bet", "Ghosting", "Simp", "Flex",
-    "Vibe", "Chill", "Bae", "GOAT", "Salty", "Cringe", "Boujee", "Gucci",
-    "Finna", "Yeet", "Sus", "Bussin", "Rizz", "Glow Up", "FOMO", "IMO", "IRL"
+  "⚽ Premier League Teams": [
+    "Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton",
+    "Chelsea", "Crystal Palace", "Everton", "Fulham", "Ipswich Town",
+    "Leicester City", "Liverpool", "Manchester City", "Manchester United",
+    "Newcastle United", "Nottingham Forest", "Southampton", "Tottenham Hotspur",
+    "West Ham United", "Wolverhampton Wanderers"
   ],
 };
 
