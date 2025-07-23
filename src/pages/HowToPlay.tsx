@@ -20,7 +20,7 @@ const HowToPlay = () => {
     {
       emoji: "⚙️",
       title: "Setup:",
-      description: "Enter player names, choose how many Imposters, and pick a word topic.",
+      description: "First, set the total number of players, then choose how many of them will be imposters. Next, enter each player's name, and finally, select a word topic.",
     },
     {
       emoji: "🤫",
