@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getWordsForTopic } from "@/utils/words";
-import { Card, CardContent } from "@/components/ui/card"; // Import Card components
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge"; // Import Badge component
 
 interface GameSetupData {
   numPlayers: number;
@@ -123,11 +124,13 @@ const NameReveal = () => {
         >
           {showWord ? (
             <div className="flex flex-col items-center justify-center animate-fade-in">
-              <p className="text-xl font-semibold text-gray-700 mb-3">You are a:</p>
-              <p className={`text-5xl font-extrabold ${isSusPlayer ? "text-red-600" : "text-green-600"} mb-6 tracking-tight`}>
+              <Badge
+                variant={isSusPlayer ? "destructive" : "secondary"}
+                className={`text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
+              >
                 {isSusPlayer ? "Sus Player" : "Crewmate"}
-              </p>
-              <p className="text-6xl font-black text-purple-700 tracking-tighter leading-none">
+              </Badge>
+              <p className="text-5xl font-black text-purple-700 tracking-tighter leading-none">
                 {currentWord}
               </p>
             </div>
