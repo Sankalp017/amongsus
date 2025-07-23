@@ -5,9 +5,9 @@ export const wordCategories = [
   "🍔 Food",
   "🎬 Movies",
   "🎲 Random words",
-  "📚 School Subjects", // Added and alphabetized
+  "📚 School Subjects",
+  "🏆 Sports", // Changed icon from ⚽ to 🏆
   "⚽ Premier League Teams",
-  "⚽ Sports",
   "📺 TV Series",
 ];
 
@@ -51,14 +51,14 @@ const wordBank: WordBank = {
     "Starlight", "Waterfall", "Blossom", "Enigma", "Labyrinth", "Mirage",
     "Solstice", "Aurora", "Cascade", "Ephemeral", "Glimmer", "Nostalgia"
   ],
-  "📚 School Subjects": [ // New category added
+  "📚 School Subjects": [
     "Algebra", "Geometry", "Calculus", "Physics", "Chemistry", "Biology",
     "History", "Social Studies", "Geography", "Literature", "Grammar",
     "Writing", "Art", "Music", "Drama", "Physical Education",
     "Computer Science", "Economics", "Sociology", "Psychology",
     "Philosophy", "Ethics", "Civics", "Government", "Statistics", "Trigonometry"
   ],
-  "⚽ Sports": [
+  "🏆 Sports": [ // Key updated to match the new category name
     "Football", "Basketball", "Tennis", "Soccer", "Baseball", "Volleyball",
     "Swimming", "Cycling", "Running", "Golf", "Boxing", "Cricket", "Rugby",
     "Hockey", "Badminton", "Skiing", "Snowboarding", "Surfing", "Skateboarding",
