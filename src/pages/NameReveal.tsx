@@ -3,12 +3,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getWordsForTopic } from "@/utils/words";
+import Timer from "@/components/Timer"; // Import the Timer component
 
 interface GameSetupData {
   numPlayers: number;
   playerNames: string[];
   numSusPlayers: number;
   topic?: string;
+  revealDuration: number; // Added revealDuration
 }
 
 const NameReveal = () => {
@@ -23,17 +25,18 @@ const NameReveal = () => {
   const [susPlayerIndices, setSusPlayerIndices] = useState<number[]>([]);
   const [mainWord, setMainWord] = useState("");
   const [susWord, setSusWord] = useState("");
+  const [timerKey, setTimerKey] = useState(0); // Key to reset timer component
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
-    if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0) {
-      toast.error("Game data not found. Please set up the game again.");
+    if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0 || gameData.revealDuration === undefined) {
+      toast.error("Game data not found or reveal duration missing. Please set up the game again.");
       navigate("/setup");
       return;
     }
 
-    // Generate words for the round
+    // Generate words for the round (only once at the beginning)
     const { mainWord: generatedMainWord, susWord: generatedSusWord } = getWordsForTopic(
       gameData.topic || "Random words",
       gameData.numSusPlayers
@@ -41,7 +44,7 @@ const NameReveal = () => {
     setMainWord(generatedMainWord);
     setSusWord(generatedSusWord);
 
-    // Randomly assign sus players
+    // Randomly assign sus players (only once at the beginning)
     const allPlayerIndices = Array.from({ length: gameData.numPlayers }, (_, i) => i);
     const shuffledIndices = allPlayerIndices.sort(() => 0.5 - Math.random());
     const selectedSusIndices = shuffledIndices.slice(0, gameData.numSusPlayers);
@@ -56,13 +59,15 @@ const NameReveal = () => {
         speechSynthesis.cancel();
       }
     };
-  }, [gameData, navigate]);
+  }, [gameData, navigate]); // Dependencies ensure this runs only once per game start
 
   useEffect(() => {
     if (currentPlayerIndex < gameData.numPlayers) {
       const playerIsSus = susPlayerIndices.includes(currentPlayerIndex);
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
+      setShowWord(false); // Hide word for the new player
+      setTimerKey(prevKey => prevKey + 1); // Reset timer for new player
     }
   }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData.numPlayers]);
 
@@ -71,7 +76,6 @@ const NameReveal = () => {
       speechSynthesis.cancel(); // Stop any ongoing speech
       const utterance = new SpeechSynthesisUtterance(`It's ${name}'s turn`);
       utterance.lang = "en-US";
-      // Try to find a female voice
       const voices = speechSynthesis.getVoices();
       const femaleVoice = voices.find(
         (voice) => voice.lang === "en-US" && voice.name.includes("Female")
@@ -79,7 +83,6 @@ const NameReveal = () => {
       if (femaleVoice) {
         utterance.voice = femaleVoice;
       } else {
-        // Fallback to any available English voice
         const englishVoice = voices.find((voice) => voice.lang === "en-US");
         if (englishVoice) {
           utterance.voice = englishVoice;
@@ -94,13 +97,10 @@ const NameReveal = () => {
 
   const handleTapToReveal = () => {
     setShowWord(true);
-    setTimeout(() => {
-      setShowWord(false);
-    }, 5000); // 5-second timer
+    // Timer will start automatically when showWord is true and Timer component is rendered
   };
 
   const handleNextPlayer = () => {
-    setShowWord(false); // Ensure word is hidden before moving to next player
     const nextIndex = currentPlayerIndex + 1;
     if (nextIndex < gameData.numPlayers) {
       setCurrentPlayerIndex(nextIndex);
@@ -112,7 +112,7 @@ const NameReveal = () => {
     }
   };
 
-  if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0) {
+  if (!gameData || !gameData.playerNames || gameData.playerNames.length === 0 || gameData.revealDuration === undefined) {
     return null; // Or a loading spinner/error message
   }
 
@@ -145,9 +145,15 @@ const NameReveal = () => {
           )}
         </div>
 
+        {showWord && (
+          <div className="mb-6">
+            <Timer key={timerKey} initialTime={gameData.revealDuration} onTimeUp={handleNextPlayer} />
+          </div>
+        )}
+
         <Button
           onClick={handleNextPlayer}
-          disabled={showWord} // Disable "Next Player" while word is visible
+          disabled={!showWord} // Enable "Next Player" only after word is revealed
           className="w-full bg-blue-600 text-white hover:bg-blue-700 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
         >
           {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
