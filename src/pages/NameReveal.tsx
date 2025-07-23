@@ -213,10 +213,12 @@ const NameReveal = () => {
 
             <div
               onClick={handleRevealWord}
-              className="relative w-full h-64 rounded-3xl overflow-hidden flex flex-col items-center justify-center p-4 cursor-pointer bg-purple-500/90 hover:bg-purple-600/90 transition-colors duration-300 ease-in-out shadow-lg mb-6"
+              className={`relative w-full h-64 rounded-3xl overflow-hidden flex flex-col items-center justify-center p-4 cursor-pointer transition-colors duration-300 ease-in-out shadow-lg mb-6
+                ${showWord ? "bg-white text-gray-800" : "bg-[#f5f5f7] hover:bg-[#e0e0e2]"}
+              `}
             >
               {!showWord && (
-                <span className="text-xl md:text-2xl font-bold text-white z-10">
+                <span className="text-xl md:text-2xl font-bold text-gray-800 z-10">
                   Tap to Reveal
                 </span>
               )}
