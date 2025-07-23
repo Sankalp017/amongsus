@@ -121,7 +121,7 @@ const NameReveal = () => {
               <p className={`text-4xl font-extrabold ${isSusPlayer ? "text-red-600" : "text-green-600"} mb-4`}>
                 {isSusPlayer ? "Sus Player" : "Crewmate"}
               </p>
-              <p className="text-3xl font-bold text-purple-700">
+              <p className="text-5xl font-bold text-purple-700">
                 Your Word: {currentWord}
               </p>
             </div>
