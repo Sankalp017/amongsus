@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -27,8 +27,7 @@ const Discussion = () => {
 
   const handleStartVoting = () => {
     toast.info("Time to vote!");
-    // TODO: Navigate to the Voting Phase, passing gameState
-    // navigate("/voting", { state: gameState });
+    navigate("/voting", { state: gameState }); // Navigate to the Voting Phase, passing gameState
   };
 
   if (!gameState) {

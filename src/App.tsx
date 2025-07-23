@@ -7,7 +7,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import GameSetup from "./pages/GameSetup";
 import NameReveal from "./pages/NameReveal";
-import Discussion from "./pages/Discussion"; // Import the new Discussion component
+import Discussion from "./pages/Discussion";
+import Voting from "./pages/Voting"; // Import the new Voting component
 
 const queryClient = new QueryClient();
 
@@ -21,7 +22,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/setup" element={<GameSetup />} />
           <Route path="/name-reveal" element={<NameReveal />} />
-          <Route path="/discussion" element={<Discussion />} /> {/* New route for Discussion */}
+          <Route path="/discussion" element={<Discussion />} />
+          <Route path="/voting" element={<Voting />} /> {/* New route for Voting */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
