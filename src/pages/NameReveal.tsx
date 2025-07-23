@@ -37,7 +37,7 @@ const NameReveal = () => {
   const [voicesLoaded, setVoicesLoaded] = useState(false);
   const [showTimer, setShowTimer] = useState(true);
   const [timerDone, setTimerDone] = useState(false);
-  const [showWord, setShowWord] = useState(false); // Re-introducing state for word visibility
+  const [showWord, setShowWord] = useState(false);
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -69,7 +69,6 @@ const NameReveal = () => {
     }
   };
 
-  // Moved checkAndSetVoices outside useEffect to be accessible in cleanup
   const checkAndSetVoices = () => {
     const voices = speechSynthesis.getVoices();
     if (voices.length > 0) {
@@ -113,7 +112,7 @@ const NameReveal = () => {
     const isNewGame = !(loadedGameState as GameStateData).mainWord || !(loadedGameState as GameStateData).susPlayerIndices;
 
     if (isNewGame) {
-      let selectedTopic = loadedGameState.topic || "🎲 Random words"; // Updated default topic
+      let selectedTopic = loadedGameState.topic || "🎲 Random words";
       if (loadedGameState.previousTopic) {
         const availableTopics = wordCategories.filter(cat => cat !== loadedGameState.previousTopic);
         if (availableTopics.length > 0) {
@@ -128,7 +127,7 @@ const NameReveal = () => {
         loadedGameState.numSusPlayers
       );
       setMainWord(generatedMainWord);
-      setSusWord(generatedSusWord); // Fixed typo here: generatedSusSusWord -> generatedSusWord
+      setSusWord(generatedSusWord);
 
       const allPlayerIndices = Array.from({ length: loadedGameState.numPlayers }, (_, i) => i);
       const shuffledIndices = allPlayerIndices.sort(() => 0.5 - Math.random());
@@ -153,19 +152,25 @@ const NameReveal = () => {
       if (utteranceRef.current) {
         speechSynthesis.cancel();
       }
-      // No need to remove event listener for checkAndSetVoices here, as it's handled in the other useEffect
     };
   }, [initialGameData, navigate]);
 
+  // This effect sets the word and is NOT blocked by voice loading.
   useEffect(() => {
-    if (gameData && currentPlayerIndex < gameData.numPlayers && voicesLoaded && timerDone) {
+    if (gameData && currentPlayerIndex < gameData.numPlayers && timerDone) {
       const playerIsSus = susPlayerIndices.includes(currentPlayerIndex);
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
       setShowWord(false); // Reset word visibility for the new player
+    }
+  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, timerDone]);
+
+  // This effect handles the speech announcement and can fail gracefully.
+  useEffect(() => {
+    if (gameData && currentPlayerIndex < gameData.numPlayers && voicesLoaded && timerDone) {
       speak(`It's ${gameData.playerNames[currentPlayerIndex]}'s turn`);
     }
-  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, voicesLoaded, timerDone]);
+  }, [currentPlayerIndex, gameData, voicesLoaded, timerDone]);
 
   const handleRevealWord = () => {
     setShowWord(true);
@@ -247,7 +252,7 @@ const NameReveal = () => {
             <Button
               onClick={handleNextPlayer}
               disabled={!showWord}
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105" // Changed to rounded-xl
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
             </Button>
