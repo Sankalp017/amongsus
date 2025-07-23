@@ -235,7 +235,7 @@ const NameReveal = () => {
                   >
                     {isSusPlayer ? "Imposter" : "Innocent"}
                   </Badge>
-                  <p className="text-4xl md:text-5xl font-medium text-purple-700 tracking-tighter leading-none animate-fade-in-pop">
+                  <p className="text-4xl md:text-5xl font-medium text-black tracking-tighter leading-none animate-fade-in-pop">
                     {currentWord}
                   </p>
                 </>
