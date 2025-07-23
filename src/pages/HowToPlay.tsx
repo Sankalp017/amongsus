@@ -19,7 +19,7 @@ const HowToPlay = () => {
         </CardHeader>
         <CardContent className="text-left space-y-4">
           <p className="text-lg">
-            Among Sus is a word-based social deduction game for 3-10 players, played on a single device.
+            Among Sus is a word-based social deduction game for <span className="font-bold">3+ players</span>, played on a single device.
             One or more players will be the "<span className="font-bold text-red-600">Imposters</span>" and will receive a slightly different word than the "<span className="font-bold text-green-600">Innocents</span>".
           </p>
 
