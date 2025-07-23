@@ -114,14 +114,14 @@ const NameReveal = () => {
         <h2 className="text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
         <p className="text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
 
-        <CardContent className="relative w-full h-64 bg-gradient-to-br from-gray-50 to-gray-200 rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 shadow-xl transform transition-all duration-300 hover:scale-[1.01] cursor-pointer">
+        <CardContent className="relative w-full h-64 bg-white rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 shadow-lg transform transition-all duration-300 hover:scale-[1.01] cursor-pointer">
           {showWord ? (
             <div className="flex flex-col items-center justify-center animate-fade-in">
-              <p className="text-lg font-medium text-gray-700 mb-2">You are a:</p>
-              <p className={`text-5xl font-black ${isSusPlayer ? "text-red-600" : "text-green-600"} mb-4 tracking-tight`}>
+              <p className="text-xl font-semibold text-gray-700 mb-3">You are a:</p>
+              <p className={`text-5xl font-extrabold ${isSusPlayer ? "text-red-600" : "text-green-600"} mb-6 tracking-tight`}>
                 {isSusPlayer ? "Sus Player" : "Crewmate"}
               </p>
-              <p className="text-7xl font-black text-purple-700 tracking-tighter leading-none">
+              <p className="text-6xl font-black text-purple-700 tracking-tighter leading-none">
                 {currentWord}
               </p>
             </div>
