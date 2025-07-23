@@ -92,10 +92,10 @@ const Results = () => {
               <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-red-800">
                 <UserX className="h-5 w-5 md:h-6 md:w-6 text-red-600" /> Imposters Were:
               </h4>
-              <div className="flex flex-wrap justify-center gap-2">
+              <div className="flex flex-wrap justify-center gap-3">
                 {gameState.susPlayerIndices.length > 0 ? (
                   gameState.susPlayerIndices.map((index) => (
-                    <Badge key={index} variant="destructive" className="text-base md:text-lg px-4 py-2 bg-red-600 text-white">
+                    <Badge key={index} variant="destructive" className="text-sm md:text-base px-4 py-2 bg-red-600 text-white">
                       {gameState.playerNames[index]}
                     </Badge>
                   ))
@@ -109,11 +109,11 @@ const Results = () => {
               <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-green-800">
                 <Users className="h-5 w-5 md:h-6 md:w-6 text-green-600" /> Innocents Were:
               </h4>
-              <div className="flex flex-wrap justify-center gap-2">
+              <div className="flex flex-wrap justify-center gap-3">
                 {gameState.playerNames
                   .filter((_, index) => !gameState.susPlayerIndices.includes(index))
                   .map((name, index) => (
-                    <Badge key={index} variant="secondary" className="text-base md:text-lg px-4 py-2 bg-green-100 text-green-800 hover:bg-green-200">
+                    <Badge key={index} variant="secondary" className="text-sm md:text-base px-4 py-2 bg-green-100 text-green-800 hover:bg-green-200">
                       {name}
                     </Badge>
                   ))}
