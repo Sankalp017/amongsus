@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator"; // Import Separator
 
 const HowToPlay = () => {
   const navigate = useNavigate();
@@ -19,10 +20,13 @@ const HowToPlay = () => {
         <CardContent className="text-left space-y-4">
           <p className="text-lg">
             Among Sus is a word-based social deduction game for 3-10 players, played on a single device.
-            One or more players will be the "Sus Players" and will receive a slightly different word than the "Crewmates".
+            One or more players will be the "<span className="font-bold text-red-600">Sus Players</span>" and will receive a slightly different word than the "<span className="font-bold text-green-600">Crewmates</span>".
           </p>
-          <h3 className="text-xl font-semibold">Game Flow:</h3>
-          <ol className="list-decimal list-inside space-y-2">
+
+          <Separator className="my-6 bg-gray-300" />
+
+          <h3 className="text-2xl font-semibold mb-3 text-purple-700">Game Flow:</h3>
+          <ol className="list-decimal list-inside space-y-3 text-lg">
             <li>
               <span className="font-bold">Game Setup:</span> Enter player names and choose the number of sus players and a word topic.
             </li>
@@ -30,19 +34,19 @@ const HowToPlay = () => {
               <span className="font-bold">Word Reveal:</span> Each player will take turns tapping the screen to reveal their secret word.
               Pass the device around, ensuring only the current player sees their word.
               Crewmates will see the main word, while Sus Players will see a subtly different "sus word."
-              A timer will count down, but players can tap "Next Player" to proceed faster.
+              Players can tap "Next Player" to proceed.
             </li>
             <li>
               <span className="font-bold">Discussion Phase:</span> All players discuss the word. Crewmates try to identify the Sus Player(s)
               by asking questions and listening for inconsistencies. Sus Players must blend in and avoid revealing their different word.
-              Be careful not to reveal the main word directly! A timer will keep track of the discussion time.
+              Be careful not to reveal the main word directly!
             </li>
             <li>
               <span className="font-bold">Results:</span> After the discussion, the game will reveal who the Sus Players were and what the main and sus words were.
               This is your chance to see if your suspicions were correct!
             </li>
           </ol>
-          <p className="text-lg mt-4">
+          <p className="text-lg mt-6">
             Good luck, and try not to be too sus!
           </p>
           <Button

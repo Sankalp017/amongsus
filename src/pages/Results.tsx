@@ -3,7 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, UserX, Users } from "lucide-react"; // Import new icons
+import { Badge } from "@/components/ui/badge"; // Import Badge component
+import { Separator } from "@/components/ui/separator"; // Import Separator
+import { BookOpen, UserX, Users } from "lucide-react";
 
 interface GameStateData {
   numPlayers: number;
@@ -28,11 +30,11 @@ const Results = () => {
   }, [gameState, navigate]);
 
   if (!gameState) {
-    return null; // Or a loading spinner/error message
+    return null;
   }
 
   const handlePlayAgain = () => {
-    navigate("/"); // Go back to the home page to start a new game
+    navigate("/");
   };
 
   return (
@@ -55,32 +57,40 @@ const Results = () => {
             <p className="text-lg">Sus Word: <span className="font-semibold text-purple-700">{gameState.susWord}</span></p>
           </div>
 
+          <Separator className="my-6 bg-gray-300" />
+
           <div className="mb-8">
             <h4 className="text-xl font-bold mb-2 flex items-center justify-center gap-2">
               <UserX className="h-6 w-6 text-red-600" /> Sus Players Were:
             </h4>
-            {gameState.susPlayerIndices.length > 0 ? (
-              gameState.susPlayerIndices.map((index) => (
-                <p key={index} className="text-lg font-semibold text-red-600">
-                  {gameState.playerNames[index]}
-                </p>
-              ))
-            ) : (
-              <p className="text-lg">No sus players assigned (this shouldn't happen in a normal game).</p>
-            )}
+            <div className="flex flex-wrap justify-center gap-2">
+              {gameState.susPlayerIndices.length > 0 ? (
+                gameState.susPlayerIndices.map((index) => (
+                  <Badge key={index} variant="destructive" className="text-lg px-4 py-2">
+                    {gameState.playerNames[index]}
+                  </Badge>
+                ))
+              ) : (
+                <p className="text-lg">No sus players assigned.</p>
+              )}
+            </div>
           </div>
+
+          <Separator className="my-6 bg-gray-300" />
 
           <div className="mb-8">
             <h4 className="text-xl font-bold mb-2 flex items-center justify-center gap-2">
               <Users className="h-6 w-6 text-green-600" /> Crewmates Were:
             </h4>
-            {gameState.playerNames
-              .filter((_, index) => !gameState.susPlayerIndices.includes(index))
-              .map((name, index) => (
-                <p key={index} className="text-lg font-semibold text-green-600">
-                  {name}
-                </p>
-              ))}
+            <div className="flex flex-wrap justify-center gap-2">
+              {gameState.playerNames
+                .filter((_, index) => !gameState.susPlayerIndices.includes(index))
+                .map((name, index) => (
+                  <Badge key={index} variant="secondary" className="text-lg px-4 py-2 bg-green-100 text-green-800 hover:bg-green-200">
+                    {name}
+                  </Badge>
+                ))}
+            </div>
           </div>
 
           <Button
