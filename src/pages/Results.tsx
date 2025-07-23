@@ -39,12 +39,19 @@ const Results = () => {
     }
     setGameState(loadedState);
 
-    // Play drum roll sound when the component mounts and game state is loaded
-    if (loadedState && !audioRef.current) {
-      const audio = new Audio("/sounds/drum-roll.mp3");
-      audio.volume = 0.7; // Adjust volume as needed (0.0 to 1.0)
-      audioRef.current = audio; // Store the audio object in the ref
-      audio.play().catch(e => console.error("Error playing drum roll:", e));
+    // Initialize audio object once
+    if (!audioRef.current) {
+      audioRef.current = new Audio("/sounds/drum-roll.mp3");
+      audioRef.current.volume = 0.7;
+    }
+
+    // Play sound if game state is loaded
+    if (loadedState) {
+      console.log("Attempting to play drum roll..."); // Debug log
+      audioRef.current.play().catch(e => {
+        console.error("Error playing drum roll:", e);
+        toast.error("Could not play drum roll sound. Please check browser autoplay settings or ensure audio is enabled.");
+      });
     }
 
     // Cleanup function to pause and reset audio when component unmounts
@@ -52,7 +59,6 @@ const Results = () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
-        audioRef.current = null; // Clear the ref
       }
     };
   }, [initialGameState, navigate]);
