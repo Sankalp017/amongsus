@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageCircle } from "lucide-react";
 import { loadGameState, saveGameState } from "@/utils/localStorage";
-import Timer from "@/components/Timer"; // Import the Timer component
+import Timer from "@/components/Timer";
+import { motion } from "framer-motion"; // Import motion
 
 interface GameStateData {
   numPlayers: number;
@@ -61,7 +62,12 @@ const Discussion = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
+    >
       <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
         {showTimer ? (
           <div className="flex flex-col items-center justify-center h-64">
@@ -91,7 +97,7 @@ const Discussion = () => {
           </>
         )}
       </Card>
-    </div>
+    </motion.div>
   );
 };
 

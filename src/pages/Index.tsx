@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion"; // Import motion
 
 const Index = () => {
   const navigate = useNavigate();
@@ -14,7 +15,12 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
+    >
       <div className="flex flex-col items-center justify-center flex-grow text-center">
         <h1 className="text-5xl md:text-7xl font-extrabold mb-4 drop-shadow-lg">
           Among Sus
@@ -38,7 +44,7 @@ const Index = () => {
         </div>
       </div>
       <MadeWithDyad />
-    </div>
+    </motion.div>
   );
 };
 
