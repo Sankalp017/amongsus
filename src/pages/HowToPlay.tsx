@@ -51,7 +51,7 @@ const HowToPlay = () => {
               <span className="font-bold">Your Word:</span> Click the screen to see your secret word.
             </li>
             <li>
-              <span className="font-bold text-red-600">Imposters</span> get a "sus word" (a tricky, similar word).
+              <span className="font-bold text-red-600">Imposters</span> get a "sus word" (a tricky word from a similar topic).
             </li>
             <li>
               <span className="font-bold text-green-600">Innocents</span> get the "main word" (the real one).
