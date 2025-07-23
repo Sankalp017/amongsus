@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { BookOpen, UserX, Users } from "lucide-react";
 import { loadGameState, clearGameState, saveGameState } from "@/utils/localStorage";
-import Timer from "@/components/Timer"; // Import the Timer component
 
 interface GameStateData {
   numPlayers: number;
@@ -24,8 +23,6 @@ const Results = () => {
   const navigate = useNavigate();
   const initialGameState = location.state?.gameState as GameStateData;
   const [gameState, setGameState] = useState<GameStateData | null>(null);
-  const [showTimer, setShowTimer] = useState(true); // State to control timer visibility
-  const [timerDone, setTimerDone] = useState(false); // State to control content visibility after timer
 
   useEffect(() => {
     let loadedState: GameStateData | undefined = initialGameState;
@@ -68,89 +65,76 @@ const Results = () => {
     navigate("/name-reveal", { state: nextRoundSetup });
   };
 
-  const handleTimerComplete = () => {
-    setShowTimer(false);
-    setTimerDone(true);
-  };
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
       <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
-        {showTimer ? (
-          <div className="flex flex-col items-center justify-center h-64">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-purple-800">Results Revealing In...</h2>
-            <Timer initialTime={3} onTimeUp={handleTimerComplete} />
-            <p className="mt-4 text-base md:text-lg text-gray-600">The truth will be revealed!</p>
-          </div>
-        ) : (
-          <>
-            <CardHeader>
-              <CardTitle className="text-2xl md:text-3xl font-bold mb-4">Game Over!</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <h3 className="text-xl md:text-2xl font-semibold mb-4">The Truth Revealed!</h3>
-              <p className="text-base md:text-lg mb-6">
-                The discussion has concluded. Here's how the game was set up:
-              </p>
+        <>
+          <CardHeader>
+            <CardTitle className="text-2xl md:text-3xl font-bold mb-4">Game Over!</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <h3 className="text-xl md:text-2xl font-semibold mb-4">The Truth Revealed!</h3>
+            <p className="text-base md:text-lg mb-6">
+              The discussion has concluded. Here's how the game was set up:
+            </p>
 
-              <div className="bg-purple-50/20 p-4 rounded-lg mb-6 border border-purple-200">
-                <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-purple-800">
-                  <BookOpen className="h-5 w-5 md:h-6 md:w-6 text-purple-700" /> The Words Were:
-                </h4>
-                <p className="text-base md:text-lg">Main Word: <span className="font-semibold text-purple-700">{gameState.mainWord}</span></p>
-                <p className="text-base md:text-lg">Sus Word: <span className="font-semibold text-purple-700">{gameState.susWord}</span></p>
-              </div>
+            <div className="bg-purple-50/20 p-4 rounded-lg mb-6 border border-purple-200">
+              <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-purple-800">
+                <BookOpen className="h-5 w-5 md:h-6 md:w-6 text-purple-700" /> The Words Were:
+              </h4>
+              <p className="text-base md:text-lg">Main Word: <span className="font-semibold text-purple-700">{gameState.mainWord}</span></p>
+              <p className="text-base md:text-lg">Sus Word: <span className="font-semibold text-purple-700">{gameState.susWord}</span></p>
+            </div>
 
-              <div className="bg-red-50/20 p-4 rounded-lg mb-6 border border-red-200">
-                <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-red-800">
-                  <UserX className="h-5 w-5 md:h-6 md:w-6 text-red-600" /> Imposters Were:
-                </h4>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {gameState.susPlayerIndices.length > 0 ? (
-                    gameState.susPlayerIndices.map((index) => (
-                      <Badge key={index} variant="destructive" className="text-base md:text-lg px-4 py-2 bg-red-600 text-white">
-                        {gameState.playerNames[index]}
-                      </Badge>
-                    ))
-                  ) : (
-                    <p className="text-base md:text-lg text-gray-600">No imposters assigned.</p>
-                  )}
-                </div>
+            <div className="bg-red-50/20 p-4 rounded-lg mb-6 border border-red-200">
+              <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-red-800">
+                <UserX className="h-5 w-5 md:h-6 md:w-6 text-red-600" /> Imposters Were:
+              </h4>
+              <div className="flex flex-wrap justify-center gap-2">
+                {gameState.susPlayerIndices.length > 0 ? (
+                  gameState.susPlayerIndices.map((index) => (
+                    <Badge key={index} variant="destructive" className="text-base md:text-lg px-4 py-2 bg-red-600 text-white">
+                      {gameState.playerNames[index]}
+                    </Badge>
+                  ))
+                ) : (
+                  <p className="text-base md:text-lg text-gray-600">No imposters assigned.</p>
+                )}
               </div>
+            </div>
 
-              <div className="bg-green-50/20 p-4 rounded-lg mb-8 border border-green-200">
-                <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-green-800">
-                  <Users className="h-5 w-5 md:h-6 md:w-6 text-green-600" /> Innocents Were:
-                </h4>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {gameState.playerNames
-                    .filter((_, index) => !gameState.susPlayerIndices.includes(index))
-                    .map((name, index) => (
-                      <Badge key={index} variant="secondary" className="text-base md:text-lg px-4 py-2 bg-green-100 text-green-800 hover:bg-green-200">
-                        {name}
-                      </Badge>
-                    ))}
-                </div>
+            <div className="bg-green-50/20 p-4 rounded-lg mb-8 border border-green-200">
+              <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-green-800">
+                <Users className="h-5 w-5 md:h-6 md:w-6 text-green-600" /> Innocents Were:
+              </h4>
+              <div className="flex flex-wrap justify-center gap-2">
+                {gameState.playerNames
+                  .filter((_, index) => !gameState.susPlayerIndices.includes(index))
+                  .map((name, index) => (
+                    <Badge key={index} variant="secondary" className="text-base md:text-lg px-4 py-2 bg-green-100 text-green-800 hover:bg-green-200">
+                      {name}
+                    </Badge>
+                  ))}
               </div>
+            </div>
 
-              <div className="flex flex-col space-y-4 mt-6">
-                <Button
-                  onClick={handlePlayNextRound}
-                  className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-                >
-                  Play Next Round
-                </Button>
-                <Button
-                  onClick={handleNewGame}
-                  variant="outline"
-                  className="w-full bg-transparent border-2 border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white text-base md:text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-                >
-                  New Game
-                </Button>
-              </div>
-            </CardContent>
-          </>
-        )}
+            <div className="flex flex-col space-y-4 mt-6">
+              <Button
+                onClick={handlePlayNextRound}
+                className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+              >
+                Play Next Round
+              </Button>
+              <Button
+                onClick={handleNewGame}
+                variant="outline"
+                className="w-full bg-transparent border-2 border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white text-base md:text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+              >
+                New Game
+              </Button>
+            </div>
+          </CardContent>
+        </>
       </Card>
     </div>
   );
