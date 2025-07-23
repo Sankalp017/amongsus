@@ -147,7 +147,7 @@ const GameSetup = () => {
                     <Input
                       type="number"
                       placeholder="e.g., 3"
-                      className="text-center text-base md:text-lg py-2 w-full bg-green-50" // Added bg-green-50
+                      className="text-center text-base md:text-lg py-2 w-full bg-green-100" // Changed to bg-green-100
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
@@ -175,7 +175,7 @@ const GameSetup = () => {
                     <Input
                       type="number"
                       placeholder="e.g., 1"
-                      className="text-center text-base md:text-lg py-2 w-full bg-red-50" // Added bg-red-50
+                      className="text-center text-base md:text-lg py-2 w-full bg-red-100" // Changed to bg-red-100
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
