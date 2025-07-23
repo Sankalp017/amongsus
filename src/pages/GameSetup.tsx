@@ -41,10 +41,10 @@ const formSchema = z.object({
     }),
   numSusPlayers: z.coerce
     .number()
-    .min(1, { message: "Minimum 1 sus player required." }),
+    .min(1, { message: "Minimum 1 imposter required." }),
   topic: z.string().optional(),
 }).refine(data => data.numSusPlayers < data.numPlayers, {
-  message: "Number of sus players must be less than total players.",
+  message: "Number of imposters must be less than total players.",
   path: ["numSusPlayers"],
 });
 
@@ -152,7 +152,7 @@ const GameSetup = () => {
               name="numSusPlayers"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-lg">Number of Sus Players</FormLabel>
+                  <FormLabel className="text-lg">Number of Imposters</FormLabel>
                   <FormControl>
                     <Input
                       type="number"

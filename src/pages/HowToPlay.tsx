@@ -20,7 +20,7 @@ const HowToPlay = () => {
         <CardContent className="text-left space-y-4">
           <p className="text-lg">
             Among Sus is a word-based social deduction game for 3-10 players, played on a single device.
-            One or more players will be the "<span className="font-bold text-red-600">Sus Players</span>" and will receive a slightly different word than the "<span className="font-bold text-green-600">Crewmates</span>".
+            One or more players will be the "<span className="font-bold text-red-600">Imposters</span>" and will receive a slightly different word than the "<span className="font-bold text-green-600">Innocents</span>".
           </p>
 
           <Separator className="my-6 bg-gray-300" />
@@ -28,23 +28,23 @@ const HowToPlay = () => {
           <h3 className="text-2xl font-semibold mb-3 text-purple-700">Game Flow:</h3>
           <ol className="list-decimal list-inside space-y-3 text-lg">
             <li>
-              <span className="font-bold">Game Setup:</span> Enter player names and choose the number of sus players and a word topic.
+              <span className="font-bold">Game Setup:</span> Enter player names and choose the number of imposters and a word topic.
             </li>
             <li>
               <span className="font-bold">Word Reveal (Offline Role Allocation):</span> This is a crucial phase! Each player will take turns. The game will announce whose turn it is using text-to-speech.
               <span className="font-bold text-purple-700"> Pass the device to the announced player.</span>
               Only the current player should look at the screen and tap to reveal their secret word.
-              Crewmates will see the main word, while Sus Players will see a subtly different "sus word."
+              Innocents will see the main word, while Imposters will see a subtly different "sus word."
               The text-to-speech will also announce "Word revealed" to let everyone know the word has been seen.
               Players can then tap "Next Player" and pass the device to the next person.
             </li>
             <li>
-              <span className="font-bold">Discussion Phase:</span> Once all players have seen their words, the discussion begins. All players discuss the word. Crewmates try to identify the Sus Player(s)
-              by asking questions and listening for inconsistencies. Sus Players must blend in and avoid revealing their different word.
+              <span className="font-bold">Discussion Phase:</span> Once all players have seen their words, the discussion begins. All players discuss the word. Innocents try to identify the Imposter(s)
+              by asking questions and listening for inconsistencies. Imposters must blend in and avoid revealing their different word.
               Be careful not to reveal the main word directly!
             </li>
             <li>
-              <span className="font-bold">Results:</span> After the discussion, the game will reveal who the Sus Players were and what the main and sus words were.
+              <span className="font-bold">Results:</span> After the discussion, the game will reveal who the Imposters were and what the main and sus words were.
               This is your chance to see if your suspicions were correct!
             </li>
           </ol>

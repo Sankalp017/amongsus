@@ -192,7 +192,7 @@ const NameReveal = () => {
                 variant={isSusPlayer ? "destructive" : "secondary"}
                 className={`text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
               >
-                {isSusPlayer ? "Sus Player" : "Crewmate"}
+                {isSusPlayer ? "Imposter" : "Innocent"}
               </Badge>
               <p className="text-5xl font-medium text-purple-700 tracking-tighter leading-none">
                 {currentWord}

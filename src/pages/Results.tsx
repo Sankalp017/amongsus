@@ -72,7 +72,7 @@ const Results = () => {
 
           <div className="mb-8">
             <h4 className="text-xl font-bold mb-2 flex items-center justify-center gap-2">
-              <UserX className="h-6 w-6 text-red-600" /> Sus Players Were:
+              <UserX className="h-6 w-6 text-red-600" /> Imposters Were:
             </h4>
             <div className="flex flex-wrap justify-center gap-2">
               {gameState.susPlayerIndices.length > 0 ? (
@@ -82,7 +82,7 @@ const Results = () => {
                   </Badge>
                 ))
               ) : (
-                <p className="text-lg">No sus players assigned.</p>
+                <p className="text-lg">No imposters assigned.</p>
               )}
             </div>
           </div>
@@ -91,7 +91,7 @@ const Results = () => {
 
           <div className="mb-8">
             <h4 className="text-xl font-bold mb-2 flex items-center justify-center gap-2">
-              <Users className="h-6 w-6 text-green-600" /> Crewmates Were:
+              <Users className="h-6 w-6 text-green-600" /> Innocents Were:
             </h4>
             <div className="flex flex-wrap justify-center gap-2">
               {gameState.playerNames
