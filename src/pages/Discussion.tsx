@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import Timer from "@/components/Timer"; // Import the new Timer component
 
 interface GameStateData {
   numPlayers: number;
@@ -17,6 +18,8 @@ const Discussion = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const gameState = location.state as GameStateData;
+
+  const discussionTime = 120; // 2 minutes for discussion
 
   useEffect(() => {
     if (!gameState || !gameState.playerNames || gameState.playerNames.length === 0) {
@@ -44,11 +47,16 @@ const Discussion = () => {
         <p className="text-md text-gray-600 mb-8">
           Remember the main word is: <span className="font-semibold">{gameState.mainWord}</span>
         </p>
+
+        <div className="mb-8">
+          <Timer initialTime={discussionTime} onTimeUp={handleStartVoting} />
+        </div>
+
         <Button
           onClick={handleStartVoting}
           className="w-full bg-purple-700 text-white hover:bg-purple-800 text-lg py-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
         >
-          Start Voting
+          End Discussion & Start Voting
         </Button>
       </div>
     </div>
