@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { wordCategories } from "@/utils/words"; // Import wordCategories
+import { ArrowLeft } from "lucide-react"; // Import ArrowLeft icon
+import { Card } from "@/components/ui/card"; // Import Card component
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -76,10 +78,22 @@ const GameSetup = () => {
     navigate("/name-reveal", { state: values }); // Navigate to Name Reveal Phase
   };
 
+  const handleGoBack = () => {
+    navigate("/"); // Navigate back to the home page
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200">
-        <h2 className="text-3xl font-bold mb-6 text-center">Game Setup</h2>
+      <Card className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200 relative"> {/* Added relative for positioning */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleGoBack}
+          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700"
+        >
+          <ArrowLeft className="h-6 w-6" />
+        </Button>
+        <h2 className="text-3xl font-bold mb-6 text-center mt-4">Game Setup</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -187,7 +201,7 @@ const GameSetup = () => {
             </Button>
           </form>
         </Form>
-      </div>
+      </Card>
     </div>
   );
 };
