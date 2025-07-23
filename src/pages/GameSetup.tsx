@@ -96,7 +96,7 @@ const GameSetup = () => {
           variant="ghost"
           size="icon"
           onClick={handleGoBack}
-          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700"
+          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700 rounded-full"
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
@@ -202,7 +202,7 @@ const GameSetup = () => {
 
             <Button
               type="submit"
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               Start Round
             </Button>
