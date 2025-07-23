@@ -10,7 +10,6 @@ import NameReveal from "./pages/NameReveal";
 import Discussion from "./pages/Discussion";
 import Results from "./pages/Results";
 import HowToPlay from "./pages/HowToPlay";
-import Countdown from "./pages/Countdown"; // Import the new Countdown page
 
 const queryClient = new QueryClient();
 
@@ -23,7 +22,6 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/setup" element={<GameSetup />} />
-          <Route path="/countdown" element={<Countdown />} /> {/* New Countdown Route */}
           <Route path="/name-reveal" element={<NameReveal />} />
           <Route path="/discussion" element={<Discussion />} />
           <Route path="/results" element={<Results />} />

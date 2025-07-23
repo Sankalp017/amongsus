@@ -80,7 +80,7 @@ const GameSetup = () => {
     console.log("Game Setup Values:", values);
     saveGameState(values); // Save initial game state to local storage
     toast.success("Game setup complete! Starting round...");
-    navigate("/countdown", { state: values }); // Navigate to Countdown Phase
+    navigate("/name-reveal", { state: values }); // Navigate to Name Reveal Phase
   };
 
   const handleGoBack = () => {
