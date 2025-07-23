@@ -1,13 +1,14 @@
 export const wordCategories = [
-  "🎬 Movies",
-  "🍔 Food",
-  "🏙️ Cities",
   "🐾 Animals",
-  "🎲 Random words",
-  "⚽ Sports",
+  "🏙️ Cities",
   "🏎️ Formula 1 Teams",
+  "🍔 Food",
+  "🎬 Movies",
+  "🎲 Random words",
+  "📚 School Subjects", // Added and alphabetized
   "⚽ Premier League Teams",
-  "📺 TV Series", // Added new category
+  "⚽ Sports",
+  "📺 TV Series",
 ];
 
 interface WordBank {
@@ -50,6 +51,13 @@ const wordBank: WordBank = {
     "Starlight", "Waterfall", "Blossom", "Enigma", "Labyrinth", "Mirage",
     "Solstice", "Aurora", "Cascade", "Ephemeral", "Glimmer", "Nostalgia"
   ],
+  "📚 School Subjects": [ // New category added
+    "Algebra", "Geometry", "Calculus", "Physics", "Chemistry", "Biology",
+    "History", "Social Studies", "Geography", "Literature", "Grammar",
+    "Writing", "Art", "Music", "Drama", "Physical Education",
+    "Computer Science", "Economics", "Sociology", "Psychology",
+    "Philosophy", "Ethics", "Civics", "Government", "Statistics", "Trigonometry"
+  ],
   "⚽ Sports": [
     "Football", "Basketball", "Tennis", "Soccer", "Baseball", "Volleyball",
     "Swimming", "Cycling", "Running", "Golf", "Boxing", "Cricket", "Rugby",
@@ -68,7 +76,7 @@ const wordBank: WordBank = {
     "Southampton", "Tottenham Hotspur", "West Ham United",
     "Wolverhampton Wanderers"
   ],
-  "📺 TV Series": [ // Added new category with famous TV series
+  "📺 TV Series": [
     "Game of Thrones", "Breaking Bad", "Stranger Things", "The Office", "Friends",
     "The Crown", "Squid Game", "The Mandalorian", "Chernobyl", "Queen's Gambit",
     "Succession", "Ted Lasso", "Wednesday", "House of the Dragon", "The Last of Us",
