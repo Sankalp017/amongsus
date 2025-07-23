@@ -7,6 +7,7 @@ export const wordCategories = [
   "⚽ Sports",
   "🏎️ Formula 1 Teams",
   "⚽ Premier League Teams",
+  "📺 TV Series", // Added new category
 ];
 
 interface WordBank {
@@ -63,8 +64,16 @@ const wordBank: WordBank = {
     "Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton",
     "Chelsea", "Crystal Palace", "Everton", "Fulham", "Ipswich Town",
     "Leicester City", "Liverpool", "Manchester City", "Manchester United",
-    "Newcastle United", "Nottingham Forest", "Southampton", "Tottenham Hotspur",
-    "West Ham United", "Wolverhampton Wanderers"
+    "Newcastle United", "Nottingham Forest",
+    "Southampton", "Tottenham Hotspur", "West Ham United",
+    "Wolverhampton Wanderers"
+  ],
+  "📺 TV Series": [ // Added new category with famous TV series
+    "Game of Thrones", "Breaking Bad", "Stranger Things", "The Office", "Friends",
+    "The Crown", "Squid Game", "The Mandalorian", "Chernobyl", "Queen's Gambit",
+    "Succession", "Ted Lasso", "Wednesday", "House of the Dragon", "The Last of Us",
+    "Severance", "Yellowstone", "Peaky Blinders", "Money Heist", "The Boys",
+    "Arcane", "Dahmer", "Only Murders in the Building", "Euphoria", "The Witcher"
   ],
 };
 
