@@ -25,7 +25,7 @@ const Index = () => {
         <div className="flex flex-col space-y-4 w-full max-w-xs">
           <Button
             onClick={handleStartGame}
-            className="bg-purple-700 text-white hover:bg-purple-800 text-xl md:text-2xl px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="bg-white text-purple-700 hover:bg-purple-100 hover:text-purple-800 text-xl md:text-2xl px-8 py-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
           >
             Start Game
           </Button>
