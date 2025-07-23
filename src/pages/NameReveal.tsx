@@ -207,8 +207,8 @@ const NameReveal = () => {
       <Card className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
         {showTimer ? (
           <div className="flex flex-col items-center justify-center h-64">
-            <h2 className="text-3xl font-bold mb-4 text-purple-800">Get Ready!</h2>
-            <Timer initialTime={5} onTimeUp={handleTimerComplete} />
+            <h2 className="text-3xl font-bold mb-4 text-purple-800 animate-pulse-fast">Get Ready!</h2>
+            <Timer initialTime={3} onTimeUp={handleTimerComplete} />
             <p className="mt-4 text-lg text-gray-600">Word reveal starting soon...</p>
           </div>
         ) : (

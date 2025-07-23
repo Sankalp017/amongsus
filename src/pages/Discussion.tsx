@@ -66,7 +66,7 @@ const Discussion = () => {
         {showTimer ? (
           <div className="flex flex-col items-center justify-center h-64">
             <h2 className="text-3xl font-bold mb-4 text-purple-800">Discussion Starts In...</h2>
-            <Timer initialTime={5} onTimeUp={handleTimerComplete} />
+            <Timer initialTime={3} onTimeUp={handleTimerComplete} />
             <p className="mt-4 text-lg text-gray-600">Get ready to accuse!</p>
           </div>
         ) : (
