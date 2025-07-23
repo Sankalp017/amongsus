@@ -2,7 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator"; // Import Separator
+import { Separator } from "@/components/ui/separator";
+import { ArrowLeft } from "lucide-react"; // Import ArrowLeft icon
 
 const HowToPlay = () => {
   const navigate = useNavigate();
@@ -11,9 +12,21 @@ const HowToPlay = () => {
     navigate("/");
   };
 
+  const handleReadyToPlay = () => {
+    navigate("/setup"); // Navigate to the setup page
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
-      <Card className="w-full max-w-2xl bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
+      <Card className="w-full max-w-2xl bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200 relative">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleGoBack}
+          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700"
+        >
+          <ArrowLeft className="h-6 w-6" />
+        </Button>
         <CardHeader>
           <CardTitle className="text-2xl md:text-3xl font-bold mb-4">How to Play Among Sus</CardTitle>
         </CardHeader>
@@ -52,10 +65,10 @@ const HowToPlay = () => {
             Good luck, and try not to be too sus!
           </p>
           <Button
-            onClick={handleGoBack}
+            onClick={handleReadyToPlay}
             className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105 mt-6"
           >
-            Back to Home
+            Ready to Play?
           </Button>
         </CardContent>
       </Card>
