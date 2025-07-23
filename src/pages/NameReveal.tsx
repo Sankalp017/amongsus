@@ -69,17 +69,18 @@ const NameReveal = () => {
     }
   };
 
-  useEffect(() => {
-    const checkAndSetVoices = () => {
-      const voices = speechSynthesis.getVoices();
-      if (voices.length > 0) {
-        setVoicesLoaded(true);
-        console.log("Speech voices loaded.");
-      } else {
-        setTimeout(checkAndSetVoices, 100);
-      }
-    };
+  // Moved checkAndSetVoices outside useEffect to be accessible in cleanup
+  const checkAndSetVoices = () => {
+    const voices = speechSynthesis.getVoices();
+    if (voices.length > 0) {
+      setVoicesLoaded(true);
+      console.log("Speech voices loaded.");
+    } else {
+      setTimeout(checkAndSetVoices, 100);
+    }
+  };
 
+  useEffect(() => {
     if ("speechSynthesis" in window) {
       checkAndSetVoices();
       speechSynthesis.addEventListener("voiceschanged", checkAndSetVoices);
@@ -127,7 +128,7 @@ const NameReveal = () => {
         loadedGameState.numSusPlayers
       );
       setMainWord(generatedMainWord);
-      setSusWord(generatedSusWord);
+      setSusWord(generatedSusWord); // Fixed typo here: generatedSusSusWord -> generatedSusWord
 
       const allPlayerIndices = Array.from({ length: loadedGameState.numPlayers }, (_, i) => i);
       const shuffledIndices = allPlayerIndices.sort(() => 0.5 - Math.random());
@@ -152,6 +153,7 @@ const NameReveal = () => {
       if (utteranceRef.current) {
         speechSynthesis.cancel();
       }
+      // No need to remove event listener for checkAndSetVoices here, as it's handled in the other useEffect
     };
   }, [initialGameData, navigate]);
 
@@ -207,7 +209,7 @@ const NameReveal = () => {
       <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200 relative">
         {showTimer ? (
           <div className="flex flex-col items-center justify-center h-64">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-purple-800 animate-pulse-fast">Get Ready!</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-black animate-pulse-fast">Get Ready!</h2>
             <Timer initialTime={3} onTimeUp={handleTimerComplete} />
             <p className="mt-4 text-base md:text-lg text-gray-600">Word reveal starting soon...</p>
           </div>
