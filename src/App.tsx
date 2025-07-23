@@ -6,7 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import GameSetup from "./pages/GameSetup";
-import NameReveal from "./pages/NameReveal"; // Import the new NameReveal component
+import NameReveal from "./pages/NameReveal";
+import Discussion from "./pages/Discussion"; // Import the new Discussion component
 
 const queryClient = new QueryClient();
 
@@ -19,7 +20,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/setup" element={<GameSetup />} />
-          <Route path="/name-reveal" element={<NameReveal />} /> {/* New route for Name Reveal */}
+          <Route path="/name-reveal" element={<NameReveal />} />
+          <Route path="/discussion" element={<Discussion />} /> {/* New route for Discussion */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
