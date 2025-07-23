@@ -24,16 +24,16 @@ import {
 import { toast } from "sonner";
 import { wordCategories } from "@/utils/words";
 import { ArrowLeft } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Import Card components
 import { saveGameState, clearGameState } from "@/utils/localStorage";
-import NumberInputStepper from "@/components/NumberInputStepper"; // Import the new component
+// import NumberInputStepper from "@/components/NumberInputStepper"; // No longer needed
 
 // Zod schema for form validation
 const formSchema = z.object({
   numPlayers: z.coerce
     .number()
     .min(3, { message: "Minimum 3 players required." })
-    .max(20, { message: "Maximum 20 players allowed." }), // Updated max to 20
+    .max(20, { message: "Maximum 20 players allowed." }),
   playerNames: z
     .array(z.string().min(1, { message: "Player name cannot be empty." }))
     .min(3, { message: "Please enter names for all players." })
@@ -43,7 +43,7 @@ const formSchema = z.object({
   numSusPlayers: z.coerce
     .number()
     .min(1, { message: "Minimum 1 imposter required." }),
-  topic: z.string().optional(), // Added topic to the schema
+  topic: z.string().optional(),
 }).refine(data => data.numSusPlayers < data.numPlayers, {
   message: "Number of imposters must be less than total players.",
   path: ["numSusPlayers"],
@@ -59,14 +59,13 @@ const GameSetup = () => {
       numPlayers: 3,
       playerNames: ["", "", ""],
       numSusPlayers: 1,
-      topic: "Random words 🎲", // Default value for topic, now with emoji
+      topic: "🎲 Random words", // Updated default value for topic
     },
   });
 
   const numPlayers = form.watch("numPlayers");
 
   useEffect(() => {
-    // Clear game state from local storage when entering setup to ensure a fresh start
     clearGameState();
 
     const currentNames = form.getValues("playerNames");
@@ -79,13 +78,13 @@ const GameSetup = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log("Game Setup Values:", values);
-    saveGameState(values); // Save initial game state to local storage
+    saveGameState(values);
     toast.success("Game setup complete! Starting round...");
-    navigate("/name-reveal", { state: values }); // Navigate to Name Reveal Phase
+    navigate("/name-reveal", { state: values });
   };
 
   const handleGoBack = () => {
-    navigate("/"); // Navigate back to the home page
+    navigate("/");
   };
 
   return (
@@ -97,7 +96,7 @@ const GameSetup = () => {
           variant="ghost"
           size="icon"
           onClick={handleGoBack}
-          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700 rounded-full"
+          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700 rounded-xl" // Changed to rounded-xl
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
@@ -111,12 +110,20 @@ const GameSetup = () => {
                 <FormItem>
                   <FormLabel className="text-base md:text-lg mb-2">Number of Players</FormLabel>
                   <FormControl>
-                    <NumberInputStepper
-                      value={field.value}
-                      onChange={field.onChange}
-                      min={3}
+                    <Input
+                      type="number"
+                      placeholder="e.g., 3"
+                      className="text-center text-base md:text-lg py-2 w-full" // Added w-full
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        const val = parseInt(e.target.value);
+                        if (!isNaN(val)) {
+                          form.setValue("numPlayers", val);
+                        }
+                      }}
+                      min={3} // Ensure min/max are still applied
                       max={20}
-                      className="w-full justify-between" // Make stepper full width and space items
                     />
                   </FormControl>
                   <FormMessage />
@@ -134,7 +141,7 @@ const GameSetup = () => {
                     <Input
                       type="number"
                       placeholder="e.g., 1"
-                      className="text-center text-base md:text-lg py-2"
+                      className="text-center text-base md:text-lg py-2 w-full" // Added w-full
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
@@ -150,25 +157,33 @@ const GameSetup = () => {
               )}
             />
 
-            {playerInputs.map((_, index) => (
-              <FormField
-                key={index}
-                control={form.control}
-                name={`playerNames.${index}`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Player {index + 1} Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={`Enter name for Player ${index + 1}`}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            ))}
+            <Card className="bg-gray-50 p-4 rounded-xl shadow-inner border border-gray-200"> {/* New card for player names */}
+              <CardHeader className="p-0 pb-4">
+                <CardTitle className="text-lg md:text-xl font-semibold text-purple-700 text-left">Player Names</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 space-y-4">
+                {playerInputs.map((_, index) => (
+                  <FormField
+                    key={index}
+                    control={form.control}
+                    name={`playerNames.${index}`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Player {index + 1} Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={`Enter name for Player ${index + 1}`}
+                            {...field}
+                            className="w-full" // Ensure input is full width
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+              </CardContent>
+            </Card>
 
             <FormField
               control={form.control}
@@ -178,7 +193,7 @@ const GameSetup = () => {
                   <FormLabel className="text-base md:text-lg">Select Topic (Optional)</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="w-full"> {/* Ensure select trigger is full width */}
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a topic" />
                       </SelectTrigger>
                     </FormControl>
@@ -197,7 +212,7 @@ const GameSetup = () => {
 
             <Button
               type="submit"
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105" // Changed to rounded-xl
             >
               Start Round
             </Button>

@@ -27,13 +27,13 @@ const Index = () => {
         <div className="flex flex-col space-y-4 w-full max-w-xs">
           <Button
             onClick={handleStartGame}
-            className="bg-white text-purple-700 hover:bg-purple-100 hover:text-purple-800 text-xl md:text-2xl px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="bg-white text-purple-700 hover:bg-purple-100 hover:text-purple-800 text-xl md:text-2xl px-8 py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105" // Changed to rounded-xl
           >
             Start Game
           </Button>
           <Button
             onClick={handleHowToPlay}
-            className="bg-white/20 backdrop-blur-lg text-white hover:bg-white/30 hover:text-white text-lg md:text-xl px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="bg-white/20 backdrop-blur-lg text-white hover:bg-white/30 hover:text-white text-lg md:text-xl px-8 py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105" // Changed to rounded-xl
           >
             How to Play
           </Button>

@@ -112,7 +112,7 @@ const NameReveal = () => {
     const isNewGame = !(loadedGameState as GameStateData).mainWord || !(loadedGameState as GameStateData).susPlayerIndices;
 
     if (isNewGame) {
-      let selectedTopic = loadedGameState.topic || "Random words";
+      let selectedTopic = loadedGameState.topic || "🎲 Random words"; // Updated default topic
       if (loadedGameState.previousTopic) {
         const availableTopics = wordCategories.filter(cat => cat !== loadedGameState.previousTopic);
         if (availableTopics.length > 0) {
@@ -245,7 +245,7 @@ const NameReveal = () => {
             <Button
               onClick={handleNextPlayer}
               disabled={!showWord}
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105" // Changed to rounded-xl
             >
               {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
             </Button>
