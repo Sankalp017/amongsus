@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getWordPacks, saveWordPacks, getWordPackById, WordPack, WordPair } from "@/utils/wordPackStorage";
+import { getWordPacks, saveWordPacks, getWordPackById, WordPack } from "@/utils/wordPackStorage";
 import { toast } from "sonner";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 
@@ -53,17 +53,20 @@ const WordPackForm = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const packs = getWordPacks();
-    
-    // Reconstruct the words array to satisfy TypeScript's strictness
-    const newWords: WordPair[] = values.words.map(word => ({
+
+    // Create a clean data object from the form values to ensure correct structure.
+    const packData = {
+      name: values.name,
+      words: values.words.map(word => ({
         mainWord: word.mainWord,
         susWord: word.susWord,
-    }));
+      })),
+    };
 
     if (isEditing && packId) {
       const updatedPacks = packs.map((pack) =>
         pack.id === packId
-          ? { id: pack.id, name: values.name, words: newWords }
+          ? { ...pack, ...packData } // Overwrite existing pack data with new data
           : pack
       );
       saveWordPacks(updatedPacks);
@@ -71,8 +74,7 @@ const WordPackForm = () => {
     } else {
       const newPack: WordPack = {
         id: new Date().toISOString(),
-        name: values.name,
-        words: newWords,
+        ...packData,
       };
       saveWordPacks([...packs, newPack]);
       toast.success("Word pack created!");
