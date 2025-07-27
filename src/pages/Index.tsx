@@ -13,6 +13,10 @@ const Index = () => {
     navigate("/how-to-play"); // Navigate to the how-to-play page
   };
 
+  const handleWordPacks = () => {
+    navigate("/word-packs");
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
       <div className="flex flex-col items-center justify-center flex-grow text-center">
@@ -34,6 +38,12 @@ const Index = () => {
             className="bg-white/20 backdrop-blur-lg text-white hover:bg-white/30 hover:text-white text-lg md:text-xl px-8 py-4 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
           >
             How to Play
+          </Button>
+          <Button
+            onClick={handleWordPacks}
+            className="bg-white/20 backdrop-blur-lg text-white hover:bg-white/30 hover:text-white text-lg md:text-xl px-8 py-4 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
+          >
+            Word Packs
           </Button>
         </div>
       </div>

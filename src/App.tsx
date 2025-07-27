@@ -10,6 +10,8 @@ import NameReveal from "./pages/NameReveal";
 import Discussion from "./pages/Discussion";
 import Results from "./pages/Results";
 import HowToPlay from "./pages/HowToPlay";
+import WordPacks from "./pages/WordPacks";
+import WordPackForm from "./pages/WordPackForm";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,9 @@ const App = () => (
           <Route path="/discussion" element={<Discussion />} />
           <Route path="/results" element={<Results />} />
           <Route path="/how-to-play" element={<HowToPlay />} />
+          <Route path="/word-packs" element={<WordPacks />} />
+          <Route path="/word-packs/new" element={<WordPackForm />} />
+          <Route path="/word-packs/edit/:packId" element={<WordPackForm />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

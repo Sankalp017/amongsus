@@ -22,17 +22,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { wordCategories } from "@/utils/words"; // Import wordCategories
-import { ArrowLeft } from "lucide-react"; // Import ArrowLeft icon
-import { Card } from "@/components/ui/card"; // Import Card component
-import { saveGameState, clearGameState } from "@/utils/localStorage"; // Import localStorage utilities
+import { wordCategories } from "@/utils/words";
+import { ArrowLeft } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { saveGameState, clearGameState } from "@/utils/localStorage";
+import { getWordPacks, WordPack } from "@/utils/wordPackStorage";
+import { Separator } from "@/components/ui/separator";
 
-// Zod schema for form validation
 const formSchema = z.object({
   numPlayers: z.coerce
     .number()
     .min(3, { message: "Minimum 3 players required." })
-    .max(10, { message: "Maximum 10 players allowed." }), // Added a max for practicality
+    .max(10, { message: "Maximum 10 players allowed." }),
   playerNames: z
     .array(z.string().min(1, { message: "Player name cannot be empty." }))
     .min(3, { message: "Please enter names for all players." })
@@ -42,7 +43,7 @@ const formSchema = z.object({
   numSusPlayers: z.coerce
     .number()
     .min(1, { message: "Minimum 1 imposter required." }),
-  topic: z.string().optional(), // Added topic to the schema
+  topic: z.string().optional(),
 }).refine(data => data.numSusPlayers < data.numPlayers, {
   message: "Number of imposters must be less than total players.",
   path: ["numSusPlayers"],
@@ -51,6 +52,7 @@ const formSchema = z.object({
 const GameSetup = () => {
   const navigate = useNavigate();
   const [playerInputs, setPlayerInputs] = useState<string[]>([]);
+  const [customPacks, setCustomPacks] = useState<WordPack[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,15 +60,15 @@ const GameSetup = () => {
       numPlayers: 3,
       playerNames: ["", "", ""],
       numSusPlayers: 1,
-      topic: "Random words", // Default value for topic
+      topic: "Random words",
     },
   });
 
   const numPlayers = form.watch("numPlayers");
 
   useEffect(() => {
-    // Clear game state from local storage when entering setup to ensure a fresh start
     clearGameState();
+    setCustomPacks(getWordPacks());
 
     const currentNames = form.getValues("playerNames");
     const newPlayerInputs = Array.from({ length: numPlayers }, (_, i) => {
@@ -78,27 +80,31 @@ const GameSetup = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log("Game Setup Values:", values);
-    saveGameState(values); // Save initial game state to local storage
+    saveGameState(values);
     toast.success("Game setup complete! Starting round...");
-    navigate("/name-reveal", { state: values }); // Navigate to Name Reveal Phase
+    navigate("/name-reveal", { state: values });
   };
 
   const handleGoBack = () => {
-    navigate("/"); // Navigate back to the home page
+    navigate("/");
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
-      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200 relative"> {/* Added relative for positioning */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleGoBack}
-          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700"
-        >
-          <ArrowLeft className="h-6 w-6" />
-        </Button>
-        <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center mt-4">Game Setup</h2>
+      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200">
+        <div className="relative flex items-center justify-center mb-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleGoBack}
+            className="absolute left-0 text-gray-600 hover:text-purple-700 rounded-xl"
+          >
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h2 className="text-2xl md:text-3xl font-bold">
+            Game Setup
+          </h2>
+        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -178,7 +184,7 @@ const GameSetup = () => {
               name="topic"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base md:text-lg">Select Topic (Optional)</FormLabel>
+                  <FormLabel className="text-base md:text-lg">Select Topic</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -191,6 +197,16 @@ const GameSetup = () => {
                           {category}
                         </SelectItem>
                       ))}
+                      {customPacks.length > 0 && (
+                        <>
+                          <Separator className="my-2" />
+                          {customPacks.map((pack) => (
+                            <SelectItem key={pack.id} value={`custom:${pack.id}`}>
+                              {pack.name}
+                            </SelectItem>
+                          ))}
+                        </>
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
