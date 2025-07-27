@@ -14,6 +14,7 @@ interface GameSetupData {
   numSusPlayers: number;
   topic?: string;
   previousTopic?: string;
+  customWords?: string[];
 }
 
 interface GameStateData extends GameSetupData {
@@ -53,18 +54,16 @@ const NameReveal = () => {
       utterance.lang = "en-US";
       const voices = speechSynthesis.getVoices();
       
-      // --- NEW: Prioritized Voice Selection for better consistency ---
       const preferredVoices = [
-        "Google US English", // High-quality on Chrome/Android
-        "Samantha",          // Common on Apple devices
-        "Alex",              // High-quality on macOS
-        "Tessa",             // Common on some systems
-        "Microsoft Zira - English (United States)", // Windows
+        "Google US English",
+        "Samantha",
+        "Alex",
+        "Tessa",
+        "Microsoft Zira - English (United States)",
       ];
 
       let selectedVoice = null;
 
-      // 1. Try to find a preferred, high-quality voice
       for (const name of preferredVoices) {
         const found = voices.find(v => v.name === name && v.lang.startsWith("en-"));
         if (found) {
@@ -73,12 +72,10 @@ const NameReveal = () => {
         }
       }
 
-      // 2. If not found, fall back to any US English female voice
       if (!selectedVoice) {
         selectedVoice = voices.find(v => v.lang === "en-US" && v.name.includes("Female"));
       }
 
-      // 3. As a last resort, find any US English voice
       if (!selectedVoice) {
         selectedVoice = voices.find(v => v.lang === "en-US");
       }
@@ -86,7 +83,6 @@ const NameReveal = () => {
       if (selectedVoice) {
         utterance.voice = selectedVoice;
       }
-      // --- END: New Logic ---
 
       speechSynthesis.speak(utterance);
       utteranceRef.current = utterance;
@@ -104,10 +100,9 @@ const NameReveal = () => {
       }
     };
 
-    handleVoicesChanged(); // Initial check
+    handleVoicesChanged();
     speechSynthesis.addEventListener("voiceschanged", handleVoicesChanged);
 
-    // Set up a timeout to show a warning if voices are still not loaded
     const warningTimeout = setTimeout(() => {
       if (speechSynthesis.getVoices().length === 0 && !ttsWarningShown) {
         toast.info("Voice announcements may not work in this browser.", {
@@ -116,7 +111,7 @@ const NameReveal = () => {
         });
         setTtsWarningShown(true);
       }
-    }, 2500); // Wait 2.5 seconds
+    }, 2500);
 
     return () => {
       speechSynthesis.removeEventListener("voiceschanged", handleVoicesChanged);
@@ -144,20 +139,29 @@ const NameReveal = () => {
     const isNewGame = !(loadedGameState as GameStateData).mainWord || !(loadedGameState as GameStateData).susPlayerIndices;
 
     if (isNewGame) {
-      let selectedTopic = loadedGameState.topic || "🎲 Random words";
-      if (loadedGameState.previousTopic) {
-        const availableTopics = wordCategories.filter(cat => cat !== loadedGameState.previousTopic);
-        if (availableTopics.length > 0) {
-          selectedTopic = availableTopics[Math.floor(Math.random() * availableTopics.length)];
-        } else {
-          selectedTopic = wordCategories[Math.floor(Math.random() * wordCategories.length)];
+      let generatedMainWord: string, generatedSusWord: string;
+
+      if (loadedGameState.customWords && loadedGameState.customWords.length >= 2) {
+        // Use custom words if provided
+        const shuffled = [...loadedGameState.customWords].sort(() => 0.5 - Math.random());
+        generatedMainWord = shuffled[0];
+        generatedSusWord = shuffled[1];
+      } else {
+        // Fallback to topic-based generation
+        let selectedTopic = loadedGameState.topic || "🎲 Random words";
+        if (loadedGameState.previousTopic) {
+          const availableTopics = wordCategories.filter(cat => cat !== loadedGameState.previousTopic);
+          if (availableTopics.length > 0) {
+            selectedTopic = availableTopics[Math.floor(Math.random() * availableTopics.length)];
+          } else {
+            selectedTopic = wordCategories[Math.floor(Math.random() * wordCategories.length)];
+          }
         }
+        const words = getWordsForTopic(selectedTopic, loadedGameState.numSusPlayers);
+        generatedMainWord = words.mainWord;
+        generatedSusWord = words.susWord;
       }
 
-      const { mainWord: generatedMainWord, susWord: generatedSusWord } = getWordsForTopic(
-        selectedTopic,
-        loadedGameState.numSusPlayers
-      );
       setMainWord(generatedMainWord);
       setSusWord(generatedSusWord);
 
@@ -168,7 +172,6 @@ const NameReveal = () => {
 
       saveGameState({
         ...loadedGameState,
-        topic: selectedTopic,
         mainWord: generatedMainWord,
         susWord: generatedSusWord,
         susPlayerIndices: selectedSusIndices,

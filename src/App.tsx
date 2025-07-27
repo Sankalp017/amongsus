@@ -10,6 +10,7 @@ import NameReveal from "./pages/NameReveal";
 import Discussion from "./pages/Discussion";
 import Results from "./pages/Results";
 import HowToPlay from "./pages/HowToPlay";
+import CustomWordPacks from "./pages/CustomWordPacks";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => {
           <Route path="/discussion" element={<Discussion />} />
           <Route path="/results" element={<Results />} />
           <Route path="/how-to-play" element={<HowToPlay />} />
+          <Route path="/custom-packs" element={<CustomWordPacks />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>

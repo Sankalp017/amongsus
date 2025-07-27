@@ -21,12 +21,16 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
+  SelectLabel,
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { wordCategories } from "@/utils/words";
 import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { saveGameState, clearGameState } from "@/utils/localStorage";
+import { loadCustomPacks } from "@/utils/wordPackStorage";
+import type { WordPack } from "@/pages/CustomWordPacks";
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -36,11 +40,13 @@ const formSchema = z.object({
     .max(20, { message: "Maximum 20 players allowed." }),
   playerNames: z
     .array(z.string().min(1, { message: "Player name cannot be empty." }))
-    .min(3, { message: "Please enter names for all players." }), // Removed the refine for unique names here
+    .min(3, { message: "Please enter names for all players." }),
   numSusPlayers: z.coerce
     .number()
     .min(1, { message: "Minimum 1 imposter required." }),
   topic: z.string().optional(),
+  // We'll add custom words here if a custom pack is selected
+  customWords: z.array(z.string()).optional(),
 }).refine(data => data.numSusPlayers < data.numPlayers, {
   message: "Number of imposters must be less than total players.",
   path: ["numSusPlayers"],
@@ -49,6 +55,7 @@ const formSchema = z.object({
 const GameSetup = () => {
   const navigate = useNavigate();
   const [playerInputs, setPlayerInputs] = useState<string[]>([]);
+  const [customPacks, setCustomPacks] = useState<WordPack[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,6 +66,10 @@ const GameSetup = () => {
       topic: "🎲 Random words",
     },
   });
+
+  useEffect(() => {
+    setCustomPacks(loadCustomPacks());
+  }, []);
 
   const numPlayers = form.watch("numPlayers");
 
@@ -74,18 +85,16 @@ const GameSetup = () => {
   }, [numPlayers, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Manual duplicate check for player names
     const seenNames = new Set<string>();
     let hasDuplicateError = false;
 
-    // Clear previous player name errors to avoid stale messages
     values.playerNames.forEach((_, index) => {
       form.clearErrors(`playerNames.${index}`);
     });
 
     values.playerNames.forEach((name, index) => {
-      const lowerName = name.toLowerCase().trim(); // Trim whitespace
-      if (lowerName === "") { // Check for empty names after trim
+      const lowerName = name.toLowerCase().trim();
+      if (lowerName === "") {
         form.setError(`playerNames.${index}`, {
           type: "manual",
           message: "Player name cannot be empty.",
@@ -105,7 +114,14 @@ const GameSetup = () => {
 
     if (hasDuplicateError) {
       toast.error("Please correct the errors in player names.");
-      return; // Stop submission if there are duplicate or empty name errors
+      return;
+    }
+
+    // Check if a custom pack was selected and add its words to the form data
+    const selectedTopic = values.topic;
+    const customPack = customPacks.find(p => p.name === selectedTopic);
+    if (customPack) {
+      values.customWords = customPack.words;
     }
 
     console.log("Game Setup Values:", values);
@@ -225,7 +241,7 @@ const GameSetup = () => {
               name="topic"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base md:text-lg">Select Topic (Optional)</FormLabel>
+                  <FormLabel className="text-base md:text-lg">Select Topic</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger className="w-full">
@@ -233,11 +249,24 @@ const GameSetup = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {wordCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
+                      <SelectGroup>
+                        <SelectLabel>Default Topics</SelectLabel>
+                        {wordCategories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                      {customPacks.length > 0 && (
+                        <SelectGroup>
+                          <SelectLabel>Custom Packs</SelectLabel>
+                          {customPacks.map((pack) => (
+                            <SelectItem key={pack.id} value={pack.name}>
+                              ✏️ {pack.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
