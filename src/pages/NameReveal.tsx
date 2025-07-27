@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { saveGameState, loadGameState } from "@/utils/localStorage";
 import Timer from "@/components/Timer";
-import { getWordPackById } from "@/utils/wordPackStorage";
 
 interface GameSetupData {
   numPlayers: number;
@@ -29,7 +28,6 @@ const NameReveal = () => {
   const initialGameData = location.state as GameSetupData;
 
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
-  const [showWord, setShowWord] = useState(false);
   const [currentWord, setCurrentWord] = useState("");
   const [isSusPlayer, setIsSusPlayer] = useState(false);
   const [susPlayerIndices, setSusPlayerIndices] = useState<number[]>([]);
@@ -39,6 +37,8 @@ const NameReveal = () => {
   const [voicesLoaded, setVoicesLoaded] = useState(false);
   const [showTimer, setShowTimer] = useState(true);
   const [timerDone, setTimerDone] = useState(false);
+  const [showWord, setShowWord] = useState(false);
+  const [ttsWarningShown, setTtsWarningShown] = useState(false);
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -52,46 +52,80 @@ const NameReveal = () => {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "en-US";
       const voices = speechSynthesis.getVoices();
-      const femaleVoice = voices.find(
-        (voice) => voice.lang === "en-US" && voice.name.includes("Female")
-      );
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
-      } else {
-        const englishVoice = voices.find((voice) => voice.lang === "en-US");
-        if (englishVoice) {
-          utterance.voice = englishVoice;
+      
+      // --- NEW: Prioritized Voice Selection for better consistency ---
+      const preferredVoices = [
+        "Google US English", // High-quality on Chrome/Android
+        "Samantha",          // Common on Apple devices
+        "Alex",              // High-quality on macOS
+        "Tessa",             // Common on some systems
+        "Microsoft Zira - English (United States)", // Windows
+      ];
+
+      let selectedVoice = null;
+
+      // 1. Try to find a preferred, high-quality voice
+      for (const name of preferredVoices) {
+        const found = voices.find(v => v.name === name && v.lang.startsWith("en-"));
+        if (found) {
+          selectedVoice = found;
+          break;
         }
       }
+
+      // 2. If not found, fall back to any US English female voice
+      if (!selectedVoice) {
+        selectedVoice = voices.find(v => v.lang === "en-US" && v.name.includes("Female"));
+      }
+
+      // 3. As a last resort, find any US English voice
+      if (!selectedVoice) {
+        selectedVoice = voices.find(v => v.lang === "en-US");
+      }
+      
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
+      // --- END: New Logic ---
+
       speechSynthesis.speak(utterance);
       utteranceRef.current = utterance;
-    } else {
-      toast.warning("Text-to-speech not supported in this browser. Please ensure your browser supports it and audio is enabled.");
     }
   };
 
   useEffect(() => {
-    const checkAndSetVoices = () => {
-      const voices = speechSynthesis.getVoices();
-      if (voices.length > 0) {
-        setVoicesLoaded(true);
-        console.log("Speech voices loaded.");
-      } else {
-        setTimeout(checkAndSetVoices, 100);
-      }
-    };
-
-    if ("speechSynthesis" in window) {
-      checkAndSetVoices();
-      speechSynthesis.addEventListener("voiceschanged", checkAndSetVoices);
+    if (!("speechSynthesis" in window)) {
+      return;
     }
 
-    return () => {
-      if ("speechSynthesis" in window) {
-        speechSynthesis.removeEventListener("voiceschanged", checkAndSetVoices);
+    const handleVoicesChanged = () => {
+      if (speechSynthesis.getVoices().length > 0) {
+        setVoicesLoaded(true);
       }
     };
-  }, []);
+
+    handleVoicesChanged(); // Initial check
+    speechSynthesis.addEventListener("voiceschanged", handleVoicesChanged);
+
+    // Set up a timeout to show a warning if voices are still not loaded
+    const warningTimeout = setTimeout(() => {
+      if (speechSynthesis.getVoices().length === 0 && !ttsWarningShown) {
+        toast.info("Voice announcements may not work in this browser.", {
+          duration: 10000,
+          description: "For the best experience, use Chrome, Safari, or Brave. The game is still fully playable without sound.",
+        });
+        setTtsWarningShown(true);
+      }
+    }, 2500); // Wait 2.5 seconds
+
+    return () => {
+      speechSynthesis.removeEventListener("voiceschanged", handleVoicesChanged);
+      clearTimeout(warningTimeout);
+      if (utteranceRef.current) {
+        speechSynthesis.cancel();
+      }
+    };
+  }, [ttsWarningShown]);
 
   useEffect(() => {
     let loadedGameState: GameStateData | GameSetupData | undefined = initialGameData;
@@ -110,7 +144,7 @@ const NameReveal = () => {
     const isNewGame = !(loadedGameState as GameStateData).mainWord || !(loadedGameState as GameStateData).susPlayerIndices;
 
     if (isNewGame) {
-      let selectedTopic = loadedGameState.topic || "Random words";
+      let selectedTopic = loadedGameState.topic || "🎲 Random words";
       if (loadedGameState.previousTopic) {
         const availableTopics = wordCategories.filter(cat => cat !== loadedGameState.previousTopic);
         if (availableTopics.length > 0) {
@@ -120,30 +154,12 @@ const NameReveal = () => {
         }
       }
 
-      let finalMainWord = "";
-      let finalSusWord = "";
-
-      if (selectedTopic.startsWith("custom:")) {
-        const packId = selectedTopic.split(":")[1];
-        const customPack = getWordPackById(packId);
-        if (customPack && customPack.words.length > 0) {
-          const randomPair = customPack.words[Math.floor(Math.random() * customPack.words.length)];
-          finalMainWord = randomPair.mainWord;
-          finalSusWord = randomPair.susWord;
-        } else {
-          toast.error("Custom pack invalid. Using random words.");
-          const { mainWord: genMain, susWord: genSus } = getWordsForTopic("Random words", loadedGameState.numSusPlayers);
-          finalMainWord = genMain;
-          finalSusWord = genSus;
-        }
-      } else {
-        const { mainWord: genMain, susWord: genSus } = getWordsForTopic(selectedTopic, loadedGameState.numSusPlayers);
-        finalMainWord = genMain;
-        finalSusWord = genSus;
-      }
-
-      setMainWord(finalMainWord);
-      setSusWord(finalSusWord);
+      const { mainWord: generatedMainWord, susWord: generatedSusWord } = getWordsForTopic(
+        selectedTopic,
+        loadedGameState.numSusPlayers
+      );
+      setMainWord(generatedMainWord);
+      setSusWord(generatedSusWord);
 
       const allPlayerIndices = Array.from({ length: loadedGameState.numPlayers }, (_, i) => i);
       const shuffledIndices = allPlayerIndices.sort(() => 0.5 - Math.random());
@@ -153,8 +169,8 @@ const NameReveal = () => {
       saveGameState({
         ...loadedGameState,
         topic: selectedTopic,
-        mainWord: finalMainWord,
-        susWord: finalSusWord,
+        mainWord: generatedMainWord,
+        susWord: generatedSusWord,
         susPlayerIndices: selectedSusIndices,
       });
     } else {
@@ -172,18 +188,23 @@ const NameReveal = () => {
   }, [initialGameData, navigate]);
 
   useEffect(() => {
-    if (gameData && currentPlayerIndex < gameData.numPlayers && voicesLoaded && timerDone) {
+    if (gameData && currentPlayerIndex < gameData.numPlayers && timerDone) {
       const playerIsSus = susPlayerIndices.includes(currentPlayerIndex);
       setIsSusPlayer(playerIsSus);
       setCurrentWord(playerIsSus ? susWord : mainWord);
       setShowWord(false);
+    }
+  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, timerDone]);
+
+  useEffect(() => {
+    if (gameData && currentPlayerIndex < gameData.numPlayers && voicesLoaded && timerDone) {
       speak(`It's ${gameData.playerNames[currentPlayerIndex]}'s turn`);
     }
-  }, [currentPlayerIndex, susPlayerIndices, mainWord, susWord, gameData, voicesLoaded, timerDone]);
+  }, [currentPlayerIndex, gameData, voicesLoaded, timerDone]);
 
-  const handleTapToReveal = () => {
+  const handleRevealWord = () => {
     setShowWord(true);
-    speak("Word revealed");
+    speak("Your word is");
   };
 
   const handleNextPlayer = () => {
@@ -217,50 +238,51 @@ const NameReveal = () => {
   const currentPlayerName = gameData.playerNames[currentPlayerIndex];
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4">
-      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
+    >
+      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200 relative">
         {showTimer ? (
           <div className="flex flex-col items-center justify-center h-64">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-purple-800 animate-pulse-fast">Get Ready!</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-black animate-pulse-fast">Get Ready!</h2>
             <Timer initialTime={3} onTimeUp={handleTimerComplete} />
             <p className="mt-4 text-base md:text-lg text-gray-600">Word reveal starting soon...</p>
           </div>
         ) : (
           <>
             <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
-            <p className="text-base md:text-lg mb-6 text-gray-600">Tap the card to reveal your word.</p>
+            <p className="text-base md:text-lg mb-6 text-gray-600">Click the card to reveal your word.</p>
 
-            <CardContent
-              onClick={!showWord ? handleTapToReveal : undefined}
-              className={`relative w-full h-64 bg-white rounded-3xl flex items-center justify-center overflow-hidden p-4 mb-6 border border-gray-300 transform transition-all duration-300 ${!showWord ? 'cursor-pointer hover:scale-[1.01]' : ''}`}
+            <div
+              onClick={handleRevealWord}
+              className={`relative w-full h-64 rounded-3xl overflow-hidden flex flex-col items-center justify-center p-4 cursor-pointer transition-colors duration-300 ease-in-out mb-6
+                ${showWord ? "bg-white text-gray-800 shadow-lg" : "bg-[#f5f5f7] hover:bg-[#e0e0e2]"}
+              `}
             >
               {!showWord && (
-                <div className="absolute inset-0 bg-purple-100 rounded-3xl flex items-center justify-center">
-                  <span className="text-xl md:text-2xl font-bold text-purple-700">
-                    Tap to Reveal
-                  </span>
-                </div>
+                <span className="text-xl md:text-2xl font-bold text-gray-800 z-10">
+                  Click to Reveal
+                </span>
               )}
-
               {showWord && (
-                <div className="flex flex-col items-center justify-center animate-fade-in-pop">
+                <>
                   <Badge
                     variant={isSusPlayer ? "destructive" : "secondary"}
-                    className={`text-lg md:text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"}`}
+                    className={`text-lg md:text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"} animate-fade-in-pop`}
                   >
                     {isSusPlayer ? "Imposter" : "Innocent"}
                   </Badge>
-                  <p className="text-4xl md:text-5xl font-medium text-purple-700 tracking-tighter leading-none">
+                  <p className="text-4xl md:text-5xl font-medium text-black tracking-tighter leading-none animate-fade-in-pop">
                     {currentWord}
                   </p>
-                </div>
+                </>
               )}
-            </CardContent>
+            </div>
 
             <Button
               onClick={handleNextPlayer}
               disabled={!showWord}
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
             </Button>

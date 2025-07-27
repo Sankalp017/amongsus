@@ -127,14 +127,22 @@
   animation: fade-in-out-subtle 1s ease-in-out forwards;
 }
 
-/* New animation for more suspenseful word reveal */
+/* Enhanced animation for more suspenseful word reveal */
 @keyframes fade-in-pop {
-  0% { opacity: 0; transform: translateY(5px) scale(0.98); } /* Reduced blur and initial transform */
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.8); /* Start further down and slightly smaller */
+    filter: blur(10px); /* More initial blur */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
 .animate-fade-in-pop {
-  animation: fade-in-pop 1s ease-out forwards; /* Slightly longer duration for smoothness */
+  animation: fade-in-pop 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; /* Smooth ease-out effect, slightly longer duration */
 }
 
 /* New animation for continuous slow spin */
