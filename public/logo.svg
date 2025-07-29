@@ -1,3 +1,4 @@
-<svg width="512" height="512" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="#FFFFFF">
-  <path d="M93.6,82.4,74.2,63A42.4,42.4,0,1,0,63,74.2l19.4,19.4a8.2,8.2,0,0,0,11.6-11.6ZM42.5,70A27.5,27.5,0,1,1,70,42.5,27.5,27.5,0,0,1,42.5,70Z"/>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="256" cy="256" r="256" fill="#6d28d9"/>
+  <text x="50%" y="50%" font-size="400" text-anchor="middle" dy=".35em">🤨</text>
 </svg>

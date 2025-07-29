@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { useNavigate } from "react-router-dom";
+import InstallPWAButton from "@/components/InstallPWAButton";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ const Index = () => {
           >
             How to Play
           </Button>
+          <InstallPWAButton />
         </div>
       </div>
       <MadeWithDyad />
