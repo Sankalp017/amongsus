@@ -1,0 +1,17 @@
+{
+  "name": "Among Sus",
+  "short_name": "Among Sus",
+  "description": "Uncover the Imposter in this thrilling word-based social deduction game.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#6d28d9",
+  "theme_color": "#6d28d9",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
