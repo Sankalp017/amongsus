@@ -12,6 +12,7 @@ import {
   DrawerTrigger,
   DrawerFooter,
   DrawerClose,
+  DrawerDescription,
 } from "@/components/ui/drawer";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -77,8 +78,11 @@ function MultiSelect({
       </DrawerTrigger>
       <DrawerContent className="bg-white text-gray-800">
         <div className="mx-auto w-full max-w-md">
-          <DrawerHeader>
-            <DrawerTitle className="text-2xl font-bold text-center">Select Topics</DrawerTitle>
+          <DrawerHeader className="text-center">
+            <DrawerTitle className="text-2xl font-bold">Select Topics</DrawerTitle>
+            <DrawerDescription>
+              Select multiple topics to get a new one in each round!
+            </DrawerDescription>
           </DrawerHeader>
           <div className="p-4 pb-0">
             <ScrollArea className="h-[40vh]">

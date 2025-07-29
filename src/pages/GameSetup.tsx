@@ -208,7 +208,7 @@ const GameSetup = () => {
               name="topics"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base md:text-lg">Select Topics</FormLabel>
+                  <FormLabel className="text-base md:text-lg">Multi-select Topics</FormLabel>
                   <FormControl>
                     <MultiSelect
                       options={wordCategories.map(cat => ({ value: cat, label: cat }))}
@@ -218,9 +218,6 @@ const GameSetup = () => {
                       className="w-full"
                     />
                   </FormControl>
-                  <FormDescription>
-                    Select multiple topics to get a new one in each round!
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
