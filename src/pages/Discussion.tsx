@@ -10,7 +10,8 @@ interface GameStateData {
   numPlayers: number;
   playerNames: string[];
   numSusPlayers: number;
-  topic?: string;
+  topic: string;
+  topics: string[];
   mainWord: string;
   susWord: string;
   susPlayerIndices: number[];

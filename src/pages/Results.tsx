@@ -12,7 +12,8 @@ interface GameStateData {
   numPlayers: number;
   playerNames: string[];
   numSusPlayers: number;
-  topic: string; // Ensure topic is always present
+  topic: string;
+  topics: string[];
   mainWord: string;
   susWord: string;
   susPlayerIndices: number[];
@@ -36,7 +37,6 @@ const Results = () => {
       }
     }
     setGameState(loadedState);
-    // Save the loaded state to ensure it persists if the user refreshes on this page
     if (loadedState) {
       saveGameState(loadedState);
     }
@@ -47,20 +47,18 @@ const Results = () => {
   }
 
   const handleNewGame = () => {
-    clearGameState(); // Clear all game state from local storage for a completely new game
+    clearGameState();
     navigate("/");
   };
 
   const handlePlayNextRound = () => {
-    // Prepare data for the next round, keeping player info but clearing round-specific details
     const nextRoundSetup = {
       numPlayers: gameState.numPlayers,
       playerNames: gameState.playerNames,
       numSusPlayers: gameState.numSusPlayers,
-      previousTopic: gameState.topic, // Pass the current topic to avoid repetition
+      topics: gameState.topics,
+      previousTopic: gameState.topic,
     };
-    // Clear the full game state from local storage before starting a new round
-    // NameReveal will then generate new words/sus players based on nextRoundSetup
     clearGameState();
     navigate("/name-reveal", { state: nextRoundSetup });
   };
@@ -77,7 +75,7 @@ const Results = () => {
               The discussion has concluded. Here's how the game was set up:
             </p>
 
-            <div className="space-y-4 mb-8"> {/* New container for the three boxes */}
+            <div className="space-y-4 mb-8">
               <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <h4 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-center gap-2 text-purple-800">
                   <BookOpen className="h-5 w-5 md:h-6 md:w-6 text-purple-700" /> The Words Were:

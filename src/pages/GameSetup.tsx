@@ -15,18 +15,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "sonner";
 import { wordCategories } from "@/utils/words";
 import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { saveGameState, clearGameState } from "@/utils/localStorage";
+import { MultiSelect } from "@/components/ui/multi-select";
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -36,11 +30,11 @@ const formSchema = z.object({
     .max(20, { message: "Maximum 20 players allowed." }),
   playerNames: z
     .array(z.string().min(1, { message: "Player name cannot be empty." }))
-    .min(3, { message: "Please enter names for all players." }), // Removed the refine for unique names here
+    .min(3, { message: "Please enter names for all players." }),
   numSusPlayers: z.coerce
     .number()
     .min(1, { message: "Minimum 1 imposter required." }),
-  topic: z.string().optional(),
+  topics: z.array(z.string()).min(1, { message: "Please select at least one topic." }),
 }).refine(data => data.numSusPlayers < data.numPlayers, {
   message: "Number of imposters must be less than total players.",
   path: ["numSusPlayers"],
@@ -56,7 +50,7 @@ const GameSetup = () => {
       numPlayers: 3,
       playerNames: ["", "", ""],
       numSusPlayers: 1,
-      topic: "🎲 Random words",
+      topics: ["🎲 Random words"],
     },
   });
 
@@ -222,24 +216,19 @@ const GameSetup = () => {
 
             <FormField
               control={form.control}
-              name="topic"
+              name="topics"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base md:text-lg">Select Topic (Optional)</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a topic" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {wordCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel className="text-base md:text-lg">Select Topics</FormLabel>
+                  <FormControl>
+                    <MultiSelect
+                      options={wordCategories.map(cat => ({ value: cat, label: cat }))}
+                      selected={field.value}
+                      onChange={field.onChange}
+                      placeholder="Select one or more topics"
+                      className="w-full"
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

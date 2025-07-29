@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { getWordsForTopic, wordCategories } from "@/utils/words";
+import { getWordsForTopic } from "@/utils/words";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { saveGameState, loadGameState } from "@/utils/localStorage";
@@ -12,7 +12,7 @@ interface GameSetupData {
   numPlayers: number;
   playerNames: string[];
   numSusPlayers: number;
-  topic?: string;
+  topics: string[];
   previousTopic?: string;
 }
 
@@ -20,6 +20,7 @@ interface GameStateData extends GameSetupData {
   mainWord: string;
   susWord: string;
   susPlayerIndices: number[];
+  topic: string; // The single topic chosen for this round
 }
 
 const NameReveal = () => {
@@ -53,18 +54,16 @@ const NameReveal = () => {
       utterance.lang = "en-US";
       const voices = speechSynthesis.getVoices();
       
-      // --- NEW: Prioritized Voice Selection for better consistency ---
       const preferredVoices = [
-        "Google US English", // High-quality on Chrome/Android
-        "Samantha",          // Common on Apple devices
-        "Alex",              // High-quality on macOS
-        "Tessa",             // Common on some systems
-        "Microsoft Zira - English (United States)", // Windows
+        "Google US English",
+        "Samantha",
+        "Alex",
+        "Tessa",
+        "Microsoft Zira - English (United States)",
       ];
 
       let selectedVoice = null;
 
-      // 1. Try to find a preferred, high-quality voice
       for (const name of preferredVoices) {
         const found = voices.find(v => v.name === name && v.lang.startsWith("en-"));
         if (found) {
@@ -73,12 +72,10 @@ const NameReveal = () => {
         }
       }
 
-      // 2. If not found, fall back to any US English female voice
       if (!selectedVoice) {
         selectedVoice = voices.find(v => v.lang === "en-US" && v.name.includes("Female"));
       }
 
-      // 3. As a last resort, find any US English voice
       if (!selectedVoice) {
         selectedVoice = voices.find(v => v.lang === "en-US");
       }
@@ -86,7 +83,6 @@ const NameReveal = () => {
       if (selectedVoice) {
         utterance.voice = selectedVoice;
       }
-      // --- END: New Logic ---
 
       speechSynthesis.speak(utterance);
       utteranceRef.current = utterance;
@@ -104,10 +100,9 @@ const NameReveal = () => {
       }
     };
 
-    handleVoicesChanged(); // Initial check
+    handleVoicesChanged();
     speechSynthesis.addEventListener("voiceschanged", handleVoicesChanged);
 
-    // Set up a timeout to show a warning if voices are still not loaded
     const warningTimeout = setTimeout(() => {
       if (speechSynthesis.getVoices().length === 0 && !ttsWarningShown) {
         toast.info("Voice announcements may not work in this browser.", {
@@ -116,7 +111,7 @@ const NameReveal = () => {
         });
         setTtsWarningShown(true);
       }
-    }, 2500); // Wait 2.5 seconds
+    }, 2500);
 
     return () => {
       speechSynthesis.removeEventListener("voiceschanged", handleVoicesChanged);
@@ -139,36 +134,41 @@ const NameReveal = () => {
       }
     }
 
-    setGameData(loadedGameState);
+    setGameData(loadedGameState as GameSetupData);
 
     const isNewGame = !(loadedGameState as GameStateData).mainWord || !(loadedGameState as GameStateData).susPlayerIndices;
 
     if (isNewGame) {
-      let selectedTopic = loadedGameState.topic || "🎲 Random words";
-      if (loadedGameState.previousTopic) {
-        const availableTopics = wordCategories.filter(cat => cat !== loadedGameState.previousTopic);
-        if (availableTopics.length > 0) {
-          selectedTopic = availableTopics[Math.floor(Math.random() * availableTopics.length)];
-        } else {
-          selectedTopic = wordCategories[Math.floor(Math.random() * wordCategories.length)];
-        }
+      const setupData = loadedGameState as GameSetupData;
+      let availableTopics = setupData.topics;
+      if (!availableTopics || availableTopics.length === 0) {
+          availableTopics = ["🎲 Random words"];
       }
 
+      if (setupData.previousTopic && availableTopics.length > 1) {
+          const filteredTopics = availableTopics.filter(t => t !== setupData.previousTopic);
+          if (filteredTopics.length > 0) {
+              availableTopics = filteredTopics;
+          }
+      }
+
+      const selectedTopicForRound = availableTopics[Math.floor(Math.random() * availableTopics.length)];
+
       const { mainWord: generatedMainWord, susWord: generatedSusWord } = getWordsForTopic(
-        selectedTopic,
-        loadedGameState.numSusPlayers
+        selectedTopicForRound,
+        setupData.numSusPlayers
       );
       setMainWord(generatedMainWord);
       setSusWord(generatedSusWord);
 
-      const allPlayerIndices = Array.from({ length: loadedGameState.numPlayers }, (_, i) => i);
+      const allPlayerIndices = Array.from({ length: setupData.numPlayers }, (_, i) => i);
       const shuffledIndices = allPlayerIndices.sort(() => 0.5 - Math.random());
-      const selectedSusIndices = shuffledIndices.slice(0, loadedGameState.numSusPlayers);
+      const selectedSusIndices = shuffledIndices.slice(0, setupData.numSusPlayers);
       setSusPlayerIndices(selectedSusIndices);
 
       saveGameState({
-        ...loadedGameState,
-        topic: selectedTopic,
+        ...setupData,
+        topic: selectedTopicForRound,
         mainWord: generatedMainWord,
         susWord: generatedSusWord,
         susPlayerIndices: selectedSusIndices,
@@ -220,6 +220,7 @@ const NameReveal = () => {
         mainWord,
         susWord,
         susPlayerIndices,
+        topic: loadGameState().topic, // Ensure topic is correctly passed
       };
       saveGameState(fullGameState);
       navigate("/discussion", { state: fullGameState });
