@@ -96,7 +96,7 @@ function MultiSelect({
                           : "bg-gray-100 hover:bg-gray-200"
                       )}
                     >
-                      <span className="text-lg font-medium">{option.label}</span>
+                      <span className="text-base font-medium">{option.label}</span>
                       {isSelected && <Check className="h-6 w-6" />}
                     </div>
                   );

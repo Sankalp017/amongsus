@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate }
-from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Form,
   FormControl,
@@ -21,6 +19,7 @@ import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { saveGameState, clearGameState } from "@/utils/localStorage";
 import { MultiSelect } from "@/components/ui/multi-select";
+import NumberStepper from "@/components/ui/NumberStepper";
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -65,21 +64,25 @@ const GameSetup = () => {
     });
     setPlayerInputs(newPlayerInputs);
     form.setValue("playerNames", newPlayerInputs);
+
+    // Clamp the number of imposters if it's no longer valid
+    const currentSusPlayers = form.getValues("numSusPlayers");
+    if (currentSusPlayers >= numPlayers) {
+      form.setValue("numSusPlayers", Math.max(1, numPlayers - 1));
+    }
   }, [numPlayers, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Manual duplicate check for player names
     const seenNames = new Set<string>();
     let hasDuplicateError = false;
 
-    // Clear previous player name errors to avoid stale messages
     values.playerNames.forEach((_, index) => {
       form.clearErrors(`playerNames.${index}`);
     });
 
     values.playerNames.forEach((name, index) => {
-      const lowerName = name.toLowerCase().trim(); // Trim whitespace
-      if (lowerName === "") { // Check for empty names after trim
+      const lowerName = name.toLowerCase().trim();
+      if (lowerName === "") {
         form.setError(`playerNames.${index}`, {
           type: "manual",
           message: "Player name cannot be empty.",
@@ -99,10 +102,9 @@ const GameSetup = () => {
 
     if (hasDuplicateError) {
       toast.error("Please correct the errors in player names.");
-      return; // Stop submission if there are duplicate or empty name errors
+      return;
     }
 
-    console.log("Game Setup Values:", values);
     saveGameState(values);
     toast.success("Game setup complete! Starting round...");
     navigate("/name-reveal", { state: values });
@@ -139,20 +141,12 @@ const GameSetup = () => {
                 <FormItem>
                   <FormLabel className="text-base md:text-lg mb-2">Number of Players</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="e.g., 3"
-                      className="text-center text-base md:text-lg py-2 w-full bg-green-100"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        const val = parseInt(e.target.value);
-                        if (!isNaN(val)) {
-                          form.setValue("numPlayers", val);
-                        }
-                      }}
+                    <NumberStepper
+                      value={field.value}
+                      onChange={field.onChange}
                       min={3}
                       max={20}
+                      className="bg-green-100"
                     />
                   </FormControl>
                   <FormMessage />
@@ -167,18 +161,12 @@ const GameSetup = () => {
                 <FormItem>
                   <FormLabel className="text-base md:text-lg">Number of Imposters</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="e.g., 1"
-                      className="text-center text-base md:text-lg py-2 w-full bg-red-100"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        const val = parseInt(e.target.value);
-                        if (!isNaN(val)) {
-                          form.setValue("numSusPlayers", val);
-                        }
-                      }}
+                    <NumberStepper
+                      value={field.value}
+                      onChange={field.onChange}
+                      min={1}
+                      max={numPlayers - 1}
+                      className="bg-red-100"
                     />
                   </FormControl>
                   <FormMessage />
