@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { saveGameState, loadGameState } from "@/utils/localStorage";
 import Timer from "@/components/Timer";
+import { shuffleArray } from "@/utils/arrayUtils"; // Import the new shuffle utility
 
 interface GameSetupData {
   numPlayers: number;
@@ -162,7 +163,7 @@ const NameReveal = () => {
       setSusWord(generatedSusWord);
 
       const allPlayerIndices = Array.from({ length: setupData.numPlayers }, (_, i) => i);
-      const shuffledIndices = allPlayerIndices.sort(() => 0.5 - Math.random());
+      const shuffledIndices = shuffleArray(allPlayerIndices); // Use the new shuffleArray function
       const selectedSusIndices = shuffledIndices.slice(0, setupData.numSusPlayers);
       setSusPlayerIndices(selectedSusIndices);
 
