@@ -58,6 +58,7 @@ const Results = () => {
       numSusPlayers: gameState.numSusPlayers,
       topics: gameState.topics,
       previousTopic: gameState.topic,
+      previousSusPlayerIndices: gameState.susPlayerIndices, // Pass previous imposters
     };
     clearGameState();
     navigate("/name-reveal", { state: nextRoundSetup });

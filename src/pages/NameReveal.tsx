@@ -15,6 +15,7 @@ interface GameSetupData {
   numSusPlayers: number;
   topics: string[];
   previousTopic?: string;
+  previousSusPlayerIndices?: number[]; // Added this
 }
 
 interface GameStateData extends GameSetupData {
@@ -130,7 +131,6 @@ const NameReveal = () => {
       loadedGameState = loadGameState();
       if (!loadedGameState || !loadedGameState.playerNames || loadedGameState.playerNames.length === 0) {
         toast.error("Game data not found. Please set up the game again.");
-        navigate("/setup");
         return;
       }
     }
@@ -141,6 +141,8 @@ const NameReveal = () => {
 
     if (isNewGame) {
       const setupData = loadedGameState as GameSetupData;
+      const previousSusPlayerIndices = setupData.previousSusPlayerIndices || []; // Get previous imposters
+
       let availableTopics = setupData.topics;
       if (!availableTopics || availableTopics.length === 0) {
           availableTopics = ["🎲 Random words"];
@@ -162,17 +164,54 @@ const NameReveal = () => {
       setMainWord(generatedMainWord);
       setSusWord(generatedSusWord);
 
+      let finalSusPlayerIndices: number[] = [];
       const allPlayerIndices = Array.from({ length: setupData.numPlayers }, (_, i) => i);
-      const shuffledIndices = shuffleArray(allPlayerIndices); // Use the new shuffleArray function
-      const selectedSusIndices = shuffledIndices.slice(0, setupData.numSusPlayers);
-      setSusPlayerIndices(selectedSusIndices);
+
+      let attempts = 0;
+      const MAX_ATTEMPTS = 50; // Limit attempts to prevent potential infinite loops in very rare edge cases
+
+      while (attempts < MAX_ATTEMPTS) {
+          const shuffledIndices = shuffleArray(allPlayerIndices);
+          const currentCandidateSusIndices = shuffledIndices.slice(0, setupData.numSusPlayers);
+
+          const overlapCount = currentCandidateSusIndices.filter(index =>
+              previousSusPlayerIndices.includes(index)
+          ).length;
+
+          // If overlap is 0 or 1, it's acceptable
+          if (overlapCount < 2) {
+              finalSusPlayerIndices = currentCandidateSusIndices;
+              break;
+          }
+
+          // If overlap is 2 or more, check if it's possible to get less overlap
+          // We need to pick at least (numSusPlayers - 1) players who were NOT previous imposters.
+          const numNonPreviousImposters = allPlayerIndices.filter(index => !previousSusPlayerIndices.includes(index)).length;
+          const canReduceOverlap = numNonPreviousImposters >= (setupData.numSusPlayers - 1);
+
+          if (!canReduceOverlap) {
+              // If it's not possible to reduce overlap, accept the current selection
+              finalSusPlayerIndices = currentCandidateSusIndices;
+              break;
+          }
+
+          attempts++;
+      }
+
+      // Fallback if MAX_ATTEMPTS reached without finding an ideal set (should be rare)
+      if (finalSusPlayerIndices.length === 0) {
+          const shuffledIndices = shuffleArray(allPlayerIndices);
+          finalSusPlayerIndices = shuffledIndices.slice(0, setupData.numSusPlayers);
+      }
+
+      setSusPlayerIndices(finalSusPlayerIndices);
 
       saveGameState({
         ...setupData,
         topic: selectedTopicForRound,
         mainWord: generatedMainWord,
         susWord: generatedSusWord,
-        susPlayerIndices: selectedSusIndices,
+        susPlayerIndices: finalSusPlayerIndices,
       });
     } else {
       const fullGameState = loadedGameState as GameStateData;
