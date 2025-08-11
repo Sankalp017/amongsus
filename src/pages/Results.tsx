@@ -17,6 +17,7 @@ interface GameStateData {
   mainWord: string;
   susWord: string;
   susPlayerIndices: number[];
+  playerDroughts: number[]; // Added for tracking imposter drought
 }
 
 const Results = () => {
@@ -36,9 +37,13 @@ const Results = () => {
         return;
       }
     }
+    // Ensure playerDroughts is initialized if missing from loaded state (for backward compatibility)
+    if (loadedState && !loadedState.playerDroughts) {
+      loadedState.playerDroughts = new Array(loadedState.numPlayers).fill(0);
+    }
     setGameState(loadedState);
     if (loadedState) {
-      saveGameState(loadedState);
+      saveGameState(loadedState); // Save updated state with droughts if it was just initialized
     }
   }, [initialGameState, navigate]);
 
@@ -52,13 +57,25 @@ const Results = () => {
   };
 
   const handlePlayNextRound = () => {
+    if (!gameState) return;
+
+    // Calculate new playerDroughts for the next round
+    const newPlayerDroughts = gameState.playerNames.map((_, index) => {
+      if (gameState.susPlayerIndices.includes(index)) {
+        return 0; // Reset if was imposter
+      } else {
+        return (gameState.playerDroughts[index] || 0) + 1; // Increment if innocent
+      }
+    });
+
     const nextRoundSetup = {
       numPlayers: gameState.numPlayers,
       playerNames: gameState.playerNames,
       numSusPlayers: gameState.numSusPlayers,
       topics: gameState.topics,
       previousTopic: gameState.topic,
-      previousSusPlayerIndices: gameState.susPlayerIndices, // Pass previous imposters
+      previousSusPlayerIndices: gameState.susPlayerIndices,
+      playerDroughts: newPlayerDroughts, // Pass updated droughts for the next round
     };
     clearGameState();
     navigate("/name-reveal", { state: nextRoundSetup });

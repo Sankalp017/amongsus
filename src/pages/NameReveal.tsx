@@ -15,7 +15,8 @@ interface GameSetupData {
   numSusPlayers: number;
   topics: string[];
   previousTopic?: string;
-  previousSusPlayerIndices?: number[]; // Added this
+  previousSusPlayerIndices?: number[];
+  playerDroughts?: number[]; // Added this
 }
 
 interface GameStateData extends GameSetupData {
@@ -23,6 +24,7 @@ interface GameStateData extends GameSetupData {
   susWord: string;
   susPlayerIndices: number[];
   topic: string; // The single topic chosen for this round
+  playerDroughts: number[]; // Make non-optional for full game state
 }
 
 const NameReveal = () => {
@@ -141,7 +143,8 @@ const NameReveal = () => {
 
     if (isNewGame) {
       const setupData = loadedGameState as GameSetupData;
-      const previousSusPlayerIndices = setupData.previousSusPlayerIndices || []; // Get previous imposters
+      const previousSusPlayerIndices = setupData.previousSusPlayerIndices || [];
+      const playerDroughts = setupData.playerDroughts || new Array(setupData.numPlayers).fill(0); // Use received droughts or initialize
 
       let availableTopics = setupData.topics;
       if (!availableTopics || availableTopics.length === 0) {
@@ -164,33 +167,75 @@ const NameReveal = () => {
       setMainWord(generatedMainWord);
       setSusWord(generatedSusWord);
 
+      // Imposter selection logic with pity timer and max 1 repeat
       let finalSusPlayerIndices: number[] = [];
       const allPlayerIndices = Array.from({ length: setupData.numPlayers }, (_, i) => i);
 
+      const PITY_THRESHOLD = 3; // After 3 rounds of being innocent, player gets a higher chance
+
+      const duePlayers = allPlayerIndices.filter(i => playerDroughts[i] >= PITY_THRESHOLD);
+      const nonDuePlayers = allPlayerIndices.filter(i => playerDroughts[i] < PITY_THRESHOLD);
+
       let attempts = 0;
-      const MAX_ATTEMPTS = 50; // Limit attempts to prevent potential infinite loops in very rare edge cases
+      const MAX_ATTEMPTS = 100; // Max attempts to find an ideal set
 
       while (attempts < MAX_ATTEMPTS) {
-          const shuffledIndices = shuffleArray(allPlayerIndices);
-          const currentCandidateSusIndices = shuffledIndices.slice(0, setupData.numSusPlayers);
+          let currentCandidateSusIndices: number[] = [];
+          let tempAvailablePlayers = [...allPlayerIndices]; // Pool to draw from
 
+          // Prioritize picking "due" players first, then fill with others
+          const shuffledDuePlayers = shuffleArray(duePlayers);
+          const shuffledNonDuePlayers = shuffleArray(nonDuePlayers);
+
+          // Try to pick due players first
+          for (const playerIdx of shuffledDuePlayers) {
+              if (currentCandidateSusIndices.length < setupData.numSusPlayers) {
+                  currentCandidateSusIndices.push(playerIdx);
+                  tempAvailablePlayers = tempAvailablePlayers.filter(p => p !== playerIdx);
+              } else {
+                  break;
+              }
+          }
+
+          // Fill remaining slots with non-due players
+          for (const playerIdx of shuffledNonDuePlayers) {
+              if (currentCandidateSusIndices.length < setupData.numSusPlayers && !currentCandidateSusIndices.includes(playerIdx)) {
+                  currentCandidateSusIndices.push(playerIdx);
+                  tempAvailablePlayers = tempAvailablePlayers.filter(p => p !== playerIdx);
+              } else if (currentCandidateSusIndices.length >= setupData.numSusPlayers) {
+                  break;
+              }
+          }
+
+          // Ensure we have exactly numSusPlayers (should be guaranteed if numPlayers >= numSusPlayers)
+          while (currentCandidateSusIndices.length < setupData.numSusPlayers) {
+              const randomIndex = Math.floor(Math.random() * tempAvailablePlayers.length);
+              currentCandidateSusIndices.push(tempAvailablePlayers[randomIndex]);
+              tempAvailablePlayers.splice(randomIndex, 1); // Remove to avoid duplicates
+          }
+
+          // Check overlap with previous imposters
           const overlapCount = currentCandidateSusIndices.filter(index =>
               previousSusPlayerIndices.includes(index)
           ).length;
 
-          // If overlap is 0 or 1, it's acceptable
-          if (overlapCount < 2) {
+          // Check if at least one "due" player was picked, if there are any "due" players
+          const atLeastOneDuePicked = duePlayers.length === 0 || currentCandidateSusIndices.some(idx => duePlayers.includes(idx));
+
+          // Acceptance criteria:
+          // 1. Overlap is 0 or 1.
+          // 2. If there are "due" players, at least one was picked.
+          if (overlapCount < 2 && atLeastOneDuePicked) {
               finalSusPlayerIndices = currentCandidateSusIndices;
               break;
           }
 
-          // If overlap is 2 or more, check if it's possible to get less overlap
-          // We need to pick at least (numSusPlayers - 1) players who were NOT previous imposters.
+          // If we couldn't meet the ideal criteria, check if it's even possible to get overlap < 2
           const numNonPreviousImposters = allPlayerIndices.filter(index => !previousSusPlayerIndices.includes(index)).length;
-          const canReduceOverlap = numNonPreviousImposters >= (setupData.numSusPlayers - 1);
+          const canAchieveLowOverlap = numNonPreviousImposters >= (setupData.numSusPlayers - 1);
 
-          if (!canReduceOverlap) {
-              // If it's not possible to reduce overlap, accept the current selection
+          if (overlapCount >= 2 && !canAchieveLowOverlap) {
+              // If overlap is 2+ AND it's impossible to get less overlap, accept this set
               finalSusPlayerIndices = currentCandidateSusIndices;
               break;
           }
@@ -198,26 +243,29 @@ const NameReveal = () => {
           attempts++;
       }
 
-      // Fallback if MAX_ATTEMPTS reached without finding an ideal set (should be rare)
+      // Final fallback if MAX_ATTEMPTS reached without finding an ideal set
       if (finalSusPlayerIndices.length === 0) {
-          const shuffledIndices = shuffleArray(allPlayerIndices);
-          finalSusPlayerIndices = shuffledIndices.slice(0, setupData.numSusPlayers);
+          finalSusPlayerIndices = shuffleArray(allPlayerIndices).slice(0, setupData.numSusPlayers);
       }
 
       setSusPlayerIndices(finalSusPlayerIndices);
 
+      // Save the full game state for the current round (including the selected topic and words)
+      // playerDroughts are updated in Results.tsx for the *next* round, but we save the current state for page refreshes.
       saveGameState({
         ...setupData,
         topic: selectedTopicForRound,
         mainWord: generatedMainWord,
         susWord: generatedSusWord,
         susPlayerIndices: finalSusPlayerIndices,
+        playerDroughts: playerDroughts, // Save the droughts that were used for this round's selection
       });
-    } else {
+    } else { // This branch is for loading an existing game state (e.g., page refresh)
       const fullGameState = loadedGameState as GameStateData;
       setMainWord(fullGameState.mainWord);
       setSusWord(fullGameState.susWord);
       setSusPlayerIndices(fullGameState.susPlayerIndices);
+      setGameData(fullGameState); // Ensure gameData is set for existing state
     }
 
     return () => {
@@ -261,6 +309,7 @@ const NameReveal = () => {
         susWord,
         susPlayerIndices,
         topic: loadGameState().topic, // Ensure topic is correctly passed
+        playerDroughts: gameData.playerDroughts || new Array(gameData.numPlayers).fill(0), // Ensure droughts are passed
       };
       saveGameState(fullGameState);
       navigate("/discussion", { state: fullGameState });
