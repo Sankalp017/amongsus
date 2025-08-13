@@ -16,7 +16,7 @@ interface GameSetupData {
   topics: string[];
   previousTopic?: string;
   previousSusPlayerIndices?: number[];
-  playerDroughts?: number[]; // Added this
+  consecutiveImposterRounds?: number[]; // Changed to consecutiveImposterRounds
 }
 
 interface GameStateData extends GameSetupData {
@@ -24,7 +24,7 @@ interface GameStateData extends GameSetupData {
   susWord: string;
   susPlayerIndices: number[];
   topic: string; // The single topic chosen for this round
-  playerDroughts: number[]; // Make non-optional for full game state
+  consecutiveImposterRounds: number[]; // Make non-optional for full game state
 }
 
 const NameReveal = () => {
@@ -143,8 +143,7 @@ const NameReveal = () => {
 
     if (isNewGame) {
       const setupData = loadedGameState as GameSetupData;
-      const previousSusPlayerIndices = setupData.previousSusPlayerIndices || [];
-      const playerDroughts = setupData.playerDroughts || new Array(setupData.numPlayers).fill(0); // Use received droughts or initialize
+      const previousConsecutiveImposterRounds = setupData.consecutiveImposterRounds || new Array(setupData.numPlayers).fill(0);
 
       let availableTopics = setupData.topics;
       if (!availableTopics || availableTopics.length === 0) {
@@ -167,61 +166,44 @@ const NameReveal = () => {
       setMainWord(generatedMainWord);
       setSusWord(generatedSusWord);
 
-      // New weighted random selection logic
       const allPlayerIndices = Array.from({ length: setupData.numPlayers }, (_, i) => i);
-      const BASE_WEIGHT = 1.0;
-      const DROUGHT_BONUS = 1.5; // Each round of being innocent adds this much weight
-      const REPEAT_PENALTY_MULTIPLIER = 0.25; // Drastic penalty for being imposter last round
+      
+      // Filter out players who have been imposter for 2 consecutive rounds
+      const strictlyEligiblePlayers = allPlayerIndices.filter(index =>
+        (previousConsecutiveImposterRounds[index] || 0) < 2
+      );
 
-      let weightedPlayers = allPlayerIndices.map(index => {
-        const drought = playerDroughts[index] || 0;
-        const isPreviousImposter = previousSusPlayerIndices.includes(index);
-        
-        let weight = BASE_WEIGHT + (drought * DROUGHT_BONUS);
-        if (isPreviousImposter) {
-            weight *= REPEAT_PENALTY_MULTIPLIER;
-        }
+      let finalSusPlayerIndices: number[] = [];
 
-        return { index, weight };
-      });
-
-      const finalSusPlayerIndices: number[] = [];
-      const availablePlayers = [...weightedPlayers];
-
-      for (let i = 0; i < setupData.numSusPlayers; i++) {
-        if (availablePlayers.length === 0) break;
-
-        const totalWeight = availablePlayers.reduce((sum, p) => sum + p.weight, 0);
-        let random = Math.random() * totalWeight;
-
-        let chosenPlayerIndexInAvailable = -1;
-        for (let j = 0; j < availablePlayers.length; j++) {
-            random -= availablePlayers[j].weight;
-            if (random <= 0) {
-                chosenPlayerIndexInAvailable = j;
-                break;
-            }
-        }
-        
-        if (chosenPlayerIndexInAvailable === -1) { // Fallback for floating point issues
-            chosenPlayerIndexInAvailable = availablePlayers.length - 1;
-        }
-
-        const [selectedPlayer] = availablePlayers.splice(chosenPlayerIndexInAvailable, 1);
-        finalSusPlayerIndices.push(selectedPlayer.index);
+      if (strictlyEligiblePlayers.length < setupData.numSusPlayers) {
+          // This means we cannot fulfill the request without violating the "no 3 consecutive" rule.
+          toast.error(`Cannot select ${setupData.numSusPlayers} imposters without someone being imposter 3 times in a row. Only ${strictlyEligiblePlayers.length} players are eligible. Please adjust game settings or accept fewer imposters this round.`);
+          // For now, we will select as many imposters as possible from the eligible pool.
+          finalSusPlayerIndices = shuffleArray(strictlyEligiblePlayers).slice(0, strictlyEligiblePlayers.length);
+      } else {
+          // If there are enough eligible players, shuffle them and pick.
+          finalSusPlayerIndices = shuffleArray(strictlyEligiblePlayers).slice(0, setupData.numSusPlayers);
       }
-
       setSusPlayerIndices(finalSusPlayerIndices);
 
-      // Save the full game state for the current round (including the selected topic and words)
-      // playerDroughts are updated in Results.tsx for the *next* round, but we save the current state for page refreshes.
+      // Calculate nextConsecutiveImposterRounds
+      const nextConsecutiveImposterRounds = new Array(setupData.numPlayers).fill(0);
+      allPlayerIndices.forEach(index => {
+          if (finalSusPlayerIndices.includes(index)) {
+              nextConsecutiveImposterRounds[index] = (previousConsecutiveImposterRounds[index] || 0) + 1;
+          } else {
+              nextConsecutiveImposterRounds[index] = 0; // Reset if innocent
+          }
+      });
+
+      // Save the full game state
       saveGameState({
         ...setupData,
         topic: selectedTopicForRound,
         mainWord: generatedMainWord,
         susWord: generatedSusWord,
         susPlayerIndices: finalSusPlayerIndices,
-        playerDroughts: playerDroughts, // Save the droughts that were used for this round's selection
+        consecutiveImposterRounds: nextConsecutiveImposterRounds, // Save for next round
       });
     } else { // This branch is for loading an existing game state (e.g., page refresh)
       const fullGameState = loadedGameState as GameStateData;
@@ -272,7 +254,7 @@ const NameReveal = () => {
         susWord,
         susPlayerIndices,
         topic: loadGameState().topic, // Ensure topic is correctly passed
-        playerDroughts: gameData.playerDroughts || new Array(gameData.numPlayers).fill(0), // Ensure droughts are passed
+        consecutiveImposterRounds: gameData.consecutiveImposterRounds || new Array(gameData.numPlayers).fill(0), // Ensure consecutiveImposterRounds are passed
       };
       saveGameState(fullGameState);
       navigate("/discussion", { state: fullGameState });

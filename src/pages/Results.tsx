@@ -17,7 +17,7 @@ interface GameStateData {
   mainWord: string;
   susWord: string;
   susPlayerIndices: number[];
-  playerDroughts: number[]; // Added for tracking imposter drought
+  consecutiveImposterRounds: number[]; // Changed to consecutiveImposterRounds
 }
 
 const Results = () => {
@@ -37,13 +37,13 @@ const Results = () => {
         return;
       }
     }
-    // Ensure playerDroughts is initialized if missing from loaded state (for backward compatibility)
-    if (loadedState && !loadedState.playerDroughts) {
-      loadedState.playerDroughts = new Array(loadedState.numPlayers).fill(0);
+    // Ensure consecutiveImposterRounds is initialized if missing from loaded state (for backward compatibility)
+    if (loadedState && !loadedState.consecutiveImposterRounds) {
+      loadedState.consecutiveImposterRounds = new Array(loadedState.numPlayers).fill(0);
     }
     setGameState(loadedState);
     if (loadedState) {
-      saveGameState(loadedState); // Save updated state with droughts if it was just initialized
+      saveGameState(loadedState); // Save updated state with consecutiveImposterRounds if it was just initialized
     }
   }, [initialGameState, navigate]);
 
@@ -59,15 +59,8 @@ const Results = () => {
   const handlePlayNextRound = () => {
     if (!gameState) return;
 
-    // Calculate new playerDroughts for the next round
-    const newPlayerDroughts = gameState.playerNames.map((_, index) => {
-      if (gameState.susPlayerIndices.includes(index)) {
-        return 0; // Reset if was imposter
-      } else {
-        return (gameState.playerDroughts[index] || 0) + 1; // Increment if innocent
-      }
-    });
-
+    // The consecutiveImposterRounds for the next round is already calculated and stored in gameState
+    // from the NameReveal component. We just pass it along.
     const nextRoundSetup = {
       numPlayers: gameState.numPlayers,
       playerNames: gameState.playerNames,
@@ -75,7 +68,7 @@ const Results = () => {
       topics: gameState.topics,
       previousTopic: gameState.topic,
       previousSusPlayerIndices: gameState.susPlayerIndices,
-      playerDroughts: newPlayerDroughts, // Pass updated droughts for the next round
+      consecutiveImposterRounds: gameState.consecutiveImposterRounds, // Pass updated consecutiveImposterRounds for the next round
     };
     clearGameState();
     navigate("/name-reveal", { state: nextRoundSetup });
