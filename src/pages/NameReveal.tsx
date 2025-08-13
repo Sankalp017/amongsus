@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { saveGameState, loadGameState } from "@/utils/localStorage";
 import Timer from "@/components/Timer";
-import { shuffleArray } from "@/utils/arrayUtils"; // Import the new shuffle utility
+import { shuffleArray } from "@/utils/arrayUtils";
 
 interface GameSetupData {
   numPlayers: number;
@@ -16,7 +16,8 @@ interface GameSetupData {
   topics: string[];
   previousTopic?: string;
   previousSusPlayerIndices?: number[];
-  consecutiveImposterRounds?: number[]; // Changed to consecutiveImposterRounds
+  consecutiveImposterRounds?: number[];
+  currentRound?: number; // Make optional for initial load, will be set to 1
 }
 
 interface GameStateData extends GameSetupData {
@@ -25,6 +26,7 @@ interface GameStateData extends GameSetupData {
   susPlayerIndices: number[];
   topic: string; // The single topic chosen for this round
   consecutiveImposterRounds: number[]; // Make non-optional for full game state
+  currentRound: number; // Make non-optional for full game state
 }
 
 const NameReveal = () => {
@@ -137,14 +139,18 @@ const NameReveal = () => {
       }
     }
 
-    setGameData(loadedGameState as GameSetupData);
+    // Ensure currentRound is initialized, defaulting to 1 if not present
+    const currentRound = (loadedGameState as GameStateData).currentRound || 1;
+    // Ensure consecutiveImposterRounds is initialized
+    const previousConsecutiveImposterRounds = (loadedGameState as GameStateData).consecutiveImposterRounds || new Array(loadedGameState.numPlayers).fill(0);
 
-    const isNewGame = !(loadedGameState as GameStateData).mainWord || !(loadedGameState as GameStateData).susPlayerIndices;
+    setGameData({ ...loadedGameState, currentRound, consecutiveImposterRounds: previousConsecutiveImposterRounds } as GameSetupData);
 
-    if (isNewGame) {
+    const isNewRoundSetup = !(loadedGameState as GameStateData).mainWord || !(loadedGameState as GameStateData).susPlayerIndices;
+
+    if (isNewRoundSetup) {
       const setupData = loadedGameState as GameSetupData;
-      const previousConsecutiveImposterRounds = setupData.consecutiveImposterRounds || new Array(setupData.numPlayers).fill(0);
-
+      
       let availableTopics = setupData.topics;
       if (!availableTopics || availableTopics.length === 0) {
           availableTopics = ["🎲 Random words"];
@@ -168,22 +174,20 @@ const NameReveal = () => {
 
       const allPlayerIndices = Array.from({ length: setupData.numPlayers }, (_, i) => i);
       
-      // Filter out players who have been imposter for 2 consecutive rounds
-      const strictlyEligiblePlayers = allPlayerIndices.filter(index =>
-        (previousConsecutiveImposterRounds[index] || 0) < 2
-      );
+      // Filter eligible players based on currentRound and consecutiveImposterRounds
+      const strictlyEligiblePlayers = allPlayerIndices.filter(index => {
+        const consecutiveCount = previousConsecutiveImposterRounds[index] || 0;
+        if (currentRound <= 2) { // For round 1 and 2, no consecutive imposters
+          return consecutiveCount === 0;
+        } else { // For round 3 onwards, no more than 2 consecutive imposters
+          return consecutiveCount < 2;
+        }
+      });
 
       let finalSusPlayerIndices: number[] = [];
-
-      if (strictlyEligiblePlayers.length < setupData.numSusPlayers) {
-          // This means we cannot fulfill the request without violating the "no 3 consecutive" rule.
-          toast.error(`Cannot select ${setupData.numSusPlayers} imposters without someone being imposter 3 times in a row. Only ${strictlyEligiblePlayers.length} players are eligible. Please adjust game settings or accept fewer imposters this round.`);
-          // For now, we will select as many imposters as possible from the eligible pool.
-          finalSusPlayerIndices = shuffleArray(strictlyEligiblePlayers).slice(0, strictlyEligiblePlayers.length);
-      } else {
-          // If there are enough eligible players, shuffle them and pick.
-          finalSusPlayerIndices = shuffleArray(strictlyEligiblePlayers).slice(0, setupData.numSusPlayers);
-      }
+      // Select as many imposters as possible from the eligible pool, up to numSusPlayers
+      finalSusPlayerIndices = shuffleArray(strictlyEligiblePlayers).slice(0, Math.min(setupData.numSusPlayers, strictlyEligiblePlayers.length));
+      
       setSusPlayerIndices(finalSusPlayerIndices);
 
       // Calculate nextConsecutiveImposterRounds
@@ -204,6 +208,7 @@ const NameReveal = () => {
         susWord: generatedSusWord,
         susPlayerIndices: finalSusPlayerIndices,
         consecutiveImposterRounds: nextConsecutiveImposterRounds, // Save for next round
+        currentRound: currentRound, // Save currentRound
       });
     } else { // This branch is for loading an existing game state (e.g., page refresh)
       const fullGameState = loadedGameState as GameStateData;
@@ -255,6 +260,7 @@ const NameReveal = () => {
         susPlayerIndices,
         topic: loadGameState().topic, // Ensure topic is correctly passed
         consecutiveImposterRounds: gameData.consecutiveImposterRounds || new Array(gameData.numPlayers).fill(0), // Ensure consecutiveImposterRounds are passed
+        currentRound: gameData.currentRound || 1, // Ensure currentRound is passed
       };
       saveGameState(fullGameState);
       navigate("/discussion", { state: fullGameState });

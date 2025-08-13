@@ -35,7 +35,8 @@ const formSchema = z.object({
     .number()
     .min(1, { message: "Minimum 1 imposter required." }),
   topics: z.array(z.string()).min(1, { message: "Please select at least one topic." }),
-  consecutiveImposterRounds: z.array(z.number()).optional(), // Added for tracking imposter drought
+  consecutiveImposterRounds: z.array(z.number()).optional(),
+  currentRound: z.number().optional(), // Added currentRound to schema
 }).refine(data => data.numSusPlayers < data.numPlayers, {
   message: "Number of imposters must be less than total players.",
   path: ["numSusPlayers"],
@@ -52,7 +53,8 @@ const GameSetup = () => {
       playerNames: ["", "", ""],
       numSusPlayers: 1,
       topics: ["🎲 Random words"],
-      consecutiveImposterRounds: [], // Initialize empty, will be filled on submit
+      consecutiveImposterRounds: [],
+      currentRound: 1, // Initialize currentRound to 1
     },
   });
 
@@ -114,9 +116,10 @@ const GameSetup = () => {
     saveGameState({
       ...values,
       consecutiveImposterRounds: initialConsecutiveImposterRounds,
+      currentRound: 1, // Ensure currentRound is explicitly set to 1 for a new game
     });
     toast.success("Game setup complete! Starting round...");
-    navigate("/name-reveal", { state: { ...values, consecutiveImposterRounds: initialConsecutiveImposterRounds } });
+    navigate("/name-reveal", { state: { ...values, consecutiveImposterRounds: initialConsecutiveImposterRounds, currentRound: 1 } });
   };
 
   const handleGoBack = () => {

@@ -17,7 +17,8 @@ interface GameStateData {
   mainWord: string;
   susWord: string;
   susPlayerIndices: number[];
-  consecutiveImposterRounds: number[]; // Changed to consecutiveImposterRounds
+  consecutiveImposterRounds: number[];
+  currentRound: number; // Added currentRound
 }
 
 const Results = () => {
@@ -37,13 +38,16 @@ const Results = () => {
         return;
       }
     }
-    // Ensure consecutiveImposterRounds is initialized if missing from loaded state (for backward compatibility)
+    // Ensure consecutiveImposterRounds and currentRound are initialized if missing from loaded state (for backward compatibility)
     if (loadedState && !loadedState.consecutiveImposterRounds) {
       loadedState.consecutiveImposterRounds = new Array(loadedState.numPlayers).fill(0);
     }
+    if (loadedState && !loadedState.currentRound) {
+      loadedState.currentRound = 1;
+    }
     setGameState(loadedState);
     if (loadedState) {
-      saveGameState(loadedState); // Save updated state with consecutiveImposterRounds if it was just initialized
+      saveGameState(loadedState); // Save updated state with consecutiveImposterRounds and currentRound if they were just initialized
     }
   }, [initialGameState, navigate]);
 
@@ -59,8 +63,9 @@ const Results = () => {
   const handlePlayNextRound = () => {
     if (!gameState) return;
 
-    // The consecutiveImposterRounds for the next round is already calculated and stored in gameState
-    // from the NameReveal component. We just pass it along.
+    // Increment currentRound for the next round
+    const nextRoundNumber = (gameState.currentRound || 0) + 1;
+
     const nextRoundSetup = {
       numPlayers: gameState.numPlayers,
       playerNames: gameState.playerNames,
@@ -68,7 +73,8 @@ const Results = () => {
       topics: gameState.topics,
       previousTopic: gameState.topic,
       previousSusPlayerIndices: gameState.susPlayerIndices,
-      consecutiveImposterRounds: gameState.consecutiveImposterRounds, // Pass updated consecutiveImposterRounds for the next round
+      consecutiveImposterRounds: gameState.consecutiveImposterRounds,
+      currentRound: nextRoundNumber, // Pass the incremented currentRound
     };
     clearGameState();
     navigate("/name-reveal", { state: nextRoundSetup });
