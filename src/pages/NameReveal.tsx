@@ -169,27 +169,53 @@ const NameReveal = () => {
       setMainWord(generatedMainWord);
       setSusWord(generatedSusWord);
 
+      // Hybrid Imposter Selection Logic
+      const finalSusPlayerIndices: number[] = [];
+      const fairnessThreshold = setupData.numPlayers + 2;
       const allPlayerIndices = Array.from({ length: setupData.numPlayers }, (_, i) => i);
-      
-      const weightedPlayerPool: number[] = [];
-      allPlayerIndices.forEach(index => {
-          const roundsWaited = previousRoundsSinceImposter[index] || 0;
-          const weight = Math.pow(roundsWaited + 1, 2);
-          for (let i = 0; i < weight; i++) {
-              weightedPlayerPool.push(index);
-          }
+
+      // 1. Fairness Guarantee: Select players who have waited too long
+      const guaranteedImposters = allPlayerIndices.filter(
+        index => (previousRoundsSinceImposter[index] || 0) >= fairnessThreshold
+      );
+      guaranteedImposters.forEach(index => {
+        if (finalSusPlayerIndices.length < setupData.numSusPlayers) {
+          finalSusPlayerIndices.push(index);
+        }
       });
 
-      const shuffledPool = shuffleArray(weightedPlayerPool);
-      const uniqueImposterSet = new Set<number>();
-      for (const playerIndex of shuffledPool) {
-          if (uniqueImposterSet.size < setupData.numSusPlayers) {
-              uniqueImposterSet.add(playerIndex);
-          } else {
-              break;
-          }
+      // 2. Balanced Lottery for remaining spots
+      const remainingImpostersToSelect = setupData.numSusPlayers - finalSusPlayerIndices.length;
+      if (remainingImpostersToSelect > 0) {
+        const eligiblePlayers = allPlayerIndices.filter(index => !finalSusPlayerIndices.includes(index));
+        
+        const weightedPlayerPool: number[] = [];
+        eligiblePlayers.forEach(index => {
+            const roundsWaited = previousRoundsSinceImposter[index] || 0;
+            // Softer, linear weighting
+            const weight = roundsWaited + 1; 
+            for (let i = 0; i < weight; i++) {
+                weightedPlayerPool.push(index);
+            }
+        });
+
+        const shuffledPool = shuffleArray(weightedPlayerPool);
+        const uniqueImposterSet = new Set<number>();
+        for (const playerIndex of shuffledPool) {
+            if (uniqueImposterSet.size < remainingImpostersToSelect) {
+                uniqueImposterSet.add(playerIndex);
+            } else {
+                break;
+            }
+        }
+        
+        uniqueImposterSet.forEach(imposterIndex => {
+            if (finalSusPlayerIndices.length < setupData.numSusPlayers) {
+                finalSusPlayerIndices.push(imposterIndex);
+            }
+        });
       }
-      const finalSusPlayerIndices = Array.from(uniqueImposterSet);
+      
       setSusPlayerIndices(finalSusPlayerIndices);
 
       const nextRoundsSinceImposter = new Array(setupData.numPlayers).fill(0);
