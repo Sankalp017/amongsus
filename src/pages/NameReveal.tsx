@@ -167,85 +167,48 @@ const NameReveal = () => {
       setMainWord(generatedMainWord);
       setSusWord(generatedSusWord);
 
-      // Imposter selection logic with pity timer and max 1 repeat
-      let finalSusPlayerIndices: number[] = [];
+      // New weighted random selection logic
       const allPlayerIndices = Array.from({ length: setupData.numPlayers }, (_, i) => i);
+      const BASE_WEIGHT = 1.0;
+      const DROUGHT_BONUS = 1.5; // Each round of being innocent adds this much weight
+      const REPEAT_PENALTY_MULTIPLIER = 0.25; // Drastic penalty for being imposter last round
 
-      const PITY_THRESHOLD = 3; // After 3 rounds of being innocent, player gets a higher chance
+      let weightedPlayers = allPlayerIndices.map(index => {
+        const drought = playerDroughts[index] || 0;
+        const isPreviousImposter = previousSusPlayerIndices.includes(index);
+        
+        let weight = BASE_WEIGHT + (drought * DROUGHT_BONUS);
+        if (isPreviousImposter) {
+            weight *= REPEAT_PENALTY_MULTIPLIER;
+        }
 
-      const duePlayers = allPlayerIndices.filter(i => playerDroughts[i] >= PITY_THRESHOLD);
-      const nonDuePlayers = allPlayerIndices.filter(i => playerDroughts[i] < PITY_THRESHOLD);
+        return { index, weight };
+      });
 
-      let attempts = 0;
-      const MAX_ATTEMPTS = 100; // Max attempts to find an ideal set
+      const finalSusPlayerIndices: number[] = [];
+      const availablePlayers = [...weightedPlayers];
 
-      while (attempts < MAX_ATTEMPTS) {
-          let currentCandidateSusIndices: number[] = [];
-          let tempAvailablePlayers = [...allPlayerIndices]; // Pool to draw from
+      for (let i = 0; i < setupData.numSusPlayers; i++) {
+        if (availablePlayers.length === 0) break;
 
-          // Prioritize picking "due" players first, then fill with others
-          const shuffledDuePlayers = shuffleArray(duePlayers);
-          const shuffledNonDuePlayers = shuffleArray(nonDuePlayers);
+        const totalWeight = availablePlayers.reduce((sum, p) => sum + p.weight, 0);
+        let random = Math.random() * totalWeight;
 
-          // Try to pick due players first
-          for (const playerIdx of shuffledDuePlayers) {
-              if (currentCandidateSusIndices.length < setupData.numSusPlayers) {
-                  currentCandidateSusIndices.push(playerIdx);
-                  tempAvailablePlayers = tempAvailablePlayers.filter(p => p !== playerIdx);
-              } else {
-                  break;
-              }
-          }
+        let chosenPlayerIndexInAvailable = -1;
+        for (let j = 0; j < availablePlayers.length; j++) {
+            random -= availablePlayers[j].weight;
+            if (random <= 0) {
+                chosenPlayerIndexInAvailable = j;
+                break;
+            }
+        }
+        
+        if (chosenPlayerIndexInAvailable === -1) { // Fallback for floating point issues
+            chosenPlayerIndexInAvailable = availablePlayers.length - 1;
+        }
 
-          // Fill remaining slots with non-due players
-          for (const playerIdx of shuffledNonDuePlayers) {
-              if (currentCandidateSusIndices.length < setupData.numSusPlayers && !currentCandidateSusIndices.includes(playerIdx)) {
-                  currentCandidateSusIndices.push(playerIdx);
-                  tempAvailablePlayers = tempAvailablePlayers.filter(p => p !== playerIdx);
-              } else if (currentCandidateSusIndices.length >= setupData.numSusPlayers) {
-                  break;
-              }
-          }
-
-          // Ensure we have exactly numSusPlayers (should be guaranteed if numPlayers >= numSusPlayers)
-          while (currentCandidateSusIndices.length < setupData.numSusPlayers) {
-              const randomIndex = Math.floor(Math.random() * tempAvailablePlayers.length);
-              currentCandidateSusIndices.push(tempAvailablePlayers[randomIndex]);
-              tempAvailablePlayers.splice(randomIndex, 1); // Remove to avoid duplicates
-          }
-
-          // Check overlap with previous imposters
-          const overlapCount = currentCandidateSusIndices.filter(index =>
-              previousSusPlayerIndices.includes(index)
-          ).length;
-
-          // Check if at least one "due" player was picked, if there are any "due" players
-          const atLeastOneDuePicked = duePlayers.length === 0 || currentCandidateSusIndices.some(idx => duePlayers.includes(idx));
-
-          // Acceptance criteria:
-          // 1. Overlap is 0 or 1.
-          // 2. If there are "due" players, at least one was picked.
-          if (overlapCount < 2 && atLeastOneDuePicked) {
-              finalSusPlayerIndices = currentCandidateSusIndices;
-              break;
-          }
-
-          // If we couldn't meet the ideal criteria, check if it's even possible to get overlap < 2
-          const numNonPreviousImposters = allPlayerIndices.filter(index => !previousSusPlayerIndices.includes(index)).length;
-          const canAchieveLowOverlap = numNonPreviousImposters >= (setupData.numSusPlayers - 1);
-
-          if (overlapCount >= 2 && !canAchieveLowOverlap) {
-              // If overlap is 2+ AND it's impossible to get less overlap, accept this set
-              finalSusPlayerIndices = currentCandidateSusIndices;
-              break;
-          }
-
-          attempts++;
-      }
-
-      // Final fallback if MAX_ATTEMPTS reached without finding an ideal set
-      if (finalSusPlayerIndices.length === 0) {
-          finalSusPlayerIndices = shuffleArray(allPlayerIndices).slice(0, setupData.numSusPlayers);
+        const [selectedPlayer] = availablePlayers.splice(chosenPlayerIndexInAvailable, 1);
+        finalSusPlayerIndices.push(selectedPlayer.index);
       }
 
       setSusPlayerIndices(finalSusPlayerIndices);
