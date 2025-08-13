@@ -15,18 +15,17 @@ interface GameSetupData {
   numSusPlayers: number;
   topics: string[];
   previousTopic?: string;
-  previousSusPlayerIndices?: number[];
-  consecutiveImposterRounds?: number[];
-  currentRound?: number; // Make optional for initial load, will be set to 1
+  roundsSinceImposter?: number[];
+  currentRound?: number;
 }
 
 interface GameStateData extends GameSetupData {
   mainWord: string;
   susWord: string;
   susPlayerIndices: number[];
-  topic: string; // The single topic chosen for this round
-  consecutiveImposterRounds: number[]; // Make non-optional for full game state
-  currentRound: number; // Make non-optional for full game state
+  topic: string;
+  roundsSinceImposter: number[];
+  currentRound: number;
 }
 
 const NameReveal = () => {
@@ -139,12 +138,10 @@ const NameReveal = () => {
       }
     }
 
-    // Ensure currentRound is initialized, defaulting to 1 if not present
     const currentRound = (loadedGameState as GameStateData).currentRound || 1;
-    // Ensure consecutiveImposterRounds is initialized
-    const previousConsecutiveImposterRounds = (loadedGameState as GameStateData).consecutiveImposterRounds || new Array(loadedGameState.numPlayers).fill(0);
+    const previousRoundsSinceImposter = (loadedGameState as GameStateData).roundsSinceImposter || new Array(loadedGameState.numPlayers).fill(0);
 
-    setGameData({ ...loadedGameState, currentRound, consecutiveImposterRounds: previousConsecutiveImposterRounds } as GameSetupData);
+    setGameData({ ...loadedGameState, currentRound, roundsSinceImposter: previousRoundsSinceImposter } as GameSetupData);
 
     const isNewRoundSetup = !(loadedGameState as GameStateData).mainWord || !(loadedGameState as GameStateData).susPlayerIndices;
 
@@ -174,48 +171,51 @@ const NameReveal = () => {
 
       const allPlayerIndices = Array.from({ length: setupData.numPlayers }, (_, i) => i);
       
-      // Filter eligible players based on currentRound and consecutiveImposterRounds
-      const strictlyEligiblePlayers = allPlayerIndices.filter(index => {
-        const consecutiveCount = previousConsecutiveImposterRounds[index] || 0;
-        if (currentRound <= 2) { // For round 1 and 2, no consecutive imposters
-          return consecutiveCount === 0;
-        } else { // For round 3 onwards, no more than 2 consecutive imposters
-          return consecutiveCount < 2;
-        }
-      });
-
-      let finalSusPlayerIndices: number[] = [];
-      // Select as many imposters as possible from the eligible pool, up to numSusPlayers
-      finalSusPlayerIndices = shuffleArray(strictlyEligiblePlayers).slice(0, Math.min(setupData.numSusPlayers, strictlyEligiblePlayers.length));
-      
-      setSusPlayerIndices(finalSusPlayerIndices);
-
-      // Calculate nextConsecutiveImposterRounds
-      const nextConsecutiveImposterRounds = new Array(setupData.numPlayers).fill(0);
+      const weightedPlayerPool: number[] = [];
       allPlayerIndices.forEach(index => {
-          if (finalSusPlayerIndices.includes(index)) {
-              nextConsecutiveImposterRounds[index] = (previousConsecutiveImposterRounds[index] || 0) + 1;
-          } else {
-              nextConsecutiveImposterRounds[index] = 0; // Reset if innocent
+          const roundsWaited = previousRoundsSinceImposter[index] || 0;
+          const weight = Math.pow(roundsWaited + 1, 2);
+          for (let i = 0; i < weight; i++) {
+              weightedPlayerPool.push(index);
           }
       });
 
-      // Save the full game state
+      const shuffledPool = shuffleArray(weightedPlayerPool);
+      const uniqueImposterSet = new Set<number>();
+      for (const playerIndex of shuffledPool) {
+          if (uniqueImposterSet.size < setupData.numSusPlayers) {
+              uniqueImposterSet.add(playerIndex);
+          } else {
+              break;
+          }
+      }
+      const finalSusPlayerIndices = Array.from(uniqueImposterSet);
+      setSusPlayerIndices(finalSusPlayerIndices);
+
+      const nextRoundsSinceImposter = new Array(setupData.numPlayers).fill(0);
+      allPlayerIndices.forEach(index => {
+          if (finalSusPlayerIndices.includes(index)) {
+              nextRoundsSinceImposter[index] = 0;
+          } else {
+              nextRoundsSinceImposter[index] = (previousRoundsSinceImposter[index] || 0) + 1;
+          }
+      });
+
       saveGameState({
         ...setupData,
         topic: selectedTopicForRound,
         mainWord: generatedMainWord,
         susWord: generatedSusWord,
         susPlayerIndices: finalSusPlayerIndices,
-        consecutiveImposterRounds: nextConsecutiveImposterRounds, // Save for next round
-        currentRound: currentRound, // Save currentRound
+        roundsSinceImposter: nextRoundsSinceImposter,
+        currentRound: currentRound,
       });
-    } else { // This branch is for loading an existing game state (e.g., page refresh)
+    } else {
       const fullGameState = loadedGameState as GameStateData;
       setMainWord(fullGameState.mainWord);
       setSusWord(fullGameState.susWord);
       setSusPlayerIndices(fullGameState.susPlayerIndices);
-      setGameData(fullGameState); // Ensure gameData is set for existing state
+      setGameData(fullGameState);
     }
 
     return () => {
@@ -258,9 +258,9 @@ const NameReveal = () => {
         mainWord,
         susWord,
         susPlayerIndices,
-        topic: loadGameState().topic, // Ensure topic is correctly passed
-        consecutiveImposterRounds: gameData.consecutiveImposterRounds || new Array(gameData.numPlayers).fill(0), // Ensure consecutiveImposterRounds are passed
-        currentRound: gameData.currentRound || 1, // Ensure currentRound is passed
+        topic: loadGameState().topic,
+        roundsSinceImposter: gameData.roundsSinceImposter || new Array(gameData.numPlayers).fill(0),
+        currentRound: gameData.currentRound || 1,
       };
       saveGameState(fullGameState);
       navigate("/discussion", { state: fullGameState });

@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { BookOpen, UserX, Users } from "lucide-react";
 import { loadGameState, clearGameState, saveGameState } from "@/utils/localStorage";
 
@@ -17,8 +16,8 @@ interface GameStateData {
   mainWord: string;
   susWord: string;
   susPlayerIndices: number[];
-  consecutiveImposterRounds: number[];
-  currentRound: number; // Added currentRound
+  roundsSinceImposter: number[];
+  currentRound: number;
 }
 
 const Results = () => {
@@ -38,21 +37,20 @@ const Results = () => {
         return;
       }
     }
-    // Ensure consecutiveImposterRounds and currentRound are initialized if missing from loaded state (for backward compatibility)
-    if (loadedState && !loadedState.consecutiveImposterRounds) {
-      loadedState.consecutiveImposterRounds = new Array(loadedState.numPlayers).fill(0);
+    if (loadedState && !loadedState.roundsSinceImposter) {
+      loadedState.roundsSinceImposter = new Array(loadedState.numPlayers).fill(0);
     }
     if (loadedState && !loadedState.currentRound) {
       loadedState.currentRound = 1;
     }
     setGameState(loadedState);
     if (loadedState) {
-      saveGameState(loadedState); // Save updated state with consecutiveImposterRounds and currentRound if they were just initialized
+      saveGameState(loadedState);
     }
   }, [initialGameState, navigate]);
 
   if (!gameState) {
-    return null; // Or a loading spinner
+    return null;
   }
 
   const handleNewGame = () => {
@@ -63,7 +61,6 @@ const Results = () => {
   const handlePlayNextRound = () => {
     if (!gameState) return;
 
-    // Increment currentRound for the next round
     const nextRoundNumber = (gameState.currentRound || 0) + 1;
 
     const nextRoundSetup = {
@@ -72,9 +69,8 @@ const Results = () => {
       numSusPlayers: gameState.numSusPlayers,
       topics: gameState.topics,
       previousTopic: gameState.topic,
-      previousSusPlayerIndices: gameState.susPlayerIndices,
-      consecutiveImposterRounds: gameState.consecutiveImposterRounds,
-      currentRound: nextRoundNumber, // Pass the incremented currentRound
+      roundsSinceImposter: gameState.roundsSinceImposter,
+      currentRound: nextRoundNumber,
     };
     clearGameState();
     navigate("/name-reveal", { state: nextRoundSetup });

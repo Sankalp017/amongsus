@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -35,8 +34,8 @@ const formSchema = z.object({
     .number()
     .min(1, { message: "Minimum 1 imposter required." }),
   topics: z.array(z.string()).min(1, { message: "Please select at least one topic." }),
-  consecutiveImposterRounds: z.array(z.number()).optional(),
-  currentRound: z.number().optional(), // Added currentRound to schema
+  roundsSinceImposter: z.array(z.number()).optional(),
+  currentRound: z.number().optional(),
 }).refine(data => data.numSusPlayers < data.numPlayers, {
   message: "Number of imposters must be less than total players.",
   path: ["numSusPlayers"],
@@ -53,8 +52,8 @@ const GameSetup = () => {
       playerNames: ["", "", ""],
       numSusPlayers: 1,
       topics: ["🎲 Random words"],
-      consecutiveImposterRounds: [],
-      currentRound: 1, // Initialize currentRound to 1
+      roundsSinceImposter: [],
+      currentRound: 1,
     },
   });
 
@@ -70,7 +69,6 @@ const GameSetup = () => {
     setPlayerInputs(newPlayerInputs);
     form.setValue("playerNames", newPlayerInputs);
 
-    // Clamp the number of imposters if it's no longer valid
     const currentSusPlayers = form.getValues("numSusPlayers");
     if (currentSusPlayers >= numPlayers) {
       form.setValue("numSusPlayers", Math.max(1, numPlayers - 1));
@@ -110,16 +108,15 @@ const GameSetup = () => {
       return;
     }
 
-    // Initialize consecutiveImposterRounds for a new game
-    const initialConsecutiveImposterRounds = new Array(values.numPlayers).fill(0);
+    const initialRoundsSinceImposter = new Array(values.numPlayers).fill(0);
 
     saveGameState({
       ...values,
-      consecutiveImposterRounds: initialConsecutiveImposterRounds,
-      currentRound: 1, // Ensure currentRound is explicitly set to 1 for a new game
+      roundsSinceImposter: initialRoundsSinceImposter,
+      currentRound: 1,
     });
     toast.success("Game setup complete! Starting round...");
-    navigate("/name-reveal", { state: { ...values, consecutiveImposterRounds: initialConsecutiveImposterRounds, currentRound: 1 } });
+    navigate("/name-reveal", { state: { ...values, roundsSinceImposter: initialRoundsSinceImposter, currentRound: 1 } });
   };
 
   const handleGoBack = () => {
