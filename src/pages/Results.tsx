@@ -126,7 +126,7 @@ const Results = () => {
           <div className="space-y-6 mb-8 text-left">
             <section aria-labelledby="words-heading" className="p-4 rounded-xl border border-gray-200 bg-gray-50">
               <h2 id="words-heading" className="text-lg md:text-xl font-bold mb-2 flex items-center gap-2 text-gray-800">
-                <BookOpen className="h-5 w-5 md:h-6 md:w-6 text-purple-700" /> The Words
+                <BookOpen className="h-5 w-5 md:h-6 md:w-6 text-purple-700" aria-hidden="true" /> The Words
               </h2>
               <p className="text-base md:text-lg ml-1">Main Word: <span className="font-semibold text-purple-700">{gameState.mainWord}</span></p>
               <p className="text-base md:text-lg ml-1">Sus Word: <span className="font-semibold text-purple-700">{gameState.susWord}</span></p>
@@ -134,8 +134,9 @@ const Results = () => {
 
             <section aria-labelledby="imposters-heading" className="p-4 rounded-xl border border-red-200 bg-red-50">
               <h2 id="imposters-heading" className="text-lg md:text-xl font-bold mb-3 flex items-center gap-2 text-red-800">
-                <UserX className="h-5 w-5 md:h-6 md:w-6 text-red-600" /> Imposter{imposters.length !== 1 && 's'}
+                <UserX className="h-5 w-5 md:h-6 md:w-6 text-red-600" aria-hidden="true" /> Imposter{imposters.length !== 1 && 's'}
               </h2>
+              <p className="sr-only">There {imposters.length === 1 ? 'is' : 'are'} {imposters.length} imposter{imposters.length !== 1 && 's'}.</p>
               <div className="flex flex-wrap justify-start gap-3 ml-1">
                 {imposters.length > 0 ? (
                   imposters.map((name, index) => (
@@ -151,8 +152,9 @@ const Results = () => {
 
             <section aria-labelledby="innocents-heading" className="p-4 rounded-xl border border-green-200 bg-green-50">
               <h2 id="innocents-heading" className="text-lg md:text-xl font-bold mb-3 flex items-center gap-2 text-green-800">
-                <Users className="h-5 w-5 md:h-6 w-6 text-green-600" /> Innocent{innocents.length !== 1 && 's'}
+                <Users className="h-5 w-5 md:h-6 w-6 text-green-600" aria-hidden="true" /> Innocent{innocents.length !== 1 && 's'}
               </h2>
+              <p className="sr-only">There are {innocents.length} innocents.</p>
               <div className="flex flex-wrap justify-start gap-3 ml-1">
                 {innocents.map((name, index) => (
                   <Badge key={index} variant="secondary" className="text-sm md:text-base px-4 py-2 bg-green-100 text-green-800 hover:bg-green-200 rounded-full shadow-md">
@@ -168,7 +170,7 @@ const Results = () => {
               onClick={handlePlayNextRound}
               className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
             >
-              <Play className="h-5 w-5" />
+              <Play className="h-5 w-5" aria-hidden="true" />
               Play Next Round
             </Button>
             <Button
@@ -176,7 +178,7 @@ const Results = () => {
               variant="outline"
               className="w-full bg-transparent border-2 border-gray-500 text-gray-700 hover:bg-gray-700 hover:text-white text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2"
             >
-              <Settings className="h-5 w-5" />
+              <Settings className="h-5 w-5" aria-hidden="true" />
               Modify Game
             </Button>
             <Button
@@ -184,7 +186,7 @@ const Results = () => {
               variant="outline"
               className="w-full bg-transparent border-2 border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2"
             >
-              <RotateCw className="h-5 w-5" />
+              <RotateCw className="h-5 w-5" aria-hidden="true" />
               Start a New Game
             </Button>
           </div>
