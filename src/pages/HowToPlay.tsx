@@ -75,17 +75,17 @@ const HowToPlay = () => {
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
     >
-      <Card className="w-full max-w-4xl bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200 relative">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleGoBack}
-          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700 rounded-xl"
-        >
-          <ArrowLeft className="h-6 w-6" />
-        </Button>
-        <CardHeader>
-          <CardTitle className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+      <Card className="w-full max-w-4xl bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
+        <CardHeader className="relative flex items-center justify-center p-0 mb-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleGoBack}
+            className="absolute left-0 text-gray-600 hover:text-purple-700 rounded-xl"
+          >
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <CardTitle className="text-3xl md:text-4xl font-bold text-gray-900">
             How to Play
           </CardTitle>
         </CardHeader>
