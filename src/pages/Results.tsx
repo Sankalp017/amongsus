@@ -71,11 +71,6 @@ const Results = () => {
     return null;
   }
 
-  const handleNewGame = () => {
-    clearGameState();
-    navigate("/");
-  };
-
   const handlePlayNextRound = () => {
     if (!gameState) return;
 
@@ -132,15 +127,15 @@ const Results = () => {
               <p className="text-base md:text-lg ml-1">Sus Word: <span className="font-semibold text-purple-700">{gameState.susWord}</span></p>
             </section>
 
-            <section aria-labelledby="imposters-heading" className="p-4 rounded-xl border border-pink-200 bg-pink-50">
-              <h2 id="imposters-heading" className="text-lg md:text-xl font-bold mb-3 flex items-center gap-2 text-pink-800">
-                <UserX className="h-5 w-5 md:h-6 md:w-6 text-pink-600" aria-hidden="true" /> Imposter{imposters.length !== 1 && 's'}
+            <section aria-labelledby="imposters-heading" className="p-4 rounded-xl border border-red-200 bg-red-50">
+              <h2 id="imposters-heading" className="text-lg md:text-xl font-bold mb-3 flex items-center gap-2 text-red-800">
+                <UserX className="h-5 w-5 md:h-6 md:w-6 text-red-600" aria-hidden="true" /> Imposter{imposters.length !== 1 && 's'}
               </h2>
               <p className="sr-only">There {imposters.length === 1 ? 'is' : 'are'} {imposters.length} imposter{imposters.length !== 1 && 's'}.</p>
               <div className="flex flex-wrap justify-start gap-3 ml-1">
                 {imposters.length > 0 ? (
                   imposters.map((name, index) => (
-                    <Badge key={index} className="text-sm md:text-base px-4 py-2 bg-pink-600 text-white rounded-full shadow-md">
+                    <Badge key={index} variant="destructive" className="text-sm md:text-base px-4 py-2 bg-red-600 text-white rounded-full shadow-md">
                       {name}
                     </Badge>
                   ))
@@ -150,14 +145,14 @@ const Results = () => {
               </div>
             </section>
 
-            <section aria-labelledby="innocents-heading" className="p-4 rounded-xl border border-indigo-200 bg-indigo-50">
-              <h2 id="innocents-heading" className="text-lg md:text-xl font-bold mb-3 flex items-center gap-2 text-indigo-800">
-                <Users className="h-5 w-5 md:h-6 w-6 text-indigo-600" aria-hidden="true" /> Innocent{innocents.length !== 1 && 's'}
+            <section aria-labelledby="innocents-heading" className="p-4 rounded-xl border border-green-200 bg-green-50">
+              <h2 id="innocents-heading" className="text-lg md:text-xl font-bold mb-3 flex items-center gap-2 text-green-800">
+                <Users className="h-5 w-5 md:h-6 w-6 text-green-600" aria-hidden="true" /> Innocent{innocents.length !== 1 && 's'}
               </h2>
               <p className="sr-only">There are {innocents.length} innocents.</p>
               <div className="flex flex-wrap justify-start gap-3 ml-1">
                 {innocents.map((name, index) => (
-                  <Badge key={index} variant="secondary" className="text-sm md:text-base px-4 py-2 bg-indigo-100 text-indigo-800 hover:bg-indigo-200 rounded-full shadow-md">
+                  <Badge key={index} variant="secondary" className="text-sm md:text-base px-4 py-2 bg-green-100 text-green-800 hover:bg-green-200 rounded-full shadow-md">
                     {name}
                   </Badge>
                 ))}
@@ -180,14 +175,6 @@ const Results = () => {
             >
               <Settings className="h-5 w-5" aria-hidden="true" />
               Modify Game
-            </Button>
-            <Button
-              onClick={handleNewGame}
-              variant="outline"
-              className="w-full bg-transparent border-2 border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2"
-            >
-              <RotateCw className="h-5 w-5" aria-hidden="true" />
-              Start a New Game
             </Button>
           </div>
         </CardContent>
