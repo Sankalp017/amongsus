@@ -57,7 +57,7 @@ const Discussion = () => {
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
     >
-      <Card className="w-full max-w-md bg-white/80 p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border-0">
+      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border-0">
         <>
           <CardHeader>
             <CardTitle className="text-3xl md:text-4xl font-bold mb-2 flex items-center justify-center gap-2">
