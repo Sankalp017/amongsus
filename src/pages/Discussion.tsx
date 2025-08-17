@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Eye } from "lucide-react";
 import { loadGameState, saveGameState } from "@/utils/localStorage";
 
 interface GameStateData {
@@ -57,22 +57,23 @@ const Discussion = () => {
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
     >
-      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
+      <Card className="w-full max-w-md bg-white/80 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border-0">
         <>
           <CardHeader>
-            <CardTitle className="text-2xl md:text-3xl font-bold mb-4 flex items-center justify-center gap-2">
-              <MessageCircle className="h-7 w-7 md:h-8 md:w-8 text-purple-700" /> Discussion Time!
+            <CardTitle className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-2">
+              <MessageCircle className="h-8 w-8 md:h-9 md:w-9 text-purple-700 animate-pulse" /> Discussion Time!
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-base md:text-lg mb-6">
-              Players, discuss among yourselves. Try to figure out who the sus players are!
+              The accusations are flying! Innocents, grill the suspects. Imposters, blend in and deceive. The truth is on the line.
             </p>
 
             <Button
               onClick={handleEndDiscussion}
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap" // Changed to rounded-xl
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap flex items-center justify-center gap-3"
             >
+              <Eye className="h-6 w-6" />
               Reveal Results
             </Button>
           </CardContent>
