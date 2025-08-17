@@ -131,15 +131,15 @@ const GameSetup = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4"
     >
-      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 border border-gray-200">
+      <Card className="w-full max-w-md bg-card p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground border-border">
         <div className="relative flex items-center justify-center mb-6">
           <Button
             variant="ghost"
             size="icon"
             onClick={handleGoBack}
-            className="absolute left-0 text-gray-600 hover:text-purple-700 rounded-xl"
+            className="absolute left-0 text-muted-foreground hover:text-foreground rounded-xl"
           >
             <ArrowLeft className="h-6 w-6" />
           </Button>
@@ -161,7 +161,7 @@ const GameSetup = () => {
                       onChange={field.onChange}
                       min={3}
                       max={20}
-                      className="bg-green-100"
+                      className="bg-green-100 dark:bg-green-900/50"
                     />
                   </FormControl>
                   <FormMessage />
@@ -181,7 +181,7 @@ const GameSetup = () => {
                       onChange={field.onChange}
                       min={1}
                       max={numPlayers - 1}
-                      className="bg-red-100"
+                      className="bg-red-100 dark:bg-red-900/50"
                     />
                   </FormControl>
                   <FormMessage />
@@ -189,9 +189,9 @@ const GameSetup = () => {
               )}
             />
 
-            <Card className="bg-gray-50 p-4 rounded-xl shadow-inner border border-gray-200">
+            <Card className="bg-muted/50 p-4 rounded-xl shadow-inner border-border">
               <CardHeader className="p-0 pb-4">
-                <CardTitle className="text-lg md:text-xl font-semibold text-purple-700 text-left">Player Names</CardTitle>
+                <CardTitle className="text-lg md:text-xl font-semibold text-purple-700 dark:text-purple-400 text-left">Player Names</CardTitle>
               </CardHeader>
               <CardContent className="p-0 space-y-4">
                 {playerInputs.map((_, index) => (
@@ -239,7 +239,7 @@ const GameSetup = () => {
 
             <Button
               type="submit"
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 dark:bg-purple-600 dark:hover:bg-purple-700 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               Start Round
             </Button>

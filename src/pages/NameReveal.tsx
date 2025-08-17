@@ -306,28 +306,28 @@ const NameReveal = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4"
     >
-      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200 relative">
+      <Card className="w-full max-w-md bg-card p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center border-border relative">
         {showTimer ? (
           <div className="flex flex-col items-center justify-center h-64">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-black animate-pulse-fast">Get Ready!</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-foreground animate-pulse-fast">Get Ready!</h2>
             <Timer initialTime={3} onTimeUp={handleTimerComplete} />
-            <p className="mt-4 text-base md:text-lg text-gray-600">Word reveal starting soon...</p>
+            <p className="mt-4 text-base md:text-lg text-muted-foreground">Word reveal starting soon...</p>
           </div>
         ) : (
           <>
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-purple-800">It's {currentPlayerName}'s Turn</h2>
-            <p className="text-base md:text-lg mb-6 text-gray-600">Click the card to reveal your word.</p>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-purple-800 dark:text-purple-300">It's {currentPlayerName}'s Turn</h2>
+            <p className="text-base md:text-lg mb-6 text-muted-foreground">Click the card to reveal your word.</p>
 
             <div
               onClick={handleRevealWord}
-              className={`relative w-full h-64 rounded-3xl overflow-hidden flex flex-col items-center justify-center p-4 cursor-pointer transition-colors duration-300 ease-in-out mb-6
-                ${showWord ? "bg-white text-gray-800 shadow-lg" : "bg-[#f5f5f7] hover:bg-[#e0e0e2]"}
+              className={`relative w-full h-64 rounded-3xl overflow-hidden flex flex-col items-center justify-center p-4 cursor-pointer transition-all duration-300 ease-in-out mb-6
+                ${showWord ? "bg-card text-card-foreground shadow-lg" : "bg-muted/50 hover:bg-muted"}
               `}
             >
               {!showWord && (
-                <span className="text-xl md:text-2xl font-bold text-gray-800 z-10">
+                <span className="text-xl md:text-2xl font-bold text-foreground z-10">
                   Click to Reveal
                 </span>
               )}
@@ -335,11 +335,11 @@ const NameReveal = () => {
                 <>
                   <Badge
                     variant={isSusPlayer ? "destructive" : "secondary"}
-                    className={`text-lg md:text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800"} animate-fade-in-pop`}
+                    className={`text-lg md:text-xl px-4 py-2 mb-6 ${isSusPlayer ? "bg-red-600 text-white" : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"} animate-fade-in-pop`}
                   >
                     {isSusPlayer ? "Imposter" : "Innocent"}
                   </Badge>
-                  <p className="text-4xl md:text-5xl font-medium text-black tracking-tighter leading-none animate-fade-in-pop">
+                  <p className="text-4xl md:text-5xl font-medium text-foreground tracking-tighter leading-none animate-fade-in-pop">
                     {currentWord}
                   </p>
                 </>
@@ -349,7 +349,7 @@ const NameReveal = () => {
             <Button
               onClick={handleNextPlayer}
               disabled={!showWord}
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-4 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 dark:bg-purple-600 dark:hover:bg-purple-700 text-base md:text-lg py-4 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
             </Button>

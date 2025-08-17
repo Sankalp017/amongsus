@@ -36,13 +36,13 @@ const HowToPlay = () => {
       emoji: "😈",
       title: "Imposters:",
       description: "Get a 'sus word' (a tricky word from a similar topic).",
-      color: "text-red-600",
+      color: "text-red-600 dark:text-red-400",
     },
     {
       emoji: "😇",
       title: "Innocents:",
       description: "Get the 'main word' (the real one).",
-      color: "text-green-600",
+      color: "text-green-600 dark:text-green-400",
     },
     {
       emoji: "🤐",
@@ -73,47 +73,47 @@ const HowToPlay = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4"
     >
-      <Card className="w-full max-w-4xl bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200">
+      <Card className="w-full max-w-4xl bg-card p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center border-border">
         <CardHeader className="relative flex items-center justify-center p-0 mb-4">
           <Button
             variant="ghost"
             size="icon"
             onClick={handleGoBack}
-            className="absolute left-0 text-gray-600 hover:text-purple-700 rounded-xl"
+            className="absolute left-0 text-muted-foreground hover:text-foreground rounded-xl"
           >
             <ArrowLeft className="h-6 w-6" />
           </Button>
-          <CardTitle className="text-3xl md:text-4xl font-bold text-gray-900">
+          <CardTitle className="text-3xl md:text-4xl font-bold text-foreground">
             How to Play
           </CardTitle>
         </CardHeader>
         <CardContent className="text-left space-y-4">
-          <p className="text-base md:text-lg mb-6 text-gray-700">
-            Welcome to Among Sus! It's a fun word game for <span className="font-bold text-gray-900">3+ players</span> on one device. Find the Imposters, or be one and lie your way to victory!
+          <p className="text-base md:text-lg mb-6 text-muted-foreground">
+            Welcome to Among Sus! It's a fun word game for <span className="font-bold text-foreground">3+ players</span> on one device. Find the Imposters, or be one and lie your way to victory!
           </p>
 
           <Separator className="my-6" />
 
-          <h3 className="text-xl md:text-2xl font-semibold mb-3 text-purple-700">Quick Guide:</h3>
+          <h3 className="text-xl md:text-2xl font-semibold mb-3 text-purple-700 dark:text-purple-400">Quick Guide:</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {guidePoints.map((point, index) => (
-              <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 flex items-start space-x-3">
+              <div key={index} className="bg-background p-4 rounded-lg shadow-sm border border-border flex items-start space-x-3">
                 <span className="text-2xl mt-0.5">{point.emoji}</span>
                 <div>
-                  <h4 className={`font-bold text-lg ${point.color || 'text-gray-900'}`}>{point.title}</h4>
-                  <p className="text-base text-gray-700">{point.description}</p>
+                  <h4 className={`font-bold text-lg ${point.color || 'text-foreground'}`}>{point.title}</h4>
+                  <p className="text-base text-muted-foreground">{point.description}</p>
                 </div>
               </div>
             ))}
           </div>
-          <p className="text-base md:text-lg mt-6 text-gray-700">
+          <p className="text-base md:text-lg mt-6 text-muted-foreground">
             Good luck, have fun, and try not to be too sus!
           </p>
           <Button
             onClick={handleReadyToPlay}
-            className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 mt-6 flex items-center justify-center gap-3"
+            className="w-full bg-purple-700 text-white hover:bg-purple-800 dark:bg-purple-600 dark:hover:bg-purple-700 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 mt-6 flex items-center justify-center gap-3"
           >
             <Play className="h-6 w-6" />
             Ready to Play? (And Lie?)

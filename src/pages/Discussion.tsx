@@ -55,23 +55,23 @@ const Discussion = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4"
     >
-      <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border-0">
+      <Card className="w-full max-w-md bg-card p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center border-border">
         <>
           <CardHeader>
             <CardTitle className="text-3xl md:text-4xl font-bold mb-2 flex items-center justify-center gap-2">
-              <MessageCircle className="h-8 w-8 md:h-9 md:w-9 text-purple-700 animate-pulse" /> Discussion Time!
+              <MessageCircle className="h-8 w-8 md:h-9 md:w-9 text-purple-700 dark:text-purple-400 animate-pulse" /> Discussion Time!
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-base md:text-lg mb-6">
+            <p className="text-base md:text-lg mb-6 text-muted-foreground">
               The accusations are flying! Innocents, grill the suspects. Imposters, blend in and deceive. The truth is on the line.
             </p>
 
             <Button
               onClick={handleEndDiscussion}
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap flex items-center justify-center gap-3"
+              className="w-full bg-purple-700 text-white hover:bg-purple-800 dark:bg-purple-600 dark:hover:bg-purple-700 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap flex items-center justify-center gap-3"
             >
               <Eye className="h-6 w-6" />
               Reveal Results
