@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -224,9 +223,6 @@ const GameSetup = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-base md:text-lg">Word Topics</FormLabel>
-                  <FormDescription>
-                    Select one or more topics. You can scroll for more options.
-                  </FormDescription>
                   <FormControl>
                     <MultiSelect
                       options={wordCategories.map(cat => ({ value: cat, label: cat }))}

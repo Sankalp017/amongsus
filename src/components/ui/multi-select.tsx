@@ -11,6 +11,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   Drawer,
   DrawerContent,
+  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -150,6 +151,9 @@ export function MultiSelect({
         <div className="mx-auto w-full max-w-md">
           <DrawerHeader className="text-center">
             <DrawerTitle className="text-2xl font-bold">Select Topics</DrawerTitle>
+            <DrawerDescription>
+              Select one or more topics. You can scroll for more options.
+            </DrawerDescription>
           </DrawerHeader>
           <div className="p-4 max-h-[60vh] overflow-y-auto">{commandContent}</div>
           <DrawerFooter>
