@@ -1,5 +1,5 @@
 export const wordCategories = [
-  "🐾 Animals",
+  "🐘 Animals",
   "🏙️ Cities",
   "🏎️ Formula 1 Teams",
   "🍔 Food",
@@ -35,7 +35,7 @@ const wordBank: WordBank = {
     "Amsterdam", "Barcelona", "Seoul", "Mexico City", "Istanbul", "Bangkok",
     "Prague", "Vienna", "Kyoto", "Venice", "Florence"
   ],
-  "🐾 Animals": [
+  "🐘 Animals": [
     "Lion", "Tiger", "Elephant", "Giraffe", "Zebra", "Kangaroo", "Panda",
     "Dolphin", "Whale", "Shark", "Penguin", "Owl", "Eagle", "Wolf", "Bear",
     "Fox", "Rabbit", "Squirrel", "Hedgehog", "Koala", "Chimpanzee", "Gorilla",
