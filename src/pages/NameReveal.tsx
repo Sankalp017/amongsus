@@ -323,7 +323,7 @@ const NameReveal = () => {
             <div
               onClick={handleRevealWord}
               className={`relative w-full h-64 rounded-3xl overflow-hidden flex flex-col items-center justify-center p-4 cursor-pointer transition-all duration-300 ease-in-out mb-6
-                ${showWord ? "bg-card text-card-foreground shadow-lg" : "bg-muted/50 hover:bg-muted"}
+                ${showWord ? "bg-muted text-card-foreground shadow-lg" : "bg-muted/50 hover:bg-muted"}
               `}
             >
               {!showWord && (
