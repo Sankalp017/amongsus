@@ -27,7 +27,7 @@ const Index = () => {
         <div className="flex flex-col space-y-4 w-full max-w-xs mx-auto">
           <Button
             onClick={handleStartGame}
-            className="bg-white text-purple-700 hover:bg-purple-100 text-xl md:text-2xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg flex items-center justify-center gap-3"
+            className="bg-white text-purple-700 hover:bg-purple-100 text-xl md:text-2xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
           >
             <Play className="h-7 w-7" />
             Start Game
@@ -35,7 +35,7 @@ const Index = () => {
           <Button
             onClick={handleHowToPlay}
             variant="outline"
-            className="bg-white/20 backdrop-blur-lg border border-white/30 text-white hover:bg-white/30 text-lg md:text-xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
+            className="bg-white/20 backdrop-blur-lg border border-white/30 text-white hover:bg-white/40 text-lg md:text-xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
           >
             <BookOpen className="h-6 w-6" />
             How to Play
