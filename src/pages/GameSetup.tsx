@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -43,24 +43,30 @@ const formSchema = z.object({
 
 const GameSetup = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [playerInputs, setPlayerInputs] = useState<string[]>([]);
+
+  const isModification = location.state?.isModification;
+  const initialValues = isModification ? location.state : {
+    numPlayers: 3,
+    playerNames: ["", "", ""],
+    numSusPlayers: 1,
+    topics: ["🎲 Random words"],
+    roundsSinceImposter: [],
+    currentRound: 1,
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      numPlayers: 3,
-      playerNames: ["", "", ""],
-      numSusPlayers: 1,
-      topics: ["🎲 Random words"],
-      roundsSinceImposter: [],
-      currentRound: 1,
-    },
+    defaultValues: initialValues,
   });
 
   const numPlayers = form.watch("numPlayers");
 
   useEffect(() => {
-    clearGameState();
+    if (!isModification) {
+      clearGameState();
+    }
 
     const currentNames = form.getValues("playerNames");
     const newPlayerInputs = Array.from({ length: numPlayers }, (_, i) => {
@@ -73,7 +79,7 @@ const GameSetup = () => {
     if (currentSusPlayers >= numPlayers) {
       form.setValue("numSusPlayers", Math.max(1, numPlayers - 1));
     }
-  }, [numPlayers, form]);
+  }, [numPlayers, form, isModification]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const seenNames = new Set<string>();
