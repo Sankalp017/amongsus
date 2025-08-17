@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Play } from "lucide-react";
 
 const HowToPlay = () => {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const HowToPlay = () => {
   };
 
   const handleReadyToPlay = () => {
-    navigate("/setup"); // Navigate to the setup page
+    navigate("/setup");
   };
 
   const guidePoints = [
@@ -36,13 +36,13 @@ const HowToPlay = () => {
       emoji: "😈",
       title: "Imposters:",
       description: "Get a 'sus word' (a tricky word from a similar topic).",
-      color: "text-red-600",
+      color: "text-red-400",
     },
     {
       emoji: "😇",
       title: "Innocents:",
       description: "Get the 'main word' (the real one).",
-      color: "text-green-600",
+      color: "text-green-400",
     },
     {
       emoji: "🤐",
@@ -75,44 +75,47 @@ const HowToPlay = () => {
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 text-white p-4"
     >
-      <Card className="w-full max-w-4xl bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-gray-800 text-center border border-gray-200 relative">
+      <Card className="w-full max-w-4xl bg-black/20 backdrop-blur-lg p-6 sm:p-8 rounded-3xl shadow-2xl text-white text-center border border-white/20 relative">
         <Button
           variant="ghost"
           size="icon"
           onClick={handleGoBack}
-          className="absolute top-4 left-4 text-gray-600 hover:text-purple-700 rounded-xl"
+          className="absolute top-4 left-4 text-white/80 hover:bg-white/20 hover:text-white rounded-xl"
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <CardHeader>
-          <CardTitle className="text-2xl md:text-3xl font-bold mb-4">How to Play (and Lie)</CardTitle>
+          <CardTitle className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-yellow-300 via-pink-400 to-purple-400 text-transparent bg-clip-text">
+            How to Play (and Lie)
+          </CardTitle>
         </CardHeader>
         <CardContent className="text-left space-y-4">
-          <p className="text-base md:text-lg mb-6">
-            Welcome to Among Sus! It's a fun word game for <span className="font-bold">3+ players</span> on one device. Find the Imposters, or be one and lie your way to victory!
+          <p className="text-base md:text-lg mb-6 text-gray-200">
+            Welcome to Among Sus! It's a fun word game for <span className="font-bold text-white">3+ players</span> on one device. Find the Imposters, or be one and lie your way to victory!
           </p>
 
-          <Separator className="my-6 bg-gray-300" />
+          <Separator className="my-6 bg-white/20" />
 
-          <h3 className="text-xl md:text-2xl font-semibold mb-3 text-purple-700">Quick Guide:</h3>
+          <h3 className="text-xl md:text-2xl font-semibold mb-3 text-yellow-300">Quick Guide:</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {guidePoints.map((point, index) => (
-              <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 flex items-start space-x-3">
+              <div key={index} className="bg-white/10 p-4 rounded-lg shadow-sm border border-white/10 flex items-start space-x-3">
                 <span className="text-2xl mt-0.5">{point.emoji}</span>
                 <div>
-                  <h4 className={`font-bold text-lg ${point.color || 'text-gray-800'}`}>{point.title}</h4>
-                  <p className="text-sm text-gray-700">{point.description}</p>
+                  <h4 className={`font-bold text-lg ${point.color || 'text-white'}`}>{point.title}</h4>
+                  <p className="text-sm text-gray-300">{point.description}</p>
                 </div>
               </div>
             ))}
           </div>
-          <p className="text-base md:text-lg mt-6">
+          <p className="text-base md:text-lg mt-6 text-gray-200">
             Good luck, have fun, and try not to be too sus!
           </p>
           <Button
             onClick={handleReadyToPlay}
-            className="w-full bg-purple-700 text-white hover:bg-purple-800 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 mt-6"
+            className="w-full bg-white text-purple-700 hover:bg-purple-100 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 mt-6 flex items-center justify-center gap-3"
           >
+            <Play className="h-6 w-6" />
             Ready to Play? (And Lie?)
           </Button>
         </CardContent>
