@@ -161,7 +161,7 @@ const GameSetup = () => {
                       onChange={field.onChange}
                       min={3}
                       max={20}
-                      className="bg-green-100 dark:bg-green-900/50"
+                      className="bg-green-100 dark:bg-green-500/20"
                     />
                   </FormControl>
                   <FormMessage />
@@ -181,7 +181,7 @@ const GameSetup = () => {
                       onChange={field.onChange}
                       min={1}
                       max={numPlayers - 1}
-                      className="bg-red-100 dark:bg-red-900/50"
+                      className="bg-red-100 dark:bg-red-500/20"
                     />
                   </FormControl>
                   <FormMessage />
