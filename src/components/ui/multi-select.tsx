@@ -2,10 +2,8 @@ import * as React from "react";
 import { Check } from "lucide-react";
 import {
   Command,
-  CommandGroup,
   CommandItem,
   CommandList,
-  CommandInput,
 } from "@/components/ui/command";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -77,26 +75,35 @@ export function MultiSelect({
   );
 
   const commandContent = (
-    <Command className="w-full">
-      <CommandInput placeholder="Search..." />
+    <Command className="bg-transparent">
       <CommandList>
-        <CommandGroup>
-          {options.map((option) => (
-            <CommandItem
-              key={option.value}
-              onSelect={() => handleSelect(option.value)}
-              className="cursor-pointer"
-            >
-              <Check
+        <div className="grid grid-cols-2 gap-3 p-1">
+          {options.map((option) => {
+            const isSelected = selected.includes(option.value);
+            return (
+              <CommandItem
+                key={option.value}
+                onSelect={() => handleSelect(option.value)}
                 className={cn(
-                  "mr-2 h-4 w-4",
-                  selected.includes(option.value) ? "opacity-100" : "opacity-0"
+                  "cursor-pointer p-3 rounded-lg border-2 flex flex-col items-center justify-center text-center h-24 transition-all duration-200 focus:bg-accent focus:text-accent-foreground",
+                  isSelected
+                    ? "border-primary bg-primary/10 text-primary font-semibold"
+                    : "border-border hover:bg-accent"
                 )}
-              />
-              {option.label}
-            </CommandItem>
-          ))}
-        </CommandGroup>
+              >
+                <span className="flex-grow flex items-center text-sm font-medium">
+                  {option.label}
+                </span>
+                <Check
+                  className={cn(
+                    "h-5 w-5 mt-1 transition-opacity",
+                    isSelected ? "opacity-100" : "opacity-0"
+                  )}
+                />
+              </CommandItem>
+            );
+          })}
+        </div>
       </CommandList>
     </Command>
   );
@@ -109,7 +116,7 @@ export function MultiSelect({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className={cn("w-full justify-between", className)}
+            className={cn("w-full justify-between min-h-10 h-auto py-2", className)}
           >
             {triggerContent}
           </Button>
@@ -128,7 +135,7 @@ export function MultiSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between", className)}
+          className={cn("w-full justify-between min-h-10 h-auto py-2", className)}
         >
           {triggerContent}
         </Button>
