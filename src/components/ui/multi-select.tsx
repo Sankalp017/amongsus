@@ -77,26 +77,31 @@ export function MultiSelect({
   const commandContent = (
     <Command className="bg-transparent">
       <CommandList>
-        <div className="grid grid-cols-2 gap-3 p-1">
+        <div className="grid grid-cols-1 gap-2 p-1">
           {options.map((option) => {
             const isSelected = selected.includes(option.value);
+            const parts = option.label.split(" ");
+            const icon = parts[0];
+            const labelText = parts.slice(1).join(" ");
+
             return (
               <CommandItem
                 key={option.value}
                 onSelect={() => handleSelect(option.value)}
                 className={cn(
-                  "cursor-pointer p-3 rounded-lg border-2 flex flex-col items-center justify-center text-center h-24 transition-all duration-200 focus:bg-accent focus:text-accent-foreground",
+                  "cursor-pointer p-4 rounded-lg border-2 flex items-center justify-between text-left transition-all duration-200 focus:bg-accent focus:text-accent-foreground w-full",
                   isSelected
                     ? "border-primary bg-primary/10 text-primary font-semibold"
                     : "border-border hover:bg-accent"
                 )}
               >
-                <span className="flex-grow flex items-center text-sm font-medium">
-                  {option.label}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{icon}</span>
+                  <span className="text-base font-medium">{labelText}</span>
+                </div>
                 <Check
                   className={cn(
-                    "h-5 w-5 mt-1 transition-opacity",
+                    "h-6 w-6 transition-opacity",
                     isSelected ? "opacity-100" : "opacity-0"
                   )}
                 />
