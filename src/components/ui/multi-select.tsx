@@ -91,10 +91,10 @@ export function MultiSelect({
                 key={option.value}
                 onSelect={() => handleSelect(option.value)}
                 className={cn(
-                  "cursor-pointer p-4 rounded-lg border-2 flex items-center justify-between text-left transition-all duration-200 focus:bg-accent focus:text-accent-foreground w-full",
+                  "cursor-pointer p-4 rounded-lg flex items-center justify-between text-left transition-all duration-200 focus:bg-accent focus:text-accent-foreground w-full",
                   isSelected
-                    ? "border-primary bg-primary/10 text-primary font-semibold"
-                    : "border-border hover:bg-accent"
+                    ? "bg-primary/10 text-primary font-semibold ring-1 ring-primary"
+                    : "bg-muted/50 hover:bg-muted"
                 )}
               >
                 <div className="flex items-center gap-3">
