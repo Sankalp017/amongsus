@@ -11,6 +11,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   Drawer,
   DrawerContent,
+  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -150,7 +151,10 @@ export function MultiSelect({
           <DrawerHeader className="text-center">
             <DrawerTitle className="text-2xl font-bold">Select Topics</DrawerTitle>
           </DrawerHeader>
-          <div className="p-4">{commandContent}</div>
+          <div className="p-4 max-h-[60vh] overflow-y-auto">{commandContent}</div>
+          <DrawerFooter>
+            <Button onClick={() => setOpen(false)} className="bg-purple-700 text-white hover:bg-purple-800 dark:bg-purple-600 dark:hover:bg-purple-700">Confirm</Button>
+          </DrawerFooter>
         </div>
       </DrawerContent>
     </Drawer>
