@@ -93,7 +93,7 @@ export function MultiSelect({
                 className={cn(
                   "cursor-pointer p-4 rounded-lg flex items-center justify-between text-left transition-all duration-200 focus:bg-accent focus:text-accent-foreground w-full",
                   isSelected
-                    ? "bg-primary/10 text-primary font-semibold ring-1 ring-primary"
+                    ? "bg-primary/20 text-primary font-semibold"
                     : "bg-muted/50 hover:bg-muted"
                 )}
               >
