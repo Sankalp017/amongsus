@@ -9,7 +9,7 @@ const Timer: React.FC<TimerProps> = ({ initialTime, onTimeUp }) => {
   const [time, setTime] = useState(initialTime);
 
   useEffect(() => {
-    if (time < 0) {
+    if (time <= 0) {
       onTimeUp();
       return;
     }
