@@ -73,9 +73,9 @@ const HowToPlay = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white p-4"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 dark:text-white text-slate-900 p-4"
     >
-      <Card className="w-full max-w-4xl bg-card/60 dark:bg-card/40 backdrop-blur-lg border border-white/20 p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center">
+      <Card className="w-full max-w-4xl bg-card/60 dark:bg-card/40 backdrop-blur-lg border border-slate-900/20 dark:border-white/20 p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center">
         <CardHeader className="relative flex items-center justify-center p-0 mb-4">
           <Button
             variant="ghost"
@@ -113,8 +113,7 @@ const HowToPlay = () => {
           </p>
           <Button
             onClick={handleReadyToPlay}
-            variant="outline"
-            className="w-full bg-white/30 backdrop-blur-lg text-white hover:bg-white/50 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 mt-6 flex items-center justify-center gap-3 shadow-lg"
+            className="w-full bg-slate-900/20 text-slate-900 hover:bg-slate-900/30 dark:bg-white/30 dark:text-white dark:hover:bg-white/50 backdrop-blur-lg text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 mt-6 flex items-center justify-center gap-3 shadow-lg"
           >
             <Play className="h-6 w-6" />
             Ready to Play? (And Lie?)

@@ -17,7 +17,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white p-4 relative">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 dark:text-white text-slate-900 p-4 relative">
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
@@ -31,16 +31,14 @@ const Index = () => {
         <div className="flex flex-col space-y-4 w-full max-w-xs mx-auto">
           <Button
             onClick={handleStartGame}
-            variant="outline"
-            className="bg-white/30 backdrop-blur-lg text-white hover:bg-white/50 shadow-lg text-xl md:text-2xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
+            className="bg-slate-900/20 text-slate-900 hover:bg-slate-900/30 dark:bg-white/30 dark:text-white dark:hover:bg-white/50 backdrop-blur-lg shadow-lg text-xl md:text-2xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
           >
             <Play className="h-7 w-7" />
             Start Game
           </Button>
           <Button
             onClick={handleHowToPlay}
-            variant="outline"
-            className="bg-white/20 backdrop-blur-lg text-white hover:bg-white/40 text-lg md:text-xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
+            className="bg-slate-900/10 text-slate-900 hover:bg-slate-900/20 dark:bg-white/20 dark:text-white dark:hover:bg-white/40 backdrop-blur-lg text-lg md:text-xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
           >
             <BookOpen className="h-6 w-6" />
             How to Play

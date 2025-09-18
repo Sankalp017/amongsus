@@ -50,8 +50,7 @@ const InstallPWAButton = () => {
   return (
     <Button
       onClick={handleInstallClick}
-      variant="outline"
-      className="bg-white/20 backdrop-blur-lg text-white hover:bg-white/40 text-lg md:text-xl px-8 py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
+      className="bg-slate-900/10 text-slate-900 hover:bg-slate-900/20 dark:bg-white/20 dark:text-white dark:hover:bg-white/40 backdrop-blur-lg text-lg md:text-xl px-8 py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
     >
       <Download className="mr-2 h-6 w-6" />
       Add to Home Screen
