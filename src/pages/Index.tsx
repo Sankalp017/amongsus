@@ -17,7 +17,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 dark:text-white text-slate-900 p-4 relative">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white p-4 relative">
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
@@ -25,20 +25,20 @@ const Index = () => {
         <h1 className="text-6xl md:text-8xl font-extrabold mb-4 drop-shadow-lg">
           Among Sus
         </h1>
-        <p className="text-lg md:text-xl mb-10 max-w-md">
+        <p className="text-lg md:text-xl mb-10 max-w-md drop-shadow-md">
           Uncover the Imposter in this thrilling word-based social deduction game, and let the accusations fly!
         </p>
         <div className="flex flex-col space-y-4 w-full max-w-xs mx-auto">
           <Button
             onClick={handleStartGame}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-white/30 dark:text-white dark:hover:bg-white/50 dark:backdrop-blur-lg shadow-lg text-xl md:text-2xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
+            className="bg-white text-slate-900 hover:bg-white/90 dark:bg-white/30 dark:text-white dark:hover:bg-white/50 dark:backdrop-blur-lg shadow-lg text-xl md:text-2xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
           >
             <Play className="h-7 w-7" />
             Start Game
           </Button>
           <Button
             onClick={handleHowToPlay}
-            className="bg-secondary text-secondary-foreground hover:bg-secondary/80 dark:bg-white/20 dark:text-white dark:hover:bg-white/40 dark:backdrop-blur-lg text-lg md:text-xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
+            className="bg-white/20 text-white hover:bg-white/40 dark:backdrop-blur-lg text-lg md:text-xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
           >
             <BookOpen className="h-6 w-6" />
             How to Play
