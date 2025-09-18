@@ -55,7 +55,7 @@ const Discussion = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white p-4"
     >
       <Card className="w-full max-w-md bg-card p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center border-border">
         <>

@@ -100,7 +100,7 @@ const Results = () => {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4 overflow-hidden"
+      className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white p-4 overflow-hidden"
     >
       <ReactConfetti
         width={windowSize.width}
