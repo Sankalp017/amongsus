@@ -25,7 +25,12 @@ const TopicSelector: React.FC<TopicSelectorProps> = ({ options, selected, onChan
           type="button" // Prevent form submission
           variant={selected.includes(option.value) ? 'default' : 'outline'}
           onClick={() => handleToggle(option.value)}
-          className="transition-all duration-200 ease-in-out rounded-full px-4 py-2 h-auto text-sm"
+          className={cn(
+            "transition-all duration-200 ease-in-out rounded-full px-4 py-2 h-auto text-sm",
+            {
+              "dark:bg-primary/80 dark:hover:bg-primary/90": selected.includes(option.value),
+            }
+          )}
         >
           {option.label}
         </Button>
