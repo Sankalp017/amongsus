@@ -61,7 +61,7 @@ const Discussion = () => {
         <>
           <CardHeader>
             <CardTitle className="text-3xl md:text-4xl font-bold mb-2 flex items-center justify-center gap-2">
-              <MessageCircle className="h-8 w-8 md:h-9 md:w-9 text-purple-700 dark:text-purple-400 animate-pulse" /> Discussion Time!
+              <MessageCircle className="h-8 w-8 md:h-9 md:w-9 text-primary animate-pulse" /> Discussion Time!
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -71,7 +71,7 @@ const Discussion = () => {
 
             <Button
               onClick={handleEndDiscussion}
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 dark:bg-purple-600 dark:hover:bg-purple-700 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap flex items-center justify-center gap-3"
+              className="w-full text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap flex items-center justify-center gap-3"
             >
               <Eye className="h-6 w-6" />
               Reveal Results

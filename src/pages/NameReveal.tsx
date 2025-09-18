@@ -317,7 +317,7 @@ const NameReveal = () => {
           </div>
         ) : (
           <>
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-purple-800 dark:text-purple-300">It's {currentPlayerName}'s Turn</h2>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-primary">It's {currentPlayerName}'s Turn</h2>
             <p className="text-base md:text-lg mb-6 text-muted-foreground">Click the card to reveal your word.</p>
 
             <div
@@ -349,7 +349,7 @@ const NameReveal = () => {
             <Button
               onClick={handleNextPlayer}
               disabled={!showWord}
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 dark:bg-purple-600 dark:hover:bg-purple-700 text-base md:text-lg py-4 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="w-full text-base md:text-lg py-4 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
             </Button>
