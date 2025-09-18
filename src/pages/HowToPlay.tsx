@@ -73,9 +73,9 @@ const HowToPlay = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4"
+      className="min-h-screen flex flex-col items-center justify-center text-white p-4"
     >
-      <Card className="w-full max-w-4xl bg-card p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center border-border">
+      <Card className="w-full max-w-4xl p-6 sm:p-8 text-card-foreground text-center">
         <CardHeader className="relative flex items-center justify-center p-0 mb-4">
           <Button
             variant="ghost"
@@ -94,12 +94,12 @@ const HowToPlay = () => {
             Welcome to Among Sus! It's a fun word game for <span className="font-bold text-foreground">3+ players</span> on one device. Find the Imposters, or be one and lie your way to victory!
           </p>
 
-          <Separator className="my-6" />
+          <Separator className="my-6 bg-white/20" />
 
           <h3 className="text-xl md:text-2xl font-semibold mb-3 text-purple-700 dark:text-purple-400">Quick Guide:</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {guidePoints.map((point, index) => (
-              <div key={index} className="bg-background p-4 rounded-lg shadow-sm border border-border flex items-start space-x-3">
+              <div key={index} className="bg-black/10 dark:bg-white/5 p-4 rounded-lg shadow-sm border border-white/10 flex items-start space-x-3">
                 <span className="text-2xl mt-0.5">{point.emoji}</span>
                 <div>
                   <h4 className={`font-bold text-lg ${point.color || 'text-foreground'}`}>{point.title}</h4>
