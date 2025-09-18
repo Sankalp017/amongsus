@@ -100,7 +100,7 @@ const Results = () => {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center justify-center text-white p-4 overflow-hidden"
+      className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4 overflow-hidden"
     >
       <ReactConfetti
         width={windowSize.width}
@@ -109,7 +109,7 @@ const Results = () => {
         numberOfPieces={showConfetti ? 200 : 0}
         gravity={0.1}
       />
-      <Card className="w-full max-w-lg p-6 sm:p-8 text-card-foreground text-center">
+      <Card className="w-full max-w-lg bg-card p-6 sm:p-8 rounded-3xl shadow-2xl text-card-foreground text-center">
         <CardContent className="p-0">
           <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 text-transparent bg-clip-text">
             The Truth is Out!
@@ -119,7 +119,7 @@ const Results = () => {
           </p>
 
           <div className="space-y-6 mb-8 text-left">
-            <section aria-labelledby="words-heading" className="p-4 rounded-xl border border-white/20 bg-black/10 dark:bg-white/5">
+            <section aria-labelledby="words-heading" className="p-4 rounded-xl border border-border bg-muted/50">
               <h2 id="words-heading" className="text-lg md:text-xl font-bold mb-2 flex items-center gap-2 text-foreground">
                 <BookOpen className="h-5 w-5 md:h-6 md:w-6 text-purple-700 dark:text-purple-400" aria-hidden="true" /> The Words
               </h2>
@@ -127,7 +127,7 @@ const Results = () => {
               <p className="text-base md:text-lg ml-1">Sus Word: <span className="font-semibold text-purple-700 dark:text-purple-400">{gameState.susWord}</span></p>
             </section>
 
-            <section aria-labelledby="imposters-heading" className="p-4 rounded-xl border border-red-500/30 bg-red-500/20 dark:bg-red-900/30 backdrop-blur-sm">
+            <section aria-labelledby="imposters-heading" className="p-4 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20">
               <h2 id="imposters-heading" className="text-lg md:text-xl font-bold mb-3 flex items-center gap-2 text-red-800 dark:text-red-300">
                 <UserX className="h-5 w-5 md:h-6 md:w-6 text-red-600 dark:text-red-400" aria-hidden="true" /> Imposter{imposters.length !== 1 && 's'}
               </h2>
@@ -145,7 +145,7 @@ const Results = () => {
               </div>
             </section>
 
-            <section aria-labelledby="innocents-heading" className="p-4 rounded-xl border border-green-500/30 bg-green-500/20 dark:bg-green-900/30 backdrop-blur-sm">
+            <section aria-labelledby="innocents-heading" className="p-4 rounded-xl border border-green-200 dark:border-green-900/50 bg-green-50 dark:bg-green-900/20">
               <h2 id="innocents-heading" className="text-lg md:text-xl font-bold mb-3 flex items-center gap-2 text-green-800 dark:text-green-300">
                 <Users className="h-5 w-5 md:h-6 w-6 text-green-600 dark:text-green-400" aria-hidden="true" /> Innocent{innocents.length !== 1 && 's'}
               </h2>

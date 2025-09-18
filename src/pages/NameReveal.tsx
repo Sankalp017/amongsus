@@ -306,9 +306,9 @@ const NameReveal = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center text-white p-4"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4"
     >
-      <Card className="w-full max-w-md p-6 sm:p-8 text-card-foreground text-center relative">
+      <Card className="w-full max-w-md bg-card p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center border-border relative">
         {showTimer ? (
           <div className="flex flex-col items-center justify-center h-64">
             <h2 className="text-2xl md:text-3xl font-bold mb-4 text-foreground animate-pulse-fast">Get Ready!</h2>
@@ -323,7 +323,7 @@ const NameReveal = () => {
             <div
               onClick={handleRevealWord}
               className={`relative w-full h-64 rounded-3xl overflow-hidden flex flex-col items-center justify-center p-4 cursor-pointer transition-all duration-300 ease-in-out mb-6
-                ${showWord ? "bg-black/20 dark:bg-white/10 shadow-lg" : "bg-black/10 dark:bg-white/5 hover:bg-black/20 dark:hover:bg-white/10"}
+                ${showWord ? "bg-muted text-card-foreground shadow-lg" : "bg-muted/50 hover:bg-muted"}
               `}
             >
               {!showWord && (

@@ -131,9 +131,9 @@ const GameSetup = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center text-white p-4"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4"
     >
-      <Card className="w-full max-w-md p-6 sm:p-8 text-card-foreground">
+      <Card className="w-full max-w-md bg-card p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground border-border">
         <div className="relative flex items-center justify-center mb-6">
           <Button
             variant="ghost"
@@ -161,7 +161,7 @@ const GameSetup = () => {
                       onChange={field.onChange}
                       min={3}
                       max={20}
-                      className="bg-green-500/20"
+                      className="bg-green-100 dark:bg-green-500/20"
                     />
                   </FormControl>
                   <FormMessage />
@@ -181,7 +181,7 @@ const GameSetup = () => {
                       onChange={field.onChange}
                       min={1}
                       max={numPlayers - 1}
-                      className="bg-red-500/20"
+                      className="bg-red-100 dark:bg-red-500/20"
                     />
                   </FormControl>
                   <FormMessage />
@@ -189,7 +189,7 @@ const GameSetup = () => {
               )}
             />
 
-            <div className="bg-black/10 dark:bg-white/5 p-4 rounded-xl shadow-inner border border-white/10">
+            <Card className="bg-muted/50 p-4 rounded-xl shadow-inner border-border">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="text-lg md:text-xl font-semibold text-purple-700 dark:text-purple-400 text-left">Player Names</CardTitle>
               </CardHeader>
@@ -215,7 +215,7 @@ const GameSetup = () => {
                   />
                 ))}
               </CardContent>
-            </div>
+            </Card>
 
             <FormField
               control={form.control}
