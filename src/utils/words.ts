@@ -1,12 +1,13 @@
 export const wordCategories = [
   "🐘 Animals",
+  "📱 Apps",
   "🏙️ Cities",
   "🏎️ Formula 1 Teams",
   "🍔 Food",
   "🎬 Movies",
   "🎲 Random words",
   "📚 School Subjects",
-  "🏆 Sports", // Changed icon from ⚽ to 🏆
+  "🏆 Sports",
   "⚽ Premier League Teams",
   "📺 TV Series",
 ];
@@ -58,7 +59,7 @@ const wordBank: WordBank = {
     "Computer Science", "Economics", "Sociology", "Psychology",
     "Philosophy", "Ethics", "Civics", "Government", "Statistics", "Trigonometry"
   ],
-  "🏆 Sports": [ // Key updated to match the new category name
+  "🏆 Sports": [
     "Football", "Basketball", "Tennis", "Soccer", "Baseball", "Volleyball",
     "Swimming", "Cycling", "Running", "Golf", "Boxing", "Cricket", "Rugby",
     "Hockey", "Badminton", "Skiing", "Snowboarding", "Surfing", "Skateboarding",
@@ -83,14 +84,19 @@ const wordBank: WordBank = {
     "Severance", "Yellowstone", "Peaky Blinders", "Money Heist", "The Boys",
     "Arcane", "Dahmer", "Only Murders in the Building", "Euphoria", "The Witcher"
   ],
+  "📱 Apps": [
+    "WhatsApp", "Telegram", "Instagram", "Facebook", "TikTok", "Twitter (X)",
+    "Snapchat", "YouTube", "Spotify", "Netflix", "Uber", "LinkedIn",
+    "Pinterest", "Reddit", "Discord", "Zoom", "Google Maps", "Amazon",
+    "Tinder", "Shazam"
+  ],
 };
 
 export const getWordsForTopic = (topic: string, numSusPlayers: number): { mainWord: string; susWord: string } => {
-  // The topic string now directly matches the keys in wordBank
-  const categoryWords = wordBank[topic] || wordBank["🎲 Random words"]; // Updated default topic
+  const categoryWords = wordBank[topic] || wordBank["🎲 Random words"];
 
   if (categoryWords.length < 2) {
-    const randomWordsFallback = wordBank["🎲 Random words"]; // Updated fallback topic
+    const randomWordsFallback = wordBank["🎲 Random words"];
     const word1 = randomWordsFallback[Math.floor(Math.random() * randomWordsFallback.length)];
     let word2 = randomWordsFallback[Math.floor(Math.random() * randomWordsFallback.length)];
     while (word1 === word2 && randomWordsFallback.length > 1) {
