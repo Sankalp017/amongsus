@@ -32,7 +32,16 @@ const TopicSelector: React.FC<TopicSelectorProps> = ({ options, selected, onChan
             }
           )}
         >
-          {option.label}
+          {option.label === '📱 Apps' ? (
+            <span className="flex items-center gap-2">
+              {option.label}
+              <span className="bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+                NEW
+              </span>
+            </span>
+          ) : (
+            option.label
+          )}
         </Button>
       ))}
     </div>
