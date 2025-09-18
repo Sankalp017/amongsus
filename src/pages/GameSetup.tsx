@@ -133,7 +133,7 @@ const GameSetup = () => {
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white p-4"
     >
-      <Card className="w-full max-w-md p-6 sm:p-8 rounded-3xl shadow-2xl text-card-foreground border-border dark:bg-card dark:backdrop-blur-xl dark:border">
+      <Card className="w-full max-w-md p-6 sm:p-8 rounded-3xl shadow-2xl bg-card/60 dark:bg-card/40 backdrop-blur-lg border border-white/20 text-card-foreground">
         <div className="relative flex items-center justify-center mb-6">
           <Button
             variant="ghost"
@@ -238,7 +238,8 @@ const GameSetup = () => {
 
             <Button
               type="submit"
-              className="w-full text-base md:text-lg py-6 rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
+              variant="outline"
+              className="w-full bg-white/30 backdrop-blur-lg text-white hover:bg-white/50 text-base md:text-lg py-6 rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg"
             >
               Start Round
             </Button>

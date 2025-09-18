@@ -114,7 +114,7 @@ const HowToPlay = () => {
           <Button
             onClick={handleReadyToPlay}
             variant="outline"
-            className="w-full bg-white/20 backdrop-blur-lg border border-white/30 text-white hover:bg-white/40 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 mt-6 flex items-center justify-center gap-3"
+            className="w-full bg-white/30 backdrop-blur-lg text-white hover:bg-white/50 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 mt-6 flex items-center justify-center gap-3 shadow-lg"
           >
             <Play className="h-6 w-6" />
             Ready to Play? (And Lie?)

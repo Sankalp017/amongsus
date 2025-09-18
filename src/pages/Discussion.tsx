@@ -72,7 +72,7 @@ const Discussion = () => {
             <Button
               onClick={handleEndDiscussion}
               variant="outline"
-              className="w-full bg-white/20 backdrop-blur-lg border border-white/30 text-white hover:bg-white/40 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap flex items-center justify-center gap-3"
+              className="w-full bg-white/30 backdrop-blur-lg text-white hover:bg-white/50 shadow-lg text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap flex items-center justify-center gap-3"
             >
               <Eye className="h-6 w-6" />
               Reveal Results

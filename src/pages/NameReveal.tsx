@@ -350,7 +350,7 @@ const NameReveal = () => {
               onClick={handleNextPlayer}
               disabled={!showWord}
               variant="outline"
-              className="w-full bg-white/20 backdrop-blur-lg border border-white/30 text-white hover:bg-white/40 text-base md:text-lg py-4 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 disabled:bg-white/10 disabled:text-white/50 disabled:border-white/20 disabled:cursor-not-allowed"
+              className="w-full bg-white/30 backdrop-blur-lg text-white hover:bg-white/50 shadow-lg text-base md:text-lg py-4 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 disabled:bg-white/10 disabled:text-white/50 disabled:cursor-not-allowed"
             >
               {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
             </Button>
