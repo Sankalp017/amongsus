@@ -131,9 +131,9 @@ const GameSetup = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 dark:text-white text-slate-900 p-4"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 p-4"
     >
-      <Card className="w-full max-w-md p-6 sm:p-8 rounded-3xl shadow-2xl bg-card/60 dark:bg-card/40 backdrop-blur-lg border border-slate-900/20 dark:border-white/20 text-card-foreground">
+      <Card className="w-full max-w-md p-6 sm:p-8 rounded-3xl shadow-2xl bg-card text-card-foreground dark:bg-card/40 dark:backdrop-blur-lg border dark:border-white/20">
         <div className="relative flex items-center justify-center mb-6">
           <Button
             variant="ghost"
@@ -238,7 +238,7 @@ const GameSetup = () => {
 
             <Button
               type="submit"
-              className="w-full bg-slate-900/20 text-slate-900 hover:bg-slate-900/30 dark:bg-white/30 dark:text-white dark:hover:bg-white/50 backdrop-blur-lg text-base md:text-lg py-6 rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-white/30 dark:text-white dark:hover:bg-white/50 dark:backdrop-blur-lg text-base md:text-lg py-6 rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg"
             >
               Start Round
             </Button>

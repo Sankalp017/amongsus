@@ -55,9 +55,9 @@ const Discussion = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 dark:text-white text-slate-900 p-4"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 p-4"
     >
-      <Card className="w-full max-w-md bg-card/60 dark:bg-card/40 backdrop-blur-lg border border-slate-900/20 dark:border-white/20 p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center">
+      <Card className="w-full max-w-md bg-card text-card-foreground dark:bg-card/40 dark:backdrop-blur-lg border dark:border-white/20 p-6 sm:p-8 rounded-2xl shadow-2xl text-center">
         <>
           <CardHeader>
             <CardTitle className="text-3xl md:text-4xl font-bold mb-2 flex items-center justify-center gap-2">
@@ -71,7 +71,7 @@ const Discussion = () => {
 
             <Button
               onClick={handleEndDiscussion}
-              className="w-full bg-slate-900/20 text-slate-900 hover:bg-slate-900/30 dark:bg-white/30 dark:text-white dark:hover:bg-white/50 backdrop-blur-lg shadow-lg text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap flex items-center justify-center gap-3"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-white/30 dark:text-white dark:hover:bg-white/50 dark:backdrop-blur-lg shadow-lg text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap flex items-center justify-center gap-3"
             >
               <Eye className="h-6 w-6" />
               Reveal Results

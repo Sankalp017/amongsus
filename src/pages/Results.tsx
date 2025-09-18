@@ -100,7 +100,7 @@ const Results = () => {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 dark:text-white text-slate-900 p-4 overflow-hidden"
+      className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 p-4 overflow-hidden"
     >
       <ReactConfetti
         width={windowSize.width}
@@ -109,7 +109,7 @@ const Results = () => {
         numberOfPieces={showConfetti ? 200 : 0}
         gravity={0.1}
       />
-      <Card className="w-full max-w-lg bg-card/60 dark:bg-card/40 backdrop-blur-lg border border-slate-900/20 dark:border-white/20 p-6 sm:p-8 rounded-3xl shadow-2xl text-card-foreground text-center">
+      <Card className="w-full max-w-lg bg-card text-card-foreground dark:bg-card/40 dark:backdrop-blur-lg border dark:border-white/20 p-6 sm:p-8 rounded-3xl shadow-2xl text-center">
         <CardContent className="p-0">
           <h1 className="text-4xl md:text-5xl font-bold mb-2 text-foreground">
             The Truth is Out!
@@ -163,14 +163,14 @@ const Results = () => {
           <div className="flex flex-col space-y-3 mt-8">
             <Button
               onClick={handlePlayNextRound}
-              className="w-full bg-slate-900/20 text-slate-900 hover:bg-slate-900/30 dark:bg-white/30 dark:text-white dark:hover:bg-white/50 backdrop-blur-lg shadow-lg text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-white/30 dark:text-white dark:hover:bg-white/50 dark:backdrop-blur-lg shadow-lg text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2"
             >
               <Play className="h-5 w-5" aria-hidden="true" />
               Play Next Round
             </Button>
             <Button
               onClick={handleModifyGame}
-              className="w-full bg-slate-900/10 text-slate-900 hover:bg-slate-900/20 dark:bg-white/20 dark:text-white dark:hover:bg-white/40 backdrop-blur-lg text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2"
+              className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/80 dark:bg-white/20 dark:text-white dark:hover:bg-white/40 dark:backdrop-blur-lg text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2"
             >
               <Settings className="h-5 w-5" aria-hidden="true" />
               Modify Game

@@ -31,14 +31,14 @@ const Index = () => {
         <div className="flex flex-col space-y-4 w-full max-w-xs mx-auto">
           <Button
             onClick={handleStartGame}
-            className="bg-slate-900/20 text-slate-900 hover:bg-slate-900/30 dark:bg-white/30 dark:text-white dark:hover:bg-white/50 backdrop-blur-lg shadow-lg text-xl md:text-2xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-white/30 dark:text-white dark:hover:bg-white/50 dark:backdrop-blur-lg shadow-lg text-xl md:text-2xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
           >
             <Play className="h-7 w-7" />
             Start Game
           </Button>
           <Button
             onClick={handleHowToPlay}
-            className="bg-slate-900/10 text-slate-900 hover:bg-slate-900/20 dark:bg-white/20 dark:text-white dark:hover:bg-white/40 backdrop-blur-lg text-lg md:text-xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
+            className="bg-secondary text-secondary-foreground hover:bg-secondary/80 dark:bg-white/20 dark:text-white dark:hover:bg-white/40 dark:backdrop-blur-lg text-lg md:text-xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
           >
             <BookOpen className="h-6 w-6" />
             How to Play
