@@ -73,9 +73,9 @@ const HowToPlay = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white p-4"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4"
     >
-      <Card className="w-full max-w-4xl p-6 sm:p-8 rounded-3xl shadow-2xl text-card-foreground text-center border-border dark:bg-card dark:backdrop-blur-xl dark:border">
+      <Card className="w-full max-w-4xl bg-card p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center border-border">
         <CardHeader className="relative flex items-center justify-center p-0 mb-4">
           <Button
             variant="ghost"
@@ -96,10 +96,10 @@ const HowToPlay = () => {
 
           <Separator className="my-6" />
 
-          <h3 className="text-xl md:text-2xl font-semibold mb-3 text-primary">Quick Guide:</h3>
+          <h3 className="text-xl md:text-2xl font-semibold mb-3 text-purple-700 dark:text-purple-400">Quick Guide:</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {guidePoints.map((point, index) => (
-              <div key={index} className="bg-background/50 p-4 rounded-2xl shadow-sm border border-border flex items-start space-x-3">
+              <div key={index} className="bg-background p-4 rounded-lg shadow-sm border border-border flex items-start space-x-3">
                 <span className="text-2xl mt-0.5">{point.emoji}</span>
                 <div>
                   <h4 className={`font-bold text-lg ${point.color || 'text-foreground'}`}>{point.title}</h4>
@@ -113,7 +113,7 @@ const HowToPlay = () => {
           </p>
           <Button
             onClick={handleReadyToPlay}
-            className="w-full text-base md:text-lg py-6 rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-105 mt-6 flex items-center justify-center gap-3"
+            className="w-full bg-purple-700 text-white hover:bg-purple-800 dark:bg-purple-600 dark:hover:bg-purple-700 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 mt-6 flex items-center justify-center gap-3"
           >
             <Play className="h-6 w-6" />
             Ready to Play? (And Lie?)
