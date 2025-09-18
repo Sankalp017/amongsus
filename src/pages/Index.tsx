@@ -36,15 +36,15 @@ const Index = () => {
             <Play className="h-7 w-7" />
             Start Game
           </Button>
-          <Button
-            onClick={handleHowToPlay}
-            className="bg-white/20 text-white hover:bg-white/40 dark:backdrop-blur-lg text-lg md:text-xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
-          >
-            <BookOpen className="h-6 w-6" />
-            How to Play
-          </Button>
           <InstallPWAButton />
         </div>
+        <button
+          onClick={handleHowToPlay}
+          className="mt-8 text-white/80 hover:text-white underline flex items-center gap-2 transition-colors"
+        >
+          <BookOpen className="h-5 w-5" />
+          How to Play
+        </button>
       </div>
       <MadeWithDyad />
     </div>
