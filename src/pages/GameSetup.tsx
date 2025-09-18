@@ -1,109 +1,140 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { toast } from "sonner";
-import { wordTopics } from "@/utils/words";
-import TopicSelector from "@/components/TopicSelector";
+import { wordCategories } from "@/utils/words";
+import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Users, UserX, BookOpen, Play } from "lucide-react";
-import { saveGameState, loadGameState, clearGameState } from "@/utils/localStorage";
+import { saveGameState, clearGameState } from "@/utils/localStorage";
+import NumberStepper from "@/components/ui/NumberStepper";
+import TopicSelector from "@/components/TopicSelector";
 
-interface GameSetupState {
-  numPlayers: number;
-  playerNames: string[];
-  numSusPlayers: number;
-  topics: string[];
-  isModification?: boolean;
-}
+// Zod schema for form validation
+const formSchema = z.object({
+  numPlayers: z.coerce
+    .number()
+    .min(3, { message: "Minimum 3 players required." })
+    .max(20, { message: "Maximum 20 players allowed." }),
+  playerNames: z
+    .array(z.string().min(1, { message: "Player name cannot be empty." }))
+    .min(3, { message: "Please enter names for all players." }),
+  numSusPlayers: z.coerce
+    .number()
+    .min(1, { message: "Minimum 1 imposter required." }),
+  topics: z.array(z.string()).min(1, { message: "Please select at least one topic." }),
+  roundsSinceImposter: z.array(z.number()).optional(),
+  currentRound: z.number().optional(),
+}).refine(data => data.numSusPlayers < data.numPlayers, {
+  message: "Number of imposters must be less than total players.",
+  path: ["numSusPlayers"],
+});
 
 const GameSetup = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const locationState = location.state as GameSetupState | undefined;
+  const [playerInputs, setPlayerInputs] = useState<string[]>([]);
 
-  const [numPlayers, setNumPlayers] = useState(3);
-  const [playerNames, setPlayerNames] = useState<string[]>(Array(3).fill(""));
-  const [numSusPlayers, setNumSusPlayers] = useState(1);
-  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  const [isModification, setIsModification] = useState(false);
+  const isModification = location.state?.isModification;
+  const initialValues = isModification ? location.state : {
+    numPlayers: 3,
+    playerNames: ["", "", ""],
+    numSusPlayers: 1,
+    topics: [],
+    roundsSinceImposter: [],
+    currentRound: 1,
+  };
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: initialValues,
+  });
+
+  const numPlayers = form.watch("numPlayers");
 
   useEffect(() => {
-    const loadedState = locationState || loadGameState();
-    if (loadedState) {
-      setNumPlayers(loadedState.numPlayers || 3);
-      setPlayerNames(loadedState.playerNames || Array(loadedState.numPlayers || 3).fill(""));
-      setNumSusPlayers(loadedState.numSusPlayers || 1);
-      setSelectedTopics(loadedState.topics || []);
-      setIsModification(loadedState.isModification || false);
-    } else {
+    if (!isModification) {
       clearGameState();
     }
-  }, [locationState]);
 
-  const handleNumPlayersChange = (value: number[]) => {
-    const newNumPlayers = value[0];
-    setNumPlayers(newNumPlayers);
-    setPlayerNames((prev) => {
-      const newPlayerNames = [...prev];
-      if (newPlayerNames.length < newNumPlayers) {
-        return [...newPlayerNames, ...Array(newNumPlayers - newPlayerNames.length).fill("")];
-      }
-      return newPlayerNames.slice(0, newNumPlayers);
+    const currentNames = form.getValues("playerNames");
+    const newPlayerInputs = Array.from({ length: numPlayers }, (_, i) => {
+      return currentNames[i] || "";
     });
-    if (numSusPlayers >= newNumPlayers) {
-      setNumSusPlayers(Math.max(1, newNumPlayers - 1));
+    setPlayerInputs(newPlayerInputs);
+    form.setValue("playerNames", newPlayerInputs);
+
+    const currentSusPlayers = form.getValues("numSusPlayers");
+    if (currentSusPlayers >= numPlayers) {
+      form.setValue("numSusPlayers", Math.max(1, numPlayers - 1));
     }
-  };
+  }, [numPlayers, form, isModification]);
 
-  const handlePlayerNameChange = (index: number, name: string) => {
-    const newPlayerNames = [...playerNames];
-    newPlayerNames[index] = name;
-    setPlayerNames(newPlayerNames);
-  };
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const seenNames = new Set<string>();
+    let hasDuplicateError = false;
 
-  const handleNumSusPlayersChange = (value: number[]) => {
-    setNumSusPlayers(value[0]);
-  };
+    values.playerNames.forEach((_, index) => {
+      form.clearErrors(`playerNames.${index}`);
+    });
 
-  const handleStartGame = () => {
-    if (playerNames.some((name) => name.trim() === "")) {
-      toast.error("Please enter all player names.");
+    values.playerNames.forEach((name, index) => {
+      const lowerName = name.toLowerCase().trim();
+      if (lowerName === "") {
+        form.setError(`playerNames.${index}`, {
+          type: "manual",
+          message: "Player name cannot be empty.",
+        });
+        hasDuplicateError = true;
+        return;
+      }
+      if (seenNames.has(lowerName)) {
+        form.setError(`playerNames.${index}`, {
+          type: "manual",
+          message: "Player name must be unique.",
+        });
+        hasDuplicateError = true;
+      }
+      seenNames.add(lowerName);
+    });
+
+    if (hasDuplicateError) {
+      toast.error("Please correct the errors in player names.");
       return;
     }
-    if (selectedTopics.length === 0) {
-      toast.error("Please select at least one topic.");
-      return;
-    }
 
-    const gameState = {
-      numPlayers,
-      playerNames,
-      numSusPlayers,
-      topics: selectedTopics,
+    const initialRoundsSinceImposter = new Array(values.numPlayers).fill(0);
+
+    saveGameState({
+      ...values,
+      roundsSinceImposter: initialRoundsSinceImposter,
       currentRound: 1,
-      roundsSinceImposter: new Array(numPlayers).fill(0),
-    };
-    saveGameState(gameState);
-    navigate("/name-reveal", { state: gameState });
+    });
+    toast.success("Game setup complete! Starting round...");
+    navigate("/name-reveal", { state: { ...values, roundsSinceImposter: initialRoundsSinceImposter, currentRound: 1 } });
   };
 
   const handleGoBack = () => {
     navigate("/");
   };
 
-  const topicOptions = Object.keys(wordTopics).map((key) => ({
-    value: key,
-    label: key,
-    isNew: key === '📱 Apps',
-  }));
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-gray-200 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-foreground p-4">
-      <Card className="w-full max-w-2xl bg-card p-6 sm:p-8 rounded-2xl shadow-2xl border-border">
-        <CardHeader className="relative flex items-center justify-center p-0 mb-6">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white p-4"
+    >
+      <Card className="w-full max-w-md p-6 sm:p-8 rounded-3xl shadow-2xl text-card-foreground border-border dark:bg-card dark:backdrop-blur-xl dark:border">
+        <div className="relative flex items-center justify-center mb-6">
           <Button
             variant="ghost"
             size="icon"
@@ -112,77 +143,107 @@ const GameSetup = () => {
           >
             <ArrowLeft className="h-6 w-6" />
           </Button>
-          <CardTitle className="text-3xl md:text-4xl font-bold text-center">
+          <h2 className="text-2xl md:text-3xl font-bold">
             Game Setup
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-8">
-          <div className="space-y-4">
-            <Label htmlFor="numPlayers" className="text-lg font-semibold flex items-center gap-2">
-              <Users className="h-5 w-5 text-purple-700 dark:text-purple-400" />
-              Number of Players: {numPlayers}
-            </Label>
-            <Slider
-              id="numPlayers"
-              min={3}
-              max={10}
-              step={1}
-              value={[numPlayers]}
-              onValueChange={handleNumPlayersChange}
+          </h2>
+        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="numPlayers"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base md:text-lg mb-2">Number of Players</FormLabel>
+                  <FormControl>
+                    <NumberStepper
+                      value={field.value}
+                      onChange={field.onChange}
+                      min={3}
+                      max={20}
+                      className="bg-green-100 dark:bg-green-500/20"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="space-y-4">
-            <Label className="text-lg font-semibold">Player Names</Label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {playerNames.map((name, index) => (
-                <Input
-                  key={index}
-                  type="text"
-                  placeholder={`Player ${index + 1}`}
-                  value={name}
-                  onChange={(e) => handlePlayerNameChange(index, e.target.value)}
-                  className="text-base"
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <Label htmlFor="numSusPlayers" className="text-lg font-semibold flex items-center gap-2">
-              <UserX className="h-5 w-5 text-red-600 dark:text-red-400" />
-              Number of Imposters: {numSusPlayers}
-            </Label>
-            <Slider
-              id="numSusPlayers"
-              min={1}
-              max={Math.max(1, numPlayers - 1)}
-              step={1}
-              value={[numSusPlayers]}
-              onValueChange={handleNumSusPlayersChange}
+            <FormField
+              control={form.control}
+              name="numSusPlayers"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base md:text-lg">Number of Imposters</FormLabel>
+                  <FormControl>
+                    <NumberStepper
+                      value={field.value}
+                      onChange={field.onChange}
+                      min={1}
+                      max={numPlayers - 1}
+                      className="bg-red-100 dark:bg-red-500/20"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="space-y-4">
-            <Label className="text-lg font-semibold flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
-              Topics
-            </Label>
-            <TopicSelector
-              options={topicOptions}
-              selected={selectedTopics}
-              onChange={setSelectedTopics}
+            <Card className="bg-muted/50 p-4 rounded-2xl shadow-inner border-border">
+              <CardHeader className="p-0 pb-4">
+                <CardTitle className="text-lg md:text-xl font-semibold text-primary text-left">Player Names</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 space-y-4">
+                {playerInputs.map((_, index) => (
+                  <FormField
+                    key={index}
+                    control={form.control}
+                    name={`playerNames.${index}`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Player {index + 1} Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={`Enter name for Player ${index + 1}`}
+                            {...field}
+                            className="w-full"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+              </CardContent>
+            </Card>
+
+            <FormField
+              control={form.control}
+              name="topics"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base md:text-lg">Multiselect topics</FormLabel>
+                  <FormControl>
+                    <TopicSelector
+                      options={wordCategories.map(cat => ({ value: cat, label: cat }))}
+                      selected={field.value}
+                      onChange={field.onChange}
+                      className="w-full"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <Button
-            onClick={handleStartGame}
-            className="w-full bg-purple-700 text-white hover:bg-purple-800 dark:bg-purple-600 dark:hover:bg-purple-700 text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
-          >
-            <Play className="h-6 w-6" />
-            {isModification ? "Update Game & Start" : "Start Game"}
-          </Button>
-        </CardContent>
+            <Button
+              type="submit"
+              className="w-full text-base md:text-lg py-6 rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
+            >
+              Start Round
+            </Button>
+          </form>
+        </Form>
       </Card>
     </div>
   );

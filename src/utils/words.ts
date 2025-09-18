@@ -1,60 +1,125 @@
-export const wordTopics = {
-    "🍎 Fruits": {
-        main: ["Apple", "Banana", "Orange", "Grape", "Strawberry", "Blueberry", "Watermelon", "Pineapple", "Mango", "Peach"],
-        sus: ["Tomato", "Cucumber", "Zucchini", "Bell Pepper", "Avocado", "Eggplant", "Pumpkin", "Olive", "Corn", "Pea"]
-    },
-    "🐶 Animals": {
-        main: ["Dog", "Cat", "Lion", "Tiger", "Elephant", "Giraffe", "Zebra", "Monkey", "Bear", "Hippo"],
-        sus: ["Human", "Dinosaur", "Dragon", "Unicorn", "Griffin", "Phoenix", "Centaur", "Minotaur", "Gorgon", "Hydra"]
-    },
-    "🚗 Vehicles": {
-        main: ["Car", "Bus", "Motorcycle", "Bicycle", "Train", "Airplane", "Boat", "Helicopter", "Scooter", "Truck"],
-        sus: ["Skateboard", "Roller Skates", "Wheelchair", "Submarine", "Spaceship", "Hot Air Balloon", "Jet Ski", "Tricycle", "Unicycle", "Segway"]
-    },
-    "💻 Technology": {
-        main: ["Computer", "Smartphone", "Laptop", "Tablet", "Television", "Camera", "Headphones", "Keyboard", "Mouse", "Printer"],
-        sus: ["Book", "Pen", "Paper", "Calculator", "Typewriter", "Abacus", "Compass", "Telescope", "Microscope", "Clock"]
-    },
-    "📱 Apps": {
-        main: ["WhatsApp", "Telegram", "Instagram", "Facebook", "TikTok", "Twitter", "Snapchat", "YouTube", "Spotify", "Netflix", "Uber", "LinkedIn", "Pinterest", "Reddit", "Discord", "Zoom", "Google Maps", "Amazon", "Tinder", "Shazam"],
-        sus: ["Google", "Apple", "Microsoft", "Meta", "IBM", "Oracle", "Adobe", "Salesforce", "SAP", "Intel"]
-    },
-    "🎲 Random words": {
-        main: ["Spoon", "Chair", "Cloud", "Guitar", "Mountain", "River", "Bridge", "Key", "Bottle", "Lamp", "Shoe", "Hat", "Sun", "Moon", "Star"],
-        sus: ["Fork", "Table", "Rain", "Piano", "Hill", "Lake", "Tunnel", "Lock", "Cup", "Lightbulb", "Sock", "Cap", "Planet", "Comet", "Galaxy"]
-    }
+export const wordCategories = [
+  "🐘 Animals",
+  "📱 Apps",
+  "🏙️ Cities",
+  "🏎️ Formula 1 Teams",
+  "🍔 Food",
+  "🎬 Movies",
+  "🎲 Random words",
+  "📚 School Subjects",
+  "🏆 Sports",
+  "⚽ Premier League Teams",
+  "📺 TV Series",
+];
+
+interface WordBank {
+  [category: string]: string[];
+}
+
+const wordBank: WordBank = {
+  "🎬 Movies": [
+    "Titanic", "Avatar", "Inception", "Matrix", "Star Wars", "Pulp Fiction",
+    "Forrest Gump", "Lion King", "Jurassic Park", "Interstellar", "Parasite",
+    "Dune", "Oppenheimer", "Barbie", "Godfather", "Shawshank Redemption",
+    "Lord of the Rings", "Harry Potter", "Avengers", "Casablanca", "Psycho",
+    "Blade Runner", "Spirited Away", "Whiplash", "La La Land", "Jaws"
+  ],
+  "🍔 Food": [
+    "Pizza", "Burger", "Sushi", "Pasta", "Taco", "Salad", "Curry", "Soup",
+    "Sandwich", "Ice Cream", "Chocolate", "Cake", "Donut", "Fries", "Steak",
+    "Pancakes", "Waffles", "Burrito", "Ramen", "Dumplings", "Croissant",
+    "Smoothie", "Lasagna", "Muffin", "Brownie"
+  ],
+  "🏙️ Cities": [
+    "Paris", "London", "Tokyo", "New York", "Rome", "Dubai", "Sydney", "Cairo",
+    "Rio de Janeiro", "Berlin", "Moscow", "Beijing", "Mumbai", "Toronto",
+    "Amsterdam", "Barcelona", "Seoul", "Mexico City", "Istanbul", "Bangkok",
+    "Prague", "Vienna", "Kyoto", "Venice", "Florence"
+  ],
+  "🐘 Animals": [
+    "Lion", "Tiger", "Elephant", "Giraffe", "Zebra", "Kangaroo", "Panda",
+    "Dolphin", "Whale", "Shark", "Penguin", "Owl", "Eagle", "Wolf", "Bear",
+    "Fox", "Rabbit", "Squirrel", "Hedgehog", "Koala", "Chimpanzee", "Gorilla",
+    "Crocodile", "Snake", "Spider", "Butterfly", "Bee", "Ant", "Fish", "Octopus"
+  ],
+  "🎲 Random words": [
+    "Cloud", "Ocean", "Mountain", "Forest", "River", "Desert", "Island", "Star",
+    "Moon", "Sun", "Rainbow", "Whisper", "Echo", "Shadow", "Dream", "Journey",
+    "Mystery", "Silence", "Freedom", "Harmony", "Adventure", "Discovery",
+    "Courage", "Wisdom", "Serenity", "Tranquility", "Imagination", "Curiosity",
+    "Innovation", "Creativity", "Happiness", "Laughter", "Friendship", "Love",
+    "Kindness", "Empathy", "Gratitude", "Patience", "Resilience", "Optimism",
+    "Starlight", "Waterfall", "Blossom", "Enigma", "Labyrinth", "Mirage",
+    "Solstice", "Aurora", "Cascade", "Ephemeral", "Glimmer", "Nostalgia"
+  ],
+  "📚 School Subjects": [
+    "Algebra", "Geometry", "Calculus", "Physics", "Chemistry", "Biology",
+    "History", "Social Studies", "Geography", "Literature", "Grammar",
+    "Writing", "Art", "Music", "Drama", "Physical Education",
+    "Computer Science", "Economics", "Sociology", "Psychology",
+    "Philosophy", "Ethics", "Civics", "Government", "Statistics", "Trigonometry"
+  ],
+  "🏆 Sports": [
+    "Football", "Basketball", "Tennis", "Soccer", "Baseball", "Volleyball",
+    "Swimming", "Cycling", "Running", "Golf", "Boxing", "Cricket", "Rugby",
+    "Hockey", "Badminton", "Skiing", "Snowboarding", "Surfing", "Skateboarding",
+    "Gymnastics", "Athletics", "Wrestling", "Judo", "Karate", "Fencing"
+  ],
+  "🏎️ Formula 1 Teams": [
+    "Red Bull Racing", "Mercedes", "Ferrari", "McLaren", "Aston Martin",
+    "Alpine", "Williams", "Sauber", "Haas"
+  ],
+  "⚽ Premier League Teams": [
+    "Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton",
+    "Chelsea", "Crystal Palace", "Everton", "Fulham", "Ipswich Town",
+    "Leicester City", "Liverpool", "Manchester City", "Manchester United",
+    "Newcastle United", "Nottingham Forest",
+    "Southampton", "Tottenham Hotspur", "West Ham United",
+    "Wolverhampton Wanderers"
+  ],
+  "📺 TV Series": [
+    "Game of Thrones", "Breaking Bad", "Stranger Things", "The Office", "Friends",
+    "The Crown", "Squid Game", "The Mandalorian", "Chernobyl", "Queen's Gambit",
+    "Succession", "Ted Lasso", "Wednesday", "House of the Dragon", "The Last of Us",
+    "Severance", "Yellowstone", "Peaky Blinders", "Money Heist", "The Boys",
+    "Arcane", "Dahmer", "Only Murders in the Building", "Euphoria", "The Witcher"
+  ],
+  "📱 Apps": [
+    "WhatsApp", "Telegram", "Instagram", "Facebook", "TikTok", "Twitter (X)",
+    "Snapchat", "YouTube", "Spotify", "Netflix", "Uber", "LinkedIn",
+    "Pinterest", "Reddit", "Discord", "Zoom", "Google Maps", "Amazon",
+    "Tinder", "Shazam"
+  ],
 };
 
-const getRandomElement = <T,>(arr: T[]): T => {
-    return arr[Math.floor(Math.random() * arr.length)];
-};
+export const getWordsForTopic = (topic: string, numSusPlayers: number): { mainWord: string; susWord: string } => {
+  const categoryWords = wordBank[topic] || wordBank["🎲 Random words"];
 
-export const getWordsForTopic = (topic: string, numSusPlayers: number) => {
-    let effectiveTopic = topic;
-    if (topic === "🎲 Random words") {
-        const allTopics = Object.keys(wordTopics).filter(t => t !== "🎲 Random words");
-        effectiveTopic = getRandomElement(allTopics);
+  if (categoryWords.length < 2) {
+    const randomWordsFallback = wordBank["🎲 Random words"];
+    const word1 = randomWordsFallback[Math.floor(Math.random() * randomWordsFallback.length)];
+    let word2 = randomWordsFallback[Math.floor(Math.random() * randomWordsFallback.length)];
+    while (word1 === word2 && randomWordsFallback.length > 1) {
+      word2 = randomWordsFallback[Math.floor(Math.random() * randomWordsFallback.length)];
     }
+    return { mainWord: word1, susWord: word2 };
+  }
 
-    const words = wordTopics[effectiveTopic as keyof typeof wordTopics];
+  const shuffledWords = [...categoryWords].sort(() => 0.5 - Math.random());
+  const mainWord = shuffledWords[0];
+  let susWord = shuffledWords[1];
 
-    if (!words) {
-        // Fallback if topic is somehow invalid
-        const fallbackWords = wordTopics["🎲 Random words"];
-        const mainWord = getRandomElement(fallbackWords.main);
-        let susWord = getRandomElement(fallbackWords.sus);
-        while (mainWord === susWord) {
-            susWord = getRandomElement(fallbackWords.sus);
-        }
-        return { mainWord, susWord };
+  if (mainWord === susWord && shuffledWords.length > 2) {
+    susWord = shuffledWords[2];
+  } else if (mainWord === susWord && shuffledWords.length === 2) {
+    const otherCategories = Object.keys(wordBank).filter(cat => cat !== topic);
+    if (otherCategories.length > 0) {
+      const fallbackCategory = wordBank[otherCategories[0]];
+      if (fallbackCategory && fallbackCategory.length > 0) {
+        susWord = fallbackCategory[Math.floor(Math.random() * fallbackCategory.length)];
+      }
     }
+  }
 
-    const mainWord = getRandomElement(words.main);
-    let susWord = getRandomElement(words.sus);
-
-    while (mainWord === susWord) {
-        susWord = getRandomElement(words.sus);
-    }
-
-    return { mainWord, susWord };
+  return { mainWord, susWord };
 };
