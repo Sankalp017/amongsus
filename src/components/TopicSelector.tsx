@@ -29,6 +29,7 @@ const TopicSelector: React.FC<TopicSelectorProps> = ({ options, selected, onChan
             "transition-all duration-200 ease-in-out rounded-full px-4 py-2 h-auto text-sm",
             {
               "dark:bg-primary/80 dark:hover:bg-primary/90": selected.includes(option.value),
+              "bg-muted/50 hover:bg-muted": !selected.includes(option.value),
             }
           )}
         >
