@@ -100,7 +100,7 @@ const Results = () => {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-black dark:to-slate-900 text-white p-4 overflow-hidden"
+      className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 dark:bg-gradient-to-br dark:from-gray-900 dark:via-blue-950 dark:to-slate-900 text-white p-4 overflow-hidden"
     >
       <ReactConfetti
         width={windowSize.width}
@@ -109,7 +109,7 @@ const Results = () => {
         numberOfPieces={showConfetti ? 200 : 0}
         gravity={0.1}
       />
-      <Card className="w-full max-w-lg p-6 sm:p-8 rounded-3xl shadow-2xl text-card-foreground text-center dark:bg-card dark:backdrop-blur-lg dark:border">
+      <Card className="w-full max-w-lg p-6 sm:p-8 rounded-3xl shadow-2xl text-card-foreground text-center dark:bg-card dark:backdrop-blur-xl dark:border">
         <CardContent className="p-0">
           <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-cyan-400 text-transparent bg-clip-text">
             The Truth is Out!
