@@ -308,7 +308,7 @@ const NameReveal = () => {
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white p-4"
     >
-      <Card className="w-full max-w-md bg-card p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center border-border relative">
+      <Card className="w-full max-w-md bg-card/60 dark:bg-card/40 backdrop-blur-lg border border-white/20 p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center relative">
         {showTimer ? (
           <div className="flex flex-col items-center justify-center h-64">
             <h2 className="text-2xl md:text-3xl font-bold mb-4 text-foreground animate-pulse-fast">Get Ready!</h2>
@@ -349,7 +349,8 @@ const NameReveal = () => {
             <Button
               onClick={handleNextPlayer}
               disabled={!showWord}
-              className="w-full text-base md:text-lg py-4 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
+              variant="outline"
+              className="w-full bg-white/20 backdrop-blur-lg border border-white/30 text-white hover:bg-white/40 text-base md:text-lg py-4 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 disabled:bg-white/10 disabled:text-white/50 disabled:border-white/20 disabled:cursor-not-allowed"
             >
               {currentPlayerIndex === gameData.numPlayers - 1 ? "Start Discussion" : "Next Player"}
             </Button>

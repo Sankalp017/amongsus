@@ -31,7 +31,8 @@ const Index = () => {
         <div className="flex flex-col space-y-4 w-full max-w-xs mx-auto">
           <Button
             onClick={handleStartGame}
-            className="text-xl md:text-2xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
+            variant="outline"
+            className="bg-white/20 backdrop-blur-lg border border-white/30 text-white hover:bg-white/40 text-xl md:text-2xl px-8 py-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3"
           >
             <Play className="h-7 w-7" />
             Start Game

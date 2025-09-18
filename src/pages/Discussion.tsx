@@ -57,7 +57,7 @@ const Discussion = () => {
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white p-4"
     >
-      <Card className="w-full max-w-md bg-card p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center border-border">
+      <Card className="w-full max-w-md bg-card/60 dark:bg-card/40 backdrop-blur-lg border border-white/20 p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground text-center">
         <>
           <CardHeader>
             <CardTitle className="text-3xl md:text-4xl font-bold mb-2 flex items-center justify-center gap-2">
@@ -71,7 +71,8 @@ const Discussion = () => {
 
             <Button
               onClick={handleEndDiscussion}
-              className="w-full text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap flex items-center justify-center gap-3"
+              variant="outline"
+              className="w-full bg-white/20 backdrop-blur-lg border border-white/30 text-white hover:bg-white/40 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 text-wrap flex items-center justify-center gap-3"
             >
               <Eye className="h-6 w-6" />
               Reveal Results

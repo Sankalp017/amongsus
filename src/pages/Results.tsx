@@ -109,7 +109,7 @@ const Results = () => {
         numberOfPieces={showConfetti ? 200 : 0}
         gravity={0.1}
       />
-      <Card className="w-full max-w-lg bg-card p-6 sm:p-8 rounded-3xl shadow-2xl text-card-foreground text-center">
+      <Card className="w-full max-w-lg bg-card/60 dark:bg-card/40 backdrop-blur-lg border border-white/20 p-6 sm:p-8 rounded-3xl shadow-2xl text-card-foreground text-center">
         <CardContent className="p-0">
           <h1 className="text-4xl md:text-5xl font-bold mb-2 text-foreground">
             The Truth is Out!
@@ -163,7 +163,8 @@ const Results = () => {
           <div className="flex flex-col space-y-3 mt-8">
             <Button
               onClick={handlePlayNextRound}
-              className="w-full text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+              variant="outline"
+              className="w-full bg-white/20 backdrop-blur-lg border border-white/30 text-white hover:bg-white/40 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
             >
               <Play className="h-5 w-5" aria-hidden="true" />
               Play Next Round
