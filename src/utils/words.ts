@@ -3,7 +3,6 @@ export const wordCategories = [
   "🏙️ Cities",
   "🏎️ Formula 1 Teams",
   "🍔 Food",
-  "🤣 Funny GIF",
   "🎬 Movies",
   "🎲 Random words",
   "📚 School Subjects",
@@ -83,12 +82,6 @@ const wordBank: WordBank = {
     "Succession", "Ted Lasso", "Wednesday", "House of the Dragon", "The Last of Us",
     "Severance", "Yellowstone", "Peaky Blinders", "Money Heist", "The Boys",
     "Arcane", "Dahmer", "Only Murders in the Building", "Euphoria", "The Witcher"
-  ],
-  "🤣 Funny GIF": [
-    "Kombucha Girl", "Side-eyeing Chloe", "Distracted Boyfriend", "This is Fine Dog",
-    "Blinking White Guy", "Salt Bae", "Hide the Pain Harold", "Woman Yelling at a Cat",
-    "Surprised Pikachu", "Drakeposting", "Roll Safe", "Is This a Pigeon?",
-    "Success Kid", "Grumpy Cat", "Expanding Brain"
   ],
 };
 
