@@ -100,7 +100,7 @@ const Results = () => {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4 overflow-hidden"
+      className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 dark:from-background dark:to-slate-900 text-white p-4 overflow-hidden"
     >
       <ReactConfetti
         width={windowSize.width}
@@ -111,7 +111,7 @@ const Results = () => {
       />
       <Card className="w-full max-w-lg bg-card p-6 sm:p-8 rounded-3xl shadow-2xl text-card-foreground text-center">
         <CardContent className="p-0">
-          <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 text-transparent bg-clip-text">
+          <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-cyan-400 text-transparent bg-clip-text">
             The Truth is Out!
           </h1>
           <p className="text-base md:text-lg mb-8 text-muted-foreground">
@@ -121,10 +121,10 @@ const Results = () => {
           <div className="space-y-6 mb-8 text-left">
             <section aria-labelledby="words-heading" className="p-4 rounded-xl border border-border bg-muted/50">
               <h2 id="words-heading" className="text-lg md:text-xl font-bold mb-2 flex items-center gap-2 text-foreground">
-                <BookOpen className="h-5 w-5 md:h-6 md:w-6 text-purple-700 dark:text-purple-400" aria-hidden="true" /> The Words
+                <BookOpen className="h-5 w-5 md:h-6 md:w-6 text-primary" aria-hidden="true" /> The Words
               </h2>
-              <p className="text-base md:text-lg ml-1">Main Word: <span className="font-semibold text-purple-700 dark:text-purple-400">{gameState.mainWord}</span></p>
-              <p className="text-base md:text-lg ml-1">Sus Word: <span className="font-semibold text-purple-700 dark:text-purple-400">{gameState.susWord}</span></p>
+              <p className="text-base md:text-lg ml-1">Main Word: <span className="font-semibold text-primary">{gameState.mainWord}</span></p>
+              <p className="text-base md:text-lg ml-1">Sus Word: <span className="font-semibold text-primary">{gameState.susWord}</span></p>
             </section>
 
             <section aria-labelledby="imposters-heading" className="p-4 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20">
@@ -163,7 +163,7 @@ const Results = () => {
           <div className="flex flex-col space-y-3 mt-8">
             <Button
               onClick={handlePlayNextRound}
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 dark:bg-purple-600 dark:hover:bg-purple-700 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+              className="w-full text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
             >
               <Play className="h-5 w-5" aria-hidden="true" />
               Play Next Round
