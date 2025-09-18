@@ -131,9 +131,9 @@ const GameSetup = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800 text-white p-4"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-yellow-500 dark:bg-gradient-to-br dark:from-slate-900 dark:via-black dark:to-slate-900 text-white p-4"
     >
-      <Card className="w-full max-w-md bg-card p-6 sm:p-8 rounded-2xl shadow-2xl text-card-foreground border-border">
+      <Card className="w-full max-w-md p-6 sm:p-8 rounded-3xl shadow-2xl text-card-foreground border-border dark:bg-card dark:backdrop-blur-lg dark:border">
         <div className="relative flex items-center justify-center mb-6">
           <Button
             variant="ghost"
@@ -189,9 +189,9 @@ const GameSetup = () => {
               )}
             />
 
-            <Card className="bg-muted/50 p-4 rounded-xl shadow-inner border-border">
+            <Card className="bg-muted/50 p-4 rounded-2xl shadow-inner border-border">
               <CardHeader className="p-0 pb-4">
-                <CardTitle className="text-lg md:text-xl font-semibold text-purple-700 dark:text-purple-400 text-left">Player Names</CardTitle>
+                <CardTitle className="text-lg md:text-xl font-semibold text-primary text-left">Player Names</CardTitle>
               </CardHeader>
               <CardContent className="p-0 space-y-4">
                 {playerInputs.map((_, index) => (
@@ -238,7 +238,7 @@ const GameSetup = () => {
 
             <Button
               type="submit"
-              className="w-full bg-purple-700 text-white hover:bg-purple-800 dark:bg-purple-600 dark:hover:bg-purple-700 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="w-full text-base md:text-lg py-6 rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               Start Round
             </Button>
