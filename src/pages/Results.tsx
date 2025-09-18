@@ -171,7 +171,7 @@ const Results = () => {
             <Button
               onClick={handleModifyGame}
               variant="outline"
-              className="w-full bg-transparent border-2 border-gray-500 text-gray-700 hover:bg-gray-700 hover:text-white dark:border-gray-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2"
+              className="w-full bg-white/20 backdrop-blur-lg border border-white/30 text-white hover:bg-white/40 text-base md:text-lg py-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2"
             >
               <Settings className="h-5 w-5" aria-hidden="true" />
               Modify Game
