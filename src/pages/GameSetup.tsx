@@ -18,8 +18,8 @@ import { wordCategories } from "@/utils/words";
 import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { saveGameState, clearGameState } from "@/utils/localStorage";
-import { MultiSelect } from "@/components/ui/multi-select";
 import NumberStepper from "@/components/ui/NumberStepper";
+import TopicSelector from "@/components/TopicSelector";
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -224,11 +224,10 @@ const GameSetup = () => {
                 <FormItem>
                   <FormLabel className="text-base md:text-lg">Word Topics</FormLabel>
                   <FormControl>
-                    <MultiSelect
+                    <TopicSelector
                       options={wordCategories.map(cat => ({ value: cat, label: cat }))}
                       selected={field.value}
                       onChange={field.onChange}
-                      placeholder="Select topics..."
                       className="w-full"
                     />
                   </FormControl>
